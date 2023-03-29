@@ -7,7 +7,6 @@ extension UIFont {
     enum MarkProFontWeight: Int {
         case plain = 400
         case medium = 500
-        case bold = 700
         case heavy = 800
         
         var nameFont: String {
@@ -16,8 +15,6 @@ extension UIFont {
                 return "DSLCLU+MarkPro"
             case .medium:
                 return "DSLCLU+MarkPro-Medium"
-            case .bold:
-                return "DSLCLU+MarkPro-Bold"
             case .heavy:
                 return "DSLCLU+MarkPro-Heavy"
             }

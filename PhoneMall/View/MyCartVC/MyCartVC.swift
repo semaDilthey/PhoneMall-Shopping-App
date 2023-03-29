@@ -25,16 +25,19 @@ class MyCartVC : UIViewController {
         setupUI()
         tableView.register(MyCartVCTableViewCell.self, forCellReuseIdentifier: MyCartVCTableViewCell.identifire)
         navigationItem.hidesBackButton = true
+        
+        backButtonSetup()
         }
     
     lazy var backButton : UIButton = {
-        let but = UIButton()
+        let but = UIButton(type: .custom)
         but.backgroundColor = .customDarkBlue
         but.setImage(UIImage(named: "Vector"), for: .normal)
         but.translatesAutoresizingMaskIntoConstraints = false
         but.widthAnchor.constraint(equalToConstant: 37).isActive = true
         but.heightAnchor.constraint(equalToConstant: 37).isActive = true
         but.layer.cornerRadius = 11
+        but.tintColor = .white
         but.clipsToBounds = true
         return but
     }()
@@ -171,9 +174,15 @@ class MyCartVC : UIViewController {
     }
 
     
-@objc func handlePresentingVC(_ sender: UIButton) {
+@objc func handlePresentingVC() {
     navigationController?.popToRootViewController(animated: true)
   }
+    
+    func backButtonSetup() {
+        backButton.addTarget(self, action: #selector(handlePresentingVC), for: .touchUpInside)
+        let backBarButtonItems = UIBarButtonItem(customView: backButton)
+        navigationItem.leftBarButtonItem = backBarButtonItems
+    }
     
     func setupUI() {
         view.backgroundColor = .white
@@ -250,7 +259,7 @@ class MyCartVC : UIViewController {
             stackView2.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35),
         ])
         
-        backButton.addTarget(self, action: #selector(handlePresentingVC(_:)), for: .touchUpInside)
+        backButton.addTarget(self, action: #selector(handlePresentingVC), for: .touchUpInside)
     }
 }
 

@@ -13,6 +13,7 @@ class ProductDetailsVC : UICollectionViewController {
         someView.addSubview(addToCartButton)
         collectionView.isScrollEnabled = false // выключает скролл по вертикали 
         setupVIew()
+        
     }
     
     // layout inizialization
@@ -64,38 +65,10 @@ class ProductDetailsVC : UICollectionViewController {
         view.layer.shadowOpacity = 4
         view.layer.shadowOffset = .init(width: 0, height: 2)
         view.layer.shadowRadius = 15
-        view.layer.shouldRasterize = true
+        view.layer.shouldRasterize = false
         return view
     }()
-    //добавляет Label Add to Cart в кнопке
-    lazy var addLabel: UILabel = {
-        let label = UILabel()
-        label.backgroundColor = .clear
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.clipsToBounds = true
-        label.layer.cornerRadius = 5
-        label.text = "ADD TO CART"
-        return label
-    }()
-    // добавляет цену в кнопке
-    lazy var priceLabel: UILabel = {
-        let label = UILabel()
-        label.backgroundColor = .clear
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.clipsToBounds = true
-        label.layer.cornerRadius = 5
-        label.text = "1500"
-        return label
-    }()
-    // добавляет кнопку
-    lazy var addToCartButton : UIButton = {
-        let button = UIButton()
-        button.backgroundColor = .orange
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.clipsToBounds = true
-        button.layer.cornerRadius = 7
-        return button
-    }()
+    
     
     // Лейбл с названием телефона
     lazy var phoneLabel: UILabel = {
@@ -105,58 +78,38 @@ class ProductDetailsVC : UICollectionViewController {
         label.clipsToBounds = true
         label.layer.cornerRadius = 5
         label.textColor = UIColor(red: 0.004, green: 0, blue: 0.208, alpha: 1)
-        label.font = UIFont(name: "MarkPro-Medium", size: 24)
+        label.font = UIFont.markProFont(size: 22, weight: .medium)
         label.textAlignment = .center
         label.attributedText = NSMutableAttributedString(string: "Galaxy Note 20 Ultra", attributes: [NSAttributedString.Key.kern: -0.33])
+        label.layer.shouldRasterize = false
         return label
     }()
     //Cоздаем 5 картинок звезды
-    lazy var star1ImageView: UIImageView = {
+    
+    static func createStarImage () -> UIImageView {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.image = UIImage(named: "star")
         image.clipsToBounds = true
+        image.widthAnchor.constraint(equalToConstant:20).isActive = true
+        image.heightAnchor.constraint(equalToConstant: 20).isActive = true
         image.backgroundColor = .clear
         return image
-    }()
-    lazy var star2ImageView: UIImageView = {
-        let image = UIImageView()
-        image.translatesAutoresizingMaskIntoConstraints = false
-        image.image = UIImage(named: "star")
-        image.clipsToBounds = true
-        image.backgroundColor = .clear
-        return image
-    }()
-    lazy var star3ImageView: UIImageView = {
-        let image = UIImageView()
-        image.translatesAutoresizingMaskIntoConstraints = false
-        image.image = UIImage(named: "star")
-        image.clipsToBounds = true
-        image.backgroundColor = .clear
-        return image
-    }()
-    lazy var star4ImageView: UIImageView = {
-        let image = UIImageView()
-        image.translatesAutoresizingMaskIntoConstraints = false
-        image.image = UIImage(named: "star")
-        image.clipsToBounds = true
-        image.backgroundColor = .clear
-        return image
-    }()
-    lazy var star5ImageView: UIImageView = {
-        let image = UIImageView()
-        image.translatesAutoresizingMaskIntoConstraints = false
-        image.image = UIImage(named: "star")
-        image.clipsToBounds = true
-        image.backgroundColor = .clear
-        return image
-    }()
+    }
+    
+    let star1ImageView = createStarImage()
+    let star2ImageView = createStarImage()
+    let star3ImageView = createStarImage()
+    let star4ImageView = createStarImage()
+    let star5ImageView = createStarImage()
+
     //кнопка избранное
     lazy var favButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "favIcon"), for: .normal)
-        button.frame = CGRect(x: 0, y: 0, width: 37, height: 33)
+        button.widthAnchor.constraint(equalToConstant: 37).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 33).isActive = true
         button.backgroundColor = .white
         button.layer.backgroundColor = UIColor(red: 0.004, green: 0, blue: 0.208, alpha: 1).cgColor
         button.layer.cornerRadius = 10
@@ -164,36 +117,33 @@ class ProductDetailsVC : UICollectionViewController {
     }()
     
     //кнопки Shop, Details, Features
-    lazy var shopButton: UIButton = {
+    
+    static func createShopDetailsFeaturesButton(string : String) -> UIButton {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .clear
-        button.titleLabel?.font = UIFont(name: "MarkPro-Regular", size: 20)
+        button.titleLabel?.font = UIFont.markProFont(size: 20, weight: .heavy)
         button.setTitleColor(UIColor(red: 0, green: 0, blue: 0, alpha: 0.5), for: .normal)
         button.titleLabel?.textAlignment = .center
-        button.titleLabel?.attributedText = NSMutableAttributedString(string: "Shop", attributes: [NSAttributedString.Key.kern: -0.33])
+//        button.titleLabel?.attributedText = NSMutableAttributedString(string: string, attributes: [NSAttributedString.Key.kern: -0.33])
+        button.setTitle(string, for: .normal)
         return button
+    }
+    let shopButton = createShopDetailsFeaturesButton(string: "Shop")
+    let detailsButton = createShopDetailsFeaturesButton(string: "Details")
+    let featuresButton = createShopDetailsFeaturesButton(string: "Features")
         
-    }()
-    lazy var detailsButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .clear
-        button.titleLabel?.font = UIFont(name: "MarkPro-Regular", size: 20)
-        button.setTitleColor(UIColor(red: 0, green: 0, blue: 0, alpha: 0.5), for: .normal)
-        button.titleLabel?.textAlignment = .center
-        button.titleLabel?.attributedText = NSMutableAttributedString(string: "Details", attributes: [NSAttributedString.Key.kern: -0.33])
-        return button
-    }()
-    lazy var featuresButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .clear
-        button.titleLabel?.font = UIFont(name: "MarkPro-Regular", size: 20)
-        button.setTitleColor(UIColor(red: 0, green: 0, blue: 0, alpha: 0.5), for: .normal)
-        button.titleLabel?.textAlignment = .center
-        button.titleLabel?.attributedText = NSMutableAttributedString(string: "Features", attributes: [NSAttributedString.Key.kern: -0.33])
-        return button
+
+    
+    // Label Select color and Capacity
+    
+    let colorCapacityLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .clear
+        label.text = "Select color and capacity"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.markProFont(size: 16, weight: .medium)
+        return label
     }()
     // создаем лейблы 2х цветов
     lazy var circleLabelBrown: UILabel = {
@@ -201,17 +151,19 @@ class ProductDetailsVC : UICollectionViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.backgroundColor = .brown
         label.clipsToBounds = true
-        label.frame = CGRect(x:0 , y: 0, width: 39, height: 39)
+        label.widthAnchor.constraint(equalToConstant: 39).isActive = true
+        label.heightAnchor.constraint(equalToConstant: 39).isActive = true
         label.layer.cornerRadius = 20
         return label
     }()
     
-    lazy var circleBlacklBrown: UILabel = {
+    lazy var circleLabelBlack: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.backgroundColor = .black
         label.clipsToBounds = true
-        label.frame = CGRect(x:0 , y: 0, width: 39, height: 39)
+        label.widthAnchor.constraint(equalToConstant: 39).isActive = true
+        label.heightAnchor.constraint(equalToConstant: 39).isActive = true
         label.layer.cornerRadius = 20
         return label
     }()
@@ -222,9 +174,10 @@ class ProductDetailsVC : UICollectionViewController {
         let button = UILabel()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.backgroundColor = UIColor(named: "customOrange")?.cgColor
-        button.layer.cornerRadius = 4
-        button.layer.frame = CGRect(x: 0, y: 0, width: 71, height: 30)
-        button.font = UIFont(name: "DSLCLU+MarkPro-Medium", size: 13)
+        button.layer.cornerRadius = 10
+        button.widthAnchor.constraint(equalToConstant: 71).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.font = UIFont.markProFont(size: 12, weight: .medium)
         button.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
         button.textAlignment = .center
         button.attributedText =  NSMutableAttributedString(string: "128 GB", attributes: [NSAttributedString.Key.kern: -0.33])
@@ -235,12 +188,49 @@ class ProductDetailsVC : UICollectionViewController {
         let button = UILabel()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.backgroundColor = UIColor.clear.cgColor
-        button.layer.cornerRadius = 4
-        button.frame = CGRect(x: 0, y: 0, width: 71, height: 30)
-        button.font = UIFont(name: "DSLCLU+MarkPro-Medium", size: 13)
+        button.layer.cornerRadius = 10
+        button.widthAnchor.constraint(equalToConstant: 71).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        button.font = UIFont.markProFont(size: 12, weight: .medium)
         button.textColor = UIColor(red: 0.554, green: 0.554, blue: 0.554, alpha: 1)
         button.textAlignment = .center
-        button.attributedText = NSMutableAttributedString(string: "128 GB", attributes: [NSAttributedString.Key.kern: -0.33])
+        button.attributedText = NSMutableAttributedString(string: "256 GB", attributes: [NSAttributedString.Key.kern: -0.33])
+        return button
+    }()
+    
+    //добавляет Label Add to Cart в кнопке
+    lazy var addLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .clear
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.clipsToBounds = true
+        label.layer.cornerRadius = 5
+        label.font = UIFont.markProFont(size: 20, weight: .medium)
+        label.text = "Add to Cart"
+        label.textColor = .white
+        return label
+    }()
+    // добавляет цену в кнопке
+    lazy var priceLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .clear
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.clipsToBounds = true
+        label.layer.cornerRadius = 5
+        label.font = UIFont.markProFont(size: 20, weight: .medium)
+        label.text = "$ 1500"
+        label.textColor = .white
+        label.layer.shouldRasterize = false
+        return label
+    }()
+    // добавляет кнопку
+    lazy var addToCartButton : UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .orange
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.clipsToBounds = true
+        button.layer.cornerRadius = 10
+        button.layer.shouldRasterize = false
         return button
     }()
     
@@ -251,6 +241,8 @@ class ProductDetailsVC : UICollectionViewController {
         image.translatesAutoresizingMaskIntoConstraints = false
         image.image = UIImage(named: name)
         image.frame = CGRect(x: 0, y: 0, width: width, height: height)
+        image.widthAnchor.constraint(equalToConstant: CGFloat(width)).isActive = true
+        image.heightAnchor.constraint(equalToConstant: CGFloat(height)).isActive = true
         image.clipsToBounds = true
         image.contentMode = .scaleAspectFit
         image.backgroundColor = .clear
@@ -264,14 +256,14 @@ class ProductDetailsVC : UICollectionViewController {
         label.clipsToBounds = true
         label.layer.cornerRadius = 5
         label.text = text
-        label.adjustsFontSizeToFitWidth = true
-        label.font = UIFont(name: "MarkPro-Regular", size: 11)
+        label.adjustsFontSizeToFitWidth = false
+        label.font = UIFont.markProFont(size: 10, weight: .plain)
         label.textColor = UIColor(red: 0.717, green: 0.717, blue: 0.717, alpha: 1)
         return label
     }
     // объекты картинок
-    static let processorImage = createImagePhoneOptions(name: "processor", width: 22, height: 22)
-    static let operativkaImage = createImagePhoneOptions(name: "operativka", width: 28, height: 22)
+    static let processorImage = createImagePhoneOptions(name: "processor", width: 28, height: 28)
+    static let operativkaImage = createImagePhoneOptions(name: "operativka", width: 21, height: 28)
     static let memoryCardImage = createImagePhoneOptions(name: "memoryCard", width: 19, height: 22)
     static let cameraOptionsImage = createImagePhoneOptions(name: "cameraOptions", width: 28, height: 22)
     // объекты лейблов
@@ -285,9 +277,9 @@ class ProductDetailsVC : UICollectionViewController {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
-        stack.distribution = .fillProportionally
+        stack.distribution = .fill
         stack.alignment = .center
-        stack.spacing = 5
+        stack.spacing = 4
         stack.backgroundColor = .clear
         stack.addArrangedSubview(image)
         stack.addArrangedSubview(label)
@@ -307,13 +299,14 @@ class ProductDetailsVC : UICollectionViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.distribution = .fillEqually
-        stack.alignment = .lastBaseline
-        stack.spacing = 30
+        stack.alignment = .center
+        stack.spacing = 20
         stack.backgroundColor = .clear
         stack.addArrangedSubview(stack1)
         stack.addArrangedSubview(stack2)
         stack.addArrangedSubview(stack3)
         stack.addArrangedSubview(stack4)
+        stack.backgroundColor = .clear
         return stack
     }
     // ну а теперь можно и засунуть
@@ -328,7 +321,6 @@ class ProductDetailsVC : UICollectionViewController {
         stackView.axis = .horizontal
         stackView.distribution = .equalSpacing
         stackView.alignment = .center
-        stackView.spacing = 210
         stackView.backgroundColor = .clear
         return stackView
     }
@@ -338,13 +330,25 @@ class ProductDetailsVC : UICollectionViewController {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
+        stackView.distribution = .fillProportionally
         stackView.alignment = .center
-        stackView.spacing = .pi
+        stackView.spacing = 3
         stackView.backgroundColor = .clear
         return stackView
     }
     
+    private func circlesStack() -> UIStackView {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .horizontal
+        stack.distribution = .fillEqually
+        stack.alignment = .center
+        stack.spacing = 5
+        stack.backgroundColor = .clear
+        return stack
+    }
+    
+    //MARK: - setup UI
     //настройка якорей
     func setupVIew () {
         
@@ -370,6 +374,12 @@ class ProductDetailsVC : UICollectionViewController {
         addSDFStuck.addArrangedSubview(featuresButton)
         someView.addSubview(addSDFStuck)
         
+        //стак для кругляшек
+        let circlesStack = circlesStack()
+        circlesStack.addArrangedSubview(circleLabelBrown)
+        circlesStack.addArrangedSubview(circleLabelBlack)
+        someView.addSubview(circlesStack)
+
         //стак для гигов
         let gbStack = makeStartsStackView()
         gbStack.addArrangedSubview(gb128Button)
@@ -379,9 +389,9 @@ class ProductDetailsVC : UICollectionViewController {
         // закидываем phoneLabel и прочиее на вью
         someView.addSubview(phoneLabel) // phone label
         someView.addSubview(favButton) // favorites button
-        someView.addSubview(circleLabelBrown) // brown circle
-        someView.addSubview(circleBlacklBrown) // black circle
+        someView.addSubview(colorCapacityLabel)
         someView.addSubview(optionsStack)
+        
         
         // констрейнты
         NSLayoutConstraint.activate([
@@ -389,50 +399,72 @@ class ProductDetailsVC : UICollectionViewController {
             someView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             someView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             someView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            someView.topAnchor.constraint(equalTo: view.topAnchor, constant: 400),
-            // для кнопки
-            addToCartButton.bottomAnchor.constraint(equalTo: someView.bottomAnchor, constant: -35),
-            addToCartButton.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 10),
-            addToCartButton.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -10),
-            // для лейблов в стаке кнопки
-            addLabel.leadingAnchor.constraint(equalTo: addButtonStuck.leadingAnchor, constant: 10),
-            addLabel.topAnchor.constraint(equalTo: addButtonStuck.topAnchor, constant: 10),
-            priceLabel.trailingAnchor.constraint(equalTo: addButtonStuck.trailingAnchor, constant: -10),
-            // лейбл названия телефон
+            someView.topAnchor.constraint(equalTo: view.topAnchor, constant: 400)
+           ])
+        // лейбл названия телефон
+        NSLayoutConstraint.activate([
             phoneLabel.topAnchor.constraint(equalTo: someView.topAnchor, constant: 20),
-            phoneLabel.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 20),
-            // стак звезд
-            addStarsStuck.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 2),
-            addStarsStuck.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 20),
-            // для кнопки избранного
-            favButton.topAnchor.constraint(equalTo: someView.topAnchor, constant: 20),
-            favButton.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -20),
-            
-            // для стака шоп детаилс фючерс
-            addSDFStuck.topAnchor.constraint(equalTo: addStarsStuck.bottomAnchor, constant: 15),
+            phoneLabel.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 30)
+            ])
+        // стак звезд
+        NSLayoutConstraint.activate([
+            addStarsStuck.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 6),
+            addStarsStuck.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 30)
+            ])
+        // для кнопки избранного
+        NSLayoutConstraint.activate([
+            favButton.topAnchor.constraint(equalTo: someView.topAnchor, constant: 28),
+            favButton.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -40)
+            ])
+        // для стака шоп детаилс фючерс
+        NSLayoutConstraint.activate([
+            addSDFStuck.topAnchor.constraint(equalTo: addStarsStuck.topAnchor, constant: 32),
             addSDFStuck.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 20),
-            addSDFStuck.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -20),
-            
-            // для стака кругляшей с выбором цвета
-            circleLabelBrown.bottomAnchor.constraint(equalTo: addToCartButton.topAnchor, constant: -15),
-            circleLabelBrown.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 20),
-            circleLabelBrown.widthAnchor.constraint(equalToConstant: 39),
-            circleLabelBrown.heightAnchor.constraint(equalToConstant: 39),
-            
-            circleBlacklBrown.bottomAnchor.constraint(equalTo: addToCartButton.topAnchor, constant: -15),
-            circleBlacklBrown.leadingAnchor.constraint(equalTo: circleLabelBrown.trailingAnchor, constant: 10),
-            circleBlacklBrown.widthAnchor.constraint(equalToConstant: 39),
-            circleBlacklBrown.heightAnchor.constraint(equalToConstant: 39),
-            // стак для проца, памяти, фото и оперативки
-            optionsStack.topAnchor.constraint(equalTo: someView.topAnchor, constant: 183),
+            addSDFStuck.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -30),
+            addSDFStuck.centerXAnchor.constraint(equalTo: someView.centerXAnchor)
+            ])
+        // стак для проца, памяти, фото и оперативки
+        NSLayoutConstraint.activate([
+            optionsStack.topAnchor.constraint(equalTo: addSDFStuck.bottomAnchor, constant: 43),
             optionsStack.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 30),
-            optionsStack.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -40),
-            optionsStack.heightAnchor.constraint(equalToConstant: 70),
+            optionsStack.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -30)
+            ])
+        // для лейбла Select color and capacity
+        NSLayoutConstraint.activate([
+            colorCapacityLabel.topAnchor.constraint(equalTo: optionsStack.bottomAnchor, constant: 29),
+            colorCapacityLabel.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 30)
+        ])
             
+            
+//
+            // для стака кругляшей с выбором цвета
+        NSLayoutConstraint.activate([
+            circlesStack.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 30),
+            circlesStack.bottomAnchor.constraint(equalTo: addToCartButton.topAnchor, constant: -27),
+            
+            
+            ])
+       
             // стак для гигов сюда
-            gbStack.bottomAnchor.constraint(equalTo: addToCartButton.topAnchor, constant: -15),
-            gbStack.leadingAnchor.constraint(equalTo: circleBlacklBrown.trailingAnchor, constant: 55),
-            gbStack.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -63)
+        NSLayoutConstraint.activate([
+            gbStack.bottomAnchor.constraint(equalTo: addToCartButton.topAnchor, constant: -27),
+            gbStack.leadingAnchor.constraint(equalTo: circlesStack.trailingAnchor, constant: 55),
+            gbStack.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -63),
+        ])
+        
+        // для кнопки
+    NSLayoutConstraint.activate([
+        addToCartButton.bottomAnchor.constraint(equalTo: someView.bottomAnchor, constant: -35),
+        addToCartButton.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 30),
+        addToCartButton.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -30),
+        addToCartButton.heightAnchor.constraint(equalToConstant: 54)
+        ])
+        // для лейблов в стаке кнопки
+    NSLayoutConstraint.activate([
+        addLabel.leadingAnchor.constraint(equalTo: addToCartButton.leadingAnchor, constant: 45),
+        addLabel.centerYAnchor.constraint(equalTo: addToCartButton.centerYAnchor),
+        
+        priceLabel.trailingAnchor.constraint(equalTo: addToCartButton.trailingAnchor, constant: -38)
         ])
     }
     
