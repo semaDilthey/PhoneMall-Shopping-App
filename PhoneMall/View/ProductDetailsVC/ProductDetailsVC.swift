@@ -479,7 +479,6 @@ class ProductDetailsVC : UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductDetailsCustomCell.identife, for: indexPath) as? ProductDetailsCustomCell else { fatalError("Failed to get expected kind of reusable cell from the tableView. Expected type `ProductDetailsCustomCell`")}
         cell.clipsToBounds = true
-        
         cell.layer.cornerRadius = 10
         
         return cell

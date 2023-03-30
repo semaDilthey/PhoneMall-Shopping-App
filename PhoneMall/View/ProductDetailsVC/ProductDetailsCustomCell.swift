@@ -29,6 +29,7 @@ class ProductDetailsCustomCell: UICollectionViewCell {
     func setupUI() {
         contentView.addSubview(imageView)
         
+        
         imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         imageView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
