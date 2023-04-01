@@ -485,7 +485,7 @@ class ProductDetailsVC : UICollectionViewController {
     }
     //MARK: - Количество объектов в скроле
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 8
+        return 9
     }
     
     //MARK: - чо будет по клику на ячейку
