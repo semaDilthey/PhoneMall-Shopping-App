@@ -1,6 +1,7 @@
 
 
 import UIKit
+import SwiftUI
 
 class CustomCellSection2: UICollectionViewCell {
     
@@ -8,11 +9,7 @@ class CustomCellSection2: UICollectionViewCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.addSubview(mainImage)
-        contentView.addSubview(isNewImage)
-        contentView.addSubview(phoneTitleLabel)
-        contentView.addSubview(subtitleLabel)
-        contentView.addSubview(button)
+       
 
     }
     
@@ -27,19 +24,27 @@ class CustomCellSection2: UICollectionViewCell {
         return image
     }()
     
-    lazy var isNewImage : UIImageView = {
-        let image = UIImageView()
-        image.translatesAutoresizingMaskIntoConstraints = false
-        image.image = UIImage(systemName: "house")
-        image.backgroundColor = .clear
-        return image
+    lazy var isNewLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.backgroundColor = .customOrange
+        label.widthAnchor.constraint(equalToConstant: 36).isActive = true
+        label.heightAnchor.constraint(equalToConstant: 36).isActive = true
+        label.clipsToBounds = true
+        label.layer.cornerRadius = 18
+        label.text = "New"
+        label.textColor = .white
+        label.font = UIFont.markProFont(size: 10, weight: .heavy)
+        label.textAlignment = .center
+        return label
     }()
     
     lazy var phoneTitleLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "IPHONE"
-        label.textColor = .red
+        label.textColor = .white
+        label.font = UIFont.markProFont(size: 25, weight: .heavy)
         return label
     }()
     
@@ -48,24 +53,37 @@ class CustomCellSection2: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "some words bout phone"
         label.textColor = .white
+        label.font = UIFont.markProFont(size: 11, weight: .plain)
         return label
     }()
         
-    private let button : UIButton = {
-        let butt = UIButton()
-        butt.setTitle("Buy now!", for: .normal)
-        butt.setTitleColor(.black, for: .normal)
+    private let buyNowLabel : UILabel = {
+        let butt = UILabel()
+        butt.text = "Buy now!"
+        butt.textColor = .black
+        butt.font = UIFont.markProFont(size: 13, weight: .heavy)
         butt.backgroundColor = .white
         butt.translatesAutoresizingMaskIntoConstraints = false
+        butt.clipsToBounds = true
+        butt.layer.cornerRadius = 4
+        butt.textAlignment = .center
         return butt
     }()
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        setupConstaints()
+        setupUI()
     }
     
-    func setupConstaints() {
+    func setupUI() {
+        
+        contentView.addSubview(mainImage)
+        contentView.addSubview(isNewLabel)
+        contentView.addSubview(phoneTitleLabel)
+        contentView.addSubview(subtitleLabel)
+        contentView.addSubview(buyNowLabel)
+        
+        
         NSLayoutConstraint.activate([
             mainImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             mainImage.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -73,25 +91,26 @@ class CustomCellSection2: UICollectionViewCell {
             mainImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
             
-            isNewImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
-            isNewImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30),
-            isNewImage.heightAnchor.constraint(equalToConstant: 40),
-            isNewImage.widthAnchor.constraint(equalToConstant: 40),
+            isNewLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 23),
+            isNewLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
             
-            phoneTitleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 60),
-            phoneTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 75),
+            phoneTitleLabel.topAnchor.constraint(equalTo: isNewLabel.bottomAnchor, constant: 18),
+            phoneTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
             
-            subtitleLabel.topAnchor.constraint(equalTo: phoneTitleLabel.bottomAnchor, constant: 7),
-            subtitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 75),
+            subtitleLabel.bottomAnchor.constraint(equalTo: buyNowLabel.topAnchor, constant: -20),
+            subtitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
             
-            button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15),
-            button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
-            button.widthAnchor.constraint(equalToConstant: contentView.frame.width/4),
-            button.heightAnchor.constraint(equalToConstant: 40)
+            buyNowLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15),
+            buyNowLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            buyNowLabel.widthAnchor.constraint(equalToConstant: 98),
+            buyNowLabel.heightAnchor.constraint(equalToConstant: 23)
         ])
         
-        button.clipsToBounds = true
-        button.layer.cornerRadius = 10
-        
+    }
+}
+
+struct ViewControllerProvider : PreviewProvider {
+    static var previews: some View {
+        HomeVC().showPreview()
     }
 }

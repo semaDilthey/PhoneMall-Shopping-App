@@ -28,6 +28,7 @@
 		3F7990ED2906EF6D003DDE5A /* MarkPro-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F7990EC2906EF6D003DDE5A /* MarkPro-Heavy.ttf */; };
 		3F7990F12906F487003DDE5A /* MarkPro-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F7990EF2906F486003DDE5A /* MarkPro-Thin.ttf */; };
 		3F7990F22906F487003DDE5A /* MarkPro-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F7990F02906F486003DDE5A /* MarkPro-Medium.ttf */; };
+		3FA5FE1929D9F6310026EFB7 /* extension + UICollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA5FE1829D9F6310026EFB7 /* extension + UICollectionViewCell.swift */; };
 		3FAF71B82989B8E400253164 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FAF71B72989B8E400253164 /* TabBarViewController.swift */; };
 		3FB8FBE428B6AF7A003F8D1D /* CustomCellSection3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB8FBE328B6AF7A003F8D1D /* CustomCellSection3.swift */; };
 		3FD5A01A28C7B31F005D6F6C /* EasyPhoneData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD5A01928C7B31F005D6F6C /* EasyPhoneData.swift */; };
@@ -59,6 +60,7 @@
 		3F7990EC2906EF6D003DDE5A /* MarkPro-Heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MarkPro-Heavy.ttf"; sourceTree = "<group>"; };
 		3F7990EF2906F486003DDE5A /* MarkPro-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MarkPro-Thin.ttf"; sourceTree = "<group>"; };
 		3F7990F02906F486003DDE5A /* MarkPro-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MarkPro-Medium.ttf"; sourceTree = "<group>"; };
+		3FA5FE1829D9F6310026EFB7 /* extension + UICollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "extension + UICollectionViewCell.swift"; sourceTree = "<group>"; };
 		3FAF71B72989B8E400253164 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TabBarViewController.swift; path = PhoneMall/View/TabBarViewController.swift; sourceTree = SOURCE_ROOT; };
 		3FB8FBE328B6AF7A003F8D1D /* CustomCellSection3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCellSection3.swift; sourceTree = "<group>"; };
 		3FD5A01928C7B31F005D6F6C /* EasyPhoneData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasyPhoneData.swift; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 				3F69B230299EDAAA00372CF8 /* extension+UIView.swift */,
 				3F69B232299EDAE600372CF8 /* extension+UIFont.swift */,
 				3F26697C29C33ED6005D93F3 /* extension+UIViewController.swift */,
+				3FA5FE1829D9F6310026EFB7 /* extension + UICollectionViewCell.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -285,6 +288,7 @@
 				3FDFEC552991415E005EBE01 /* extension+UIColor.swift in Sources */,
 				3F69B22F299ECCC200372CF8 /* CustomStepper.swift in Sources */,
 				3F010AE8299D71B700B241A9 /* extension+UITabBar.swift in Sources */,
+				3FA5FE1929D9F6310026EFB7 /* extension + UICollectionViewCell.swift in Sources */,
 				3F4A8F0428B6A64500B5E646 /* CustomCellSection2.swift in Sources */,
 				3F4A8EF828B280EE00B5E646 /* PhoneData.swift in Sources */,
 				3FB8FBE428B6AF7A003F8D1D /* CustomCellSection3.swift in Sources */,

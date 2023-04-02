@@ -4,53 +4,6 @@ import Foundation
 import UIKit
 import SwiftUI
 //
-//struct PhoneData : Codable {
-//
-//    let homeStore : [Store]
-//    let bestSeller : [Seller]
-//
-//    enum CodingKeys :  String, CodingKey {
-//        case homeStore = "home_store"
-//        case bestSeller = "best_seller"
-//    }
-//}
-//
-//struct Store : Codable {
-//    let id : Int
-//    let title : String
-//    let subtitle : String
-//    let isNew : Bool?
-//    let picture : String
-//    let isBuy : Bool
-//
-//    enum CodingKeys : String, CodingKey {
-//        case isNew = "is_new"
-//        case isBuy = "is_buy"
-//        case id = "id"
-//        case title = "title"
-//        case subtitle = "subtitle"
-//        case picture = "picture"
-//    }
-//
-//}
-//
-//struct Seller : Codable {
-//    let id : Int
-//    let isFavorites : Bool
-//    let title : String
-//    let priceWithoutDiscount : Int
-//    let discountPrice : Int
-//    let picture : String
-//
-//    enum CodingKeys : String, CodingKey {
-//        case id = "id"
-//        case title = "title"
-//        case isFavorites = "is_favorites"
-//        case priceWithoutDiscount = "price_without_discount"
-//        case discountPrice = "discount_price"
-//        case picture = "picture"
-//    }
-//}
 
 class HomeVC : UICollectionViewController{
 
@@ -217,11 +170,13 @@ class HomeVC : UICollectionViewController{
             } else if indexPath.row == 1 {
                 cell.phoneTitleLabel.text! = EasyBestSellerData.titles[1]
                 cell.subtitleLabel.text = EasyBestSellerData.subtitle
+                cell.phoneTitleLabel.text = ""
                 cell.mainImage.image = EasyBestSellerData.picture[1]
                 //ячейка №2 в 1 секции
             } else {
                 cell.phoneTitleLabel.text = EasyBestSellerData.titles[2]
                 cell.subtitleLabel.text = EasyBestSellerData.subtitle
+                cell.phoneTitleLabel.textColor = .black
                 cell.mainImage.image = EasyBestSellerData.picture[2]
             }
             return cell
@@ -273,16 +228,9 @@ class HomeVC : UICollectionViewController{
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    
-    
-    
-    
-    
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }
 
 
@@ -331,8 +279,6 @@ class Header : UICollectionReusableView {
 //struct ViewControllerProvider : PreviewProvider {
 //    static var previews: some View {
 //        HomeVC().showPreview()
-//        MyCartVC().showPreview()
-//        TabBarViewController().showPreview()
-//        ProductDetailsVC().showPreview()
+//    
 //    }
 //}

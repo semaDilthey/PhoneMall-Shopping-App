@@ -12,20 +12,17 @@ class MyCartVC : UIViewController {
     //var checkingOut = false
     
     var checkingOut : Bool {
-        if checkoutButton.isTouchInside {
-            return true
-        } else {
-            return false
-        }
+        checkoutButton.isTouchInside ? true : false
     }
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        tableView.register(MyCartVCTableViewCell.self, forCellReuseIdentifier: MyCartVCTableViewCell.identifire)
-        navigationItem.hidesBackButton = true
         
+        tableView.register(MyCartVCTableViewCell.self, forCellReuseIdentifier: MyCartVCTableViewCell.identifire)
+        
+        navigationItem.hidesBackButton = true
         backButtonSetup()
         }
     
@@ -174,9 +171,9 @@ class MyCartVC : UIViewController {
     }
 
     
-@objc func handlePresentingVC() {
-    navigationController?.popToRootViewController(animated: true)
-  }
+    @objc func handlePresentingVC() {
+        navigationController?.popToRootViewController(animated: true)
+    }
     
     func backButtonSetup() {
         backButton.addTarget(self, action: #selector(handlePresentingVC), for: .touchUpInside)
@@ -259,7 +256,6 @@ class MyCartVC : UIViewController {
             stackView2.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35),
         ])
         
-        backButton.addTarget(self, action: #selector(handlePresentingVC), for: .touchUpInside)
     }
 }
 

@@ -8,7 +8,7 @@ class ProductDetailsCustomCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
-        self.backgroundColor = .red
+        self.backgroundColor = .clear
     }
     
     
@@ -18,6 +18,7 @@ class ProductDetailsCustomCell: UICollectionViewCell {
         image.translatesAutoresizingMaskIntoConstraints = false
         image.frame = bounds
         image.clipsToBounds = true
+        image.layer.cornerRadius = 16
         return image
     }()
     

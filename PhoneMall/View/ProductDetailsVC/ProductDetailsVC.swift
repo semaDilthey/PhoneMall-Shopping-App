@@ -8,11 +8,18 @@ class ProductDetailsVC : UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // рег ячейку
         collectionView.register(ProductDetailsCustomCell.self, forCellWithReuseIdentifier: ProductDetailsCustomCell.identife)
-        view.addSubview(someView)
-        someView.addSubview(addToCartButton)
-        collectionView.isScrollEnabled = false // выключает скролл по вертикали 
+        
+        collectionView.isScrollEnabled = false // выключает скролл по вертикали
+        
+       // настройка всего вью
         setupVIew()
+        
+        // тут настройка кнопки назад
+        navigationItem.hidesBackButton = true
+        backButtonSetup()
+        shopCartButtonSetup()
         
     }
     
@@ -22,49 +29,110 @@ class ProductDetailsVC : UICollectionViewController {
     }
     
     // создаем Layout который будет туда сюда ходить
-            static func createScrollableLayout() -> UICollectionViewCompositionalLayout {
-            let compositionalLayout: UICollectionViewCompositionalLayout = {
-                let fraction: CGFloat = 4.0 / 8.0
-                
-                // Item
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-                let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                
-                // Group
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(fraction), heightDimension: .fractionalWidth(fraction))
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-                
-                // Section
-                let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 80, bottom: 0, trailing: 2.5)
-                section.orthogonalScrollingBehavior = .continuous
-                
-                // creating transformableScrolling
-                section.visibleItemsInvalidationHandler = { (items, offset, environment) in
-                    items.forEach { item in
-                        let distanceFromCenter = abs((item.frame.midX - offset.x) - environment.container.contentSize.width / 2.0)
-                        let minScale: CGFloat = 0.8
-                        let maxScale: CGFloat = 1.1
-                        let scale = max(maxScale - (distanceFromCenter / environment.container.contentSize.width), minScale)
-                        item.transform = CGAffineTransform(scaleX: scale, y: scale)
-                    }
+    static func createScrollableLayout() -> UICollectionViewCompositionalLayout {
+        let compositionalLayout: UICollectionViewCompositionalLayout = {
+            let fraction: CGFloat = 4.0 / 8.0
+            
+            // Item
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            
+            // Group
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(fraction), heightDimension: .fractionalWidth(fraction))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+            
+            // Section
+            let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 80, bottom: 0, trailing: 2.5)
+            section.orthogonalScrollingBehavior = .continuous
+            
+            // creating transformableScrolling
+            section.visibleItemsInvalidationHandler = { (items, offset, environment) in
+                items.forEach { item in
+                    let distanceFromCenter = abs((item.frame.midX - offset.x) - environment.container.contentSize.width / 2.0)
+                    let minScale: CGFloat = 0.8
+                    let maxScale: CGFloat = 1.1
+                    let scale = max(maxScale - (distanceFromCenter / environment.container.contentSize.width), minScale)
+                    item.transform = CGAffineTransform(scaleX: scale, y: scale)
                 }
-                return UICollectionViewCompositionalLayout(section: section)
-            }()
-            return compositionalLayout
-        }
+            }
+            return UICollectionViewCompositionalLayout(section: section)
+        }()
+        
+        return compositionalLayout
+    }
     
     //MARK: - Создаем кастомную вью под коллекшеном вью
+    // кастомная кнопка назад
+    lazy var backButton : UIButton = {
+        let but = UIButton(type: .custom)
+        but.backgroundColor = .customDarkBlue
+        but.setImage(UIImage(named: "Vector"), for: .normal)
+        but.translatesAutoresizingMaskIntoConstraints = false
+        but.widthAnchor.constraint(equalToConstant: 37).isActive = true
+        but.heightAnchor.constraint(equalToConstant: 37).isActive = true
+        but.layer.cornerRadius = 11
+        but.tintColor = .white
+        but.clipsToBounds = true
+        return but
+    }()
+    
+    // обжС функция для селектора кнопки backButton
+    @objc func backButtonPresentingVC() {
+        navigationController?.popToRootViewController(animated: true)
+    }
+    // что происходит по клику на кнопку назад
+    func backButtonSetup() {
+        backButton.addTarget(self, action: #selector(backButtonPresentingVC), for: .touchUpInside)
+        let backBarButtonItems = UIBarButtonItem(customView: backButton)
+        navigationItem.leftBarButtonItem = backBarButtonItems
+    }
+    
+    lazy var shopCartButton : UIButton = {
+        let but = UIButton(type: .custom)
+        but.backgroundColor = .customOrange
+        but.setImage(UIImage(named: "shopCart"), for: .normal)
+        but.translatesAutoresizingMaskIntoConstraints = false
+        but.widthAnchor.constraint(equalToConstant: 37).isActive = true
+        but.heightAnchor.constraint(equalToConstant: 37).isActive = true
+        but.layer.cornerRadius = 11
+        but.clipsToBounds = true
+        but.layer.shouldRasterize = false
+        return but
+    }()
+    
+    @objc func shopCartButtonPresentingVC() {
+        navigationController?.pushViewController(MyCartVC(), animated: true)
+        
+    }
+    
+    func shopCartButtonSetup() {
+        let rightBarButton = UIBarButtonItem(customView: shopCartButton)
+        navigationItem.setRightBarButton(rightBarButton, animated: true)
+        shopCartButton.addTarget(self, action: #selector(shopCartButtonPresentingVC), for: .touchUpInside)
+      
+    }
+    
+  
+    // Product details label that in the top center
+    let detailsLabel : UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .clear
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.markProFont(size: 18, weight: .medium)
+        label.text = "Product details"
+        label.textColor = .black
+        return label
+    }()
+    // Наш основной нижний view в котором все находится
     lazy var someView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         view.translatesAutoresizingMaskIntoConstraints = false
         view.clipsToBounds = true
         view.layer.cornerRadius = 15
-        view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowOpacity = 4
-        view.layer.shadowOffset = .init(width: 0, height: 2)
-        view.layer.shadowRadius = 15
+        view.layer.borderColor = UIColor.snowyWhite?.cgColor
+        view.layer.borderWidth = 0.5
         view.layer.shouldRasterize = false
         return view
     }()
@@ -386,14 +454,29 @@ class ProductDetailsVC : UICollectionViewController {
         gbStack.addArrangedSubview(gb256Button)
         someView.addSubview(gbStack)
         
-        // закидываем phoneLabel и прочиее на вью
+        // закидываем someView, phoneLabel и прочиее на вью
         someView.addSubview(phoneLabel) // phone label
         someView.addSubview(favButton) // favorites button
         someView.addSubview(colorCapacityLabel)
         someView.addSubview(optionsStack)
+        view.addSubview(someView)
+        someView.addSubview(addToCartButton)
+        view.addSubview(detailsLabel)
+        view.addSubview(shopCartButton)
         
         
         // констрейнты
+        // для лейбла Продукт Детаилис
+        NSLayoutConstraint.activate([
+            detailsLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            detailsLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 55)
+        ])
+        // кнопка в корзину верх право
+        NSLayoutConstraint.activate([
+            shopCartButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 55),
+            shopCartButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
+        ])
+        
         NSLayoutConstraint.activate([
             // для вью
             someView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -480,7 +563,7 @@ class ProductDetailsVC : UICollectionViewController {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductDetailsCustomCell.identife, for: indexPath) as? ProductDetailsCustomCell else { fatalError("Failed to get expected kind of reusable cell from the tableView. Expected type `ProductDetailsCustomCell`")}
         cell.clipsToBounds = true
         cell.layer.cornerRadius = 10
-        
+        cell.addShadow()
         return cell
     }
     //MARK: - Количество объектов в скроле
@@ -501,8 +584,12 @@ class ProductDetailsVC : UICollectionViewController {
     }
 }
 
-struct ViewControllerProvider : PreviewProvider {
-    static var previews: some View {
-        ProductDetailsVC().showPreview()
-    }
-}
+//struct ViewControllerProvider : PreviewProvider {
+//    static var previews: some View {
+//        ProductDetailsVC().showPreview()
+//    }
+//}
+
+
+
+
