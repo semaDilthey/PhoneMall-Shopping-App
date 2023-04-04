@@ -13,28 +13,29 @@ import UIKit
 //    func didFailWithError(error: Error)
 //}
 
-//struct PhoneManager {
-////
-//    //var phonesArray = [PhoneData]()
+//class PhoneManager {
+////  Массивчик, в который будет погружаться все что мы парсим
+//    var phonesArray = [HomeVCData]()
 ////
 ////    var delegate: PhoneManagerDelegate? //свойство для делегирования по протоколу
-////
+//
 //    let phoneURL = "https://run.mocky.io/v3/654bd15e-b121-49ba-a588-960956b15175"
 //
-//    mutating func getJSON(with urlString : String) { // функция выполяющая запрос  через URLSession
+//    
+//    func getJSON(with urlString : String) { // функция выполяющая запрос  через URLSession
 //        guard let url = URL(string: urlString) else {
 //                fatalError("guard URL failed")
 //            }
 //        URLSession.shared.dataTask(with: url) { data, response, error in
 //            if let data = data {
-//                guard let phone = try? JSONDecoder().decode(PhoneData.self, from: data) else {
+//                guard let phone = try? JSONDecoder().decode(HomeVCData.self, from: data) else {
 //                    fatalError("Something wrong with JSON Decoder, code: \(error!)")
 //                }
-//                DispatchQueue.main.async {
-//                    HomeVC().array.append(phone)
-//
+//               DispatchQueue.main.async {
+//                     self.phonesArray.append(phone)
 //                }
-//                print(HomeVC().array)
+//                print(self.phonesArray)
+//
 //            }
 //        }
 //        .resume()

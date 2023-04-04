@@ -6,10 +6,6 @@ import SwiftUI
 //
 
 class HomeVC : UICollectionViewController{
-
-    
-   // var phonesArray = [PhoneData]()
-
     
     let headerID = "HeaderID"
     static let categoryHeaderId = "CategoryHeaderID"
@@ -26,10 +22,10 @@ class HomeVC : UICollectionViewController{
         collectionView.register(CustomCellSection2.self, forCellWithReuseIdentifier: CustomCellSection2.identifire)
         collectionView.register(CustomCellSection3.self, forCellWithReuseIdentifier: CustomCellSection3.identifire)
         collectionView.register(Header.self, forSupplementaryViewOfKind: HomeVC.categoryHeaderId, withReuseIdentifier: headerID) // рег заголовок
-        //performRequest(with: phoneURL)
-//        getJSON(with: phoneURL)
+    
         navigationController?.navigationBar.prefersLargeTitles = true
 //        navigationController?.navigationItem.hidesBackButton = true
+        //PhoneManager().getJSON(with: PhoneManager().phoneURL)
     }
     
     init(){
@@ -37,28 +33,6 @@ class HomeVC : UICollectionViewController{
         super.init(collectionViewLayout: HomeVC.createLayout())
     }
     
-    
-    
-    
-    //MARK: - NETWORKING
-//
-//    let phoneURL = "https://run.mocky.io/v3/654bd15e-b121-49ba-a588-960956b15175"
-//
-//     func getJSON(with urlString : String) { // функция выполяющая запрос  через URLSession
-//        guard let url = URL(string: urlString) else {
-//                fatalError("guard URL failed")
-//            }
-//        URLSession.shared.dataTask(with: url) {  data, response, error in
-//            if let data = data {
-//                guard let phone = try? JSONDecoder().decode(PhoneData.self, from: data) else {
-//                    fatalError("Something wrong with JSON Decoder, code: \(error!)")
-//                }
-//                self.phonesArray.append(phone)
-//                print(self.phonesArray[0].bestSeller[0].discountPrice)
-//            }
-//        }
-//        .resume()
-//    }
     
     //MARK: - Создает композишен лейаут
     static func createLayout() -> UICollectionViewCompositionalLayout {

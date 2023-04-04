@@ -10,7 +10,9 @@ import UIKit
 
 struct EasyBestSellerData {
     
+    
     static let titles = ["Iphone 12", "Samsung Galaxy A71", "Xiaomi Mi 11 ultra"]
+ 
     static let subtitle = "Súper. Mega. Rápido."
     static let isNew = [true, false, false]
     static let picture = [UIImage(named: "bestSellerIphone"), UIImage(named: "bestSellerSamsung"), UIImage(named: "bestSellerXiaomi")]

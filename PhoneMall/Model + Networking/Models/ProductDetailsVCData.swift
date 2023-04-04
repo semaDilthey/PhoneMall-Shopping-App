@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ProductDetailsVCData: Decodable {
+struct ProductDetailsVCData: Codable {
     let title: String
     let isFavorites: Bool
     let CPU: String
