@@ -15,12 +15,10 @@ class CustomCellSection3: UICollectionViewCell {
         contentView.addSubview(discountPriceLabel)
         contentView.addSubview(nameLabel)
 
-
     }
     
     lazy var image : UIImageView = {
         let image = UIImageView()
-        //image.image = UIImage(named: "pp1")
         image.image = UIImage(systemName: "house")
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
@@ -29,7 +27,7 @@ class CustomCellSection3: UICollectionViewCell {
     // значения для кнопки надо сохранять в юзерДефолтс
     lazy var isFavoritesButton : UIButton = {
         let butt = UIButton()
-        butt.backgroundColor = UIColor(named: "snowyWhite")
+        butt.backgroundColor = UIColor.snowyWhite
         butt.setImage(UIImage(systemName: "heart"), for: .normal)
         butt.clipsToBounds = true
         butt.layer.cornerRadius = 16
@@ -42,7 +40,7 @@ class CustomCellSection3: UICollectionViewCell {
         label.text = "1500$"
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "DSLCLU+MarkPro-Medium", size: 16)
+        label.font = UIFont.markProFont(size: 16, weight: .medium)
         return label
     }()
     
@@ -53,7 +51,7 @@ class CustomCellSection3: UICollectionViewCell {
         label.textColor = UIColor(red: 0.004, green: 0, blue: 0.208, alpha: 1)
         label.frame = CGRect(x: 0, y: 0, width: 50, height: 20)
         label.attributedText = attributeString
-        label.font = UIFont(name: "DSLCLU+MarkPro-Thin", size: 13)
+        label.font = UIFont.markProFont(size: 13, weight: .plain)
         label.textColor = .gray
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -62,7 +60,7 @@ class CustomCellSection3: UICollectionViewCell {
     lazy var nameLabel : UILabel = {
         let label = UILabel()
         label.text = "Phone name lalalalal"
-        label.font = UIFont(name: "DSLCLU+MarkPro", size: 13)
+        label.font = UIFont.markProFont(size: 13, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()

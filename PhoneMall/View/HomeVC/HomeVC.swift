@@ -160,11 +160,6 @@ class HomeVC : UICollectionViewController{
             cell.layer.cornerRadius = 15
             cell.clipsToBounds = true
             cell.backgroundColor = .white
-            // shadows - не работает в данный момент
-            cell.layer.shadowRadius = 2
-            cell.layer.shadowOffset = CGSize(width: 0, height: 3)
-            cell.layer.shadowOpacity = 0.25
-            cell.layer.shadowColor = UIColor.black.cgColor
             if indexPath.row == 0 {
                 cell.image.image = EasyHomeStoreData.picture[1]
                 cell.discountPriceLabel.text = EasyHomeStoreData.discountPrice[1] + "$"
@@ -193,20 +188,15 @@ class HomeVC : UICollectionViewController{
     
     //MARK: - чо будет по клику на ячейку
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let vc = UIViewController()
-//        print("This cell #\(indexPath.row) located in section #\(indexPath.section)")
-//        vc.view.backgroundColor = indexPath.section == 0 ? .yellow : .systemGray
-//        navigationController?.pushViewController(vc, animated: true)
         
         let vc = ProductDetailsVC()
         navigationController?.pushViewController(vc, animated: true)
-    }
+}
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
 
 // класс для кастомного хедера
 class Header : UICollectionReusableView {
@@ -215,7 +205,7 @@ class Header : UICollectionReusableView {
         let label = UILabel()
         label.text = "Best seller"
         label.textColor = .black
-        label.font = UIFont(name: "DSLCLU+MarkPro-Heavy", size: 20)
+        label.font = UIFont.markProFont(size: 20, weight: .heavy)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()

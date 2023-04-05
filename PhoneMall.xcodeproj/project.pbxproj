@@ -115,14 +115,14 @@
 		3F4A8EDB28AFC01E00B5E646 /* PhoneMall */ = {
 			isa = PBXGroup;
 			children = (
-				3F010AE6299D719400B241A9 /* Extensions */,
-				3F7990E92906EBCB003DDE5A /* fonts */,
 				3F4A8F0028B6985D00B5E646 /* View */,
 				3F4A8EF628AFC1B000B5E646 /* Resourses  */,
 				3F4A8EF928B3B2B900B5E646 /* Model + Networking */,
 				3F4A8EE528AFC01F00B5E646 /* Assets.xcassets */,
 				3F5B2BF929AFA2F900E8F0CC /* Launch Screen.storyboard */,
 				3F4A8EEA28AFC01F00B5E646 /* Info.plist */,
+				3F7990E92906EBCB003DDE5A /* fonts */,
+				3F010AE6299D719400B241A9 /* Extensions */,
 			);
 			path = PhoneMall;
 			sourceTree = "<group>";

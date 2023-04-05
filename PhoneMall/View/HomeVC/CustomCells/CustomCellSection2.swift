@@ -7,19 +7,16 @@ class CustomCellSection2: UICollectionViewCell {
     
     static let identifire = "CustomCellSection2"
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-       
-
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//    override init(frame: CGRect) {
+//        super.init(frame: frame)
+//    }
+//
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
     var mainImage : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(named: "pp1")
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
