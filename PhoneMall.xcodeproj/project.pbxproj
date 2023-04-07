@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		3F010AE8299D71B700B241A9 /* extension+UITabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F010AE7299D71B700B241A9 /* extension+UITabBar.swift */; };
+		3F02EB3B29E0054100EAA3E0 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F02EB3A29E0054100EAA3E0 /* HomeViewModel.swift */; };
+		3F02EB3E29E0064700EAA3E0 /* CollectionViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F02EB3D29E0064700EAA3E0 /* CollectionViewCellModel.swift */; };
+		3F02EB4A29E04CD600EAA3E0 /* CartCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F02EB4929E04CD600EAA3E0 /* CartCellViewModel.swift */; };
+		3F02EB4C29E04CF200EAA3E0 /* CartCellViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F02EB4B29E04CF200EAA3E0 /* CartCellViewModelProtocol.swift */; };
 		3F26697D29C33ED6005D93F3 /* extension+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F26697C29C33ED6005D93F3 /* extension+UIViewController.swift */; };
 		3F4A8EDD28AFC01E00B5E646 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4A8EDC28AFC01E00B5E646 /* AppDelegate.swift */; };
 		3F4A8EDF28AFC01E00B5E646 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4A8EDE28AFC01E00B5E646 /* SceneDelegate.swift */; };
@@ -40,6 +44,10 @@
 
 /* Begin PBXFileReference section */
 		3F010AE7299D71B700B241A9 /* extension+UITabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "extension+UITabBar.swift"; sourceTree = "<group>"; };
+		3F02EB3A29E0054100EAA3E0 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		3F02EB3D29E0064700EAA3E0 /* CollectionViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCellModel.swift; sourceTree = "<group>"; };
+		3F02EB4929E04CD600EAA3E0 /* CartCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartCellViewModel.swift; sourceTree = "<group>"; };
+		3F02EB4B29E04CF200EAA3E0 /* CartCellViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartCellViewModelProtocol.swift; sourceTree = "<group>"; };
 		3F26697C29C33ED6005D93F3 /* extension+UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "extension+UIViewController.swift"; sourceTree = "<group>"; };
 		3F4A8ED928AFC01E00B5E646 /* PhoneMall.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhoneMall.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F4A8EDC28AFC01E00B5E646 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -65,7 +73,7 @@
 		3F89B8CE29DB4FAB00B361B1 /* ProductDetailsVCData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsVCData.swift; sourceTree = "<group>"; };
 		3F89B8D029DB4FED00B361B1 /* CartData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartData.swift; sourceTree = "<group>"; };
 		3FA5FE1829D9F6310026EFB7 /* extension + UICollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "extension + UICollectionViewCell.swift"; sourceTree = "<group>"; };
-		3FAF71B72989B8E400253164 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TabBarViewController.swift; path = PhoneMall/View/TabBarViewController.swift; sourceTree = SOURCE_ROOT; };
+		3FAF71B72989B8E400253164 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TabBarViewController.swift; path = PhoneMall/TabBarViewController.swift; sourceTree = SOURCE_ROOT; };
 		3FB8FBE328B6AF7A003F8D1D /* CustomCellSection3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCellSection3.swift; sourceTree = "<group>"; };
 		3FD5A01928C7B31F005D6F6C /* EasyPhoneData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasyPhoneData.swift; sourceTree = "<group>"; };
 		3FDFEC542991415E005EBE01 /* extension+UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "extension+UIColor.swift"; sourceTree = "<group>"; };
@@ -96,6 +104,88 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		3F02EB3F29E01B6000EAA3E0 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				3F02EB4529E01EE400EAA3E0 /* Cells */,
+				3F4A8EF028AFC06B00B5E646 /* HomeVC.swift */,
+				3F02EB3A29E0054100EAA3E0 /* HomeViewModel.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		3F02EB4029E01B6C00EAA3E0 /* Details */ = {
+			isa = PBXGroup;
+			children = (
+				3F4A8EF228AFC08B00B5E646 /* ProductDetailsVC.swift */,
+				3F02EB4429E01EC000EAA3E0 /* Cell */,
+			);
+			path = Details;
+			sourceTree = "<group>";
+		};
+		3F02EB4129E01B7300EAA3E0 /* Cart */ = {
+			isa = PBXGroup;
+			children = (
+				3F4A8EF428AFC09300B5E646 /* MyCartVC.swift */,
+				3F02EB4B29E04CF200EAA3E0 /* CartCellViewModelProtocol.swift */,
+				3F02EB4929E04CD600EAA3E0 /* CartCellViewModel.swift */,
+				3F02EB4329E01E1100EAA3E0 /* Cell */,
+			);
+			path = Cart;
+			sourceTree = "<group>";
+		};
+		3F02EB4329E01E1100EAA3E0 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				3F69B22B299EA10500372CF8 /* MyCartVCTableViewCell.swift */,
+				3F69B22E299ECCC200372CF8 /* CustomStepper.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		3F02EB4429E01EC000EAA3E0 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				3FF67DCE28D34F1F0034CD19 /* ProductDetailsCustomCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		3F02EB4529E01EE400EAA3E0 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				3F02EB4829E01EF700EAA3E0 /* CellSection3 */,
+				3F02EB4729E01EF400EAA3E0 /* CellSection2 */,
+				3F02EB4629E01EF200EAA3E0 /* CellSection1 */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		3F02EB4629E01EF200EAA3E0 /* CellSection1 */ = {
+			isa = PBXGroup;
+			children = (
+				3F4A8F0128B6986F00B5E646 /* CustomCellSection1.swift */,
+			);
+			path = CellSection1;
+			sourceTree = "<group>";
+		};
+		3F02EB4729E01EF400EAA3E0 /* CellSection2 */ = {
+			isa = PBXGroup;
+			children = (
+				3F4A8F0328B6A64500B5E646 /* CustomCellSection2.swift */,
+			);
+			path = CellSection2;
+			sourceTree = "<group>";
+		};
+		3F02EB4829E01EF700EAA3E0 /* CellSection3 */ = {
+			isa = PBXGroup;
+			children = (
+				3FB8FBE328B6AF7A003F8D1D /* CustomCellSection3.swift */,
+				3F02EB3D29E0064700EAA3E0 /* CollectionViewCellModel.swift */,
+			);
+			path = CellSection3;
+			sourceTree = "<group>";
+		};
 		3F4A8ED028AFC01E00B5E646 = {
 			isa = PBXGroup;
 			children = (
@@ -115,13 +205,16 @@
 		3F4A8EDB28AFC01E00B5E646 /* PhoneMall */ = {
 			isa = PBXGroup;
 			children = (
-				3F4A8F0028B6985D00B5E646 /* View */,
-				3F4A8EF628AFC1B000B5E646 /* Resourses  */,
+				3FAF71B72989B8E400253164 /* TabBarViewController.swift */,
+				3F02EB3F29E01B6000EAA3E0 /* Home */,
+				3F02EB4029E01B6C00EAA3E0 /* Details */,
+				3F02EB4129E01B7300EAA3E0 /* Cart */,
 				3F4A8EF928B3B2B900B5E646 /* Model + Networking */,
 				3F4A8EE528AFC01F00B5E646 /* Assets.xcassets */,
 				3F5B2BF929AFA2F900E8F0CC /* Launch Screen.storyboard */,
 				3F4A8EEA28AFC01F00B5E646 /* Info.plist */,
 				3F7990E92906EBCB003DDE5A /* fonts */,
+				3F4A8EF628AFC1B000B5E646 /* Resourses  */,
 				3F010AE6299D719400B241A9 /* Extensions */,
 			);
 			path = PhoneMall;
@@ -146,26 +239,6 @@
 			path = "Model + Networking";
 			sourceTree = "<group>";
 		};
-		3F4A8F0028B6985D00B5E646 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				3FAF71B72989B8E400253164 /* TabBarViewController.swift */,
-				3FF67DCD28D344470034CD19 /* MyCartVC */,
-				3FF67DCC28D343E10034CD19 /* ProductDetailsVC */,
-				3FF67DCA28D343850034CD19 /* HomeVC */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		3F69B22D299ECCA800372CF8 /* MyCartCell */ = {
-			isa = PBXGroup;
-			children = (
-				3F69B22B299EA10500372CF8 /* MyCartVCTableViewCell.swift */,
-				3F69B22E299ECCC200372CF8 /* CustomStepper.swift */,
-			);
-			path = MyCartCell;
-			sourceTree = "<group>";
-		};
 		3F7990E92906EBCB003DDE5A /* fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -185,43 +258,6 @@
 				3F89B8D029DB4FED00B361B1 /* CartData.swift */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		3FF67DCA28D343850034CD19 /* HomeVC */ = {
-			isa = PBXGroup;
-			children = (
-				3F4A8EF028AFC06B00B5E646 /* HomeVC.swift */,
-				3FF67DCB28D343A50034CD19 /* CustomCells */,
-			);
-			path = HomeVC;
-			sourceTree = "<group>";
-		};
-		3FF67DCB28D343A50034CD19 /* CustomCells */ = {
-			isa = PBXGroup;
-			children = (
-				3F4A8F0128B6986F00B5E646 /* CustomCellSection1.swift */,
-				3F4A8F0328B6A64500B5E646 /* CustomCellSection2.swift */,
-				3FB8FBE328B6AF7A003F8D1D /* CustomCellSection3.swift */,
-			);
-			path = CustomCells;
-			sourceTree = "<group>";
-		};
-		3FF67DCC28D343E10034CD19 /* ProductDetailsVC */ = {
-			isa = PBXGroup;
-			children = (
-				3F4A8EF228AFC08B00B5E646 /* ProductDetailsVC.swift */,
-				3FF67DCE28D34F1F0034CD19 /* ProductDetailsCustomCell.swift */,
-			);
-			path = ProductDetailsVC;
-			sourceTree = "<group>";
-		};
-		3FF67DCD28D344470034CD19 /* MyCartVC */ = {
-			isa = PBXGroup;
-			children = (
-				3F4A8EF428AFC09300B5E646 /* MyCartVC.swift */,
-				3F69B22D299ECCA800372CF8 /* MyCartCell */,
-			);
-			path = MyCartVC;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -304,6 +340,7 @@
 				3F010AE8299D71B700B241A9 /* extension+UITabBar.swift in Sources */,
 				3FA5FE1929D9F6310026EFB7 /* extension + UICollectionViewCell.swift in Sources */,
 				3F4A8F0428B6A64500B5E646 /* CustomCellSection2.swift in Sources */,
+				3F02EB4C29E04CF200EAA3E0 /* CartCellViewModelProtocol.swift in Sources */,
 				3F4A8EF828B280EE00B5E646 /* HomeVCData.swift in Sources */,
 				3F89B8CF29DB4FAB00B361B1 /* ProductDetailsVCData.swift in Sources */,
 				3FB8FBE428B6AF7A003F8D1D /* CustomCellSection3.swift in Sources */,
@@ -315,8 +352,11 @@
 				3F4A8F0228B6986F00B5E646 /* CustomCellSection1.swift in Sources */,
 				3F69B233299EDAE600372CF8 /* extension+UIFont.swift in Sources */,
 				3F69B231299EDAAA00372CF8 /* extension+UIView.swift in Sources */,
+				3F02EB3E29E0064700EAA3E0 /* CollectionViewCellModel.swift in Sources */,
 				3F26697D29C33ED6005D93F3 /* extension+UIViewController.swift in Sources */,
 				3F4A8EDD28AFC01E00B5E646 /* AppDelegate.swift in Sources */,
+				3F02EB4A29E04CD600EAA3E0 /* CartCellViewModel.swift in Sources */,
+				3F02EB3B29E0054100EAA3E0 /* HomeViewModel.swift in Sources */,
 				3FAF71B82989B8E400253164 /* TabBarViewController.swift in Sources */,
 				3F4A8EDF28AFC01E00B5E646 /* SceneDelegate.swift in Sources */,
 				3F69B22C299EA10500372CF8 /* MyCartVCTableViewCell.swift in Sources */,
