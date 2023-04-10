@@ -7,12 +7,12 @@
 
 import Foundation
 
-class CartCellViewModel: CartCellViewModelProtoco?l {
-    var namePhone: String
+class CartCellViewModel: CartCellViewModelProtocol {
     
-    var price: String
+    var namePhone: String = ""
     
-    var counter: String
+    var price: String = ""
     
+    var counter: String = ""
     
 }

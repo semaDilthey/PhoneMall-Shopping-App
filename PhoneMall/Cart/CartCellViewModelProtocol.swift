@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol CartCellViewModelProtocol {
+protocol CartCellViewModelProtocol: AnyObject {
     
     var namePhone : String { get }
     var price : String { get }
