@@ -2,13 +2,12 @@
 //  CartCellViewModelProtocol.swift
 //  PhoneMall
 //
-//  Created by Семен Гайдамакин on 07.04.2023.
 //
 
 import Foundation
 import UIKit
 
-protocol CartCellViewModelProtocol: AnyObject {
+protocol CartCellViewModelProtocol {
     
     var namePhone : String { get }
     var price : String { get }
