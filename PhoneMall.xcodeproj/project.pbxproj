@@ -107,9 +107,9 @@
 		3F02EB3F29E01B6000EAA3E0 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				3F02EB4529E01EE400EAA3E0 /* Cells */,
 				3F4A8EF028AFC06B00B5E646 /* HomeVC.swift */,
 				3F02EB3A29E0054100EAA3E0 /* HomeViewModel.swift */,
+				3F02EB4529E01EE400EAA3E0 /* Cells */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -127,8 +127,6 @@
 			isa = PBXGroup;
 			children = (
 				3F4A8EF428AFC09300B5E646 /* MyCartVC.swift */,
-				3F02EB4B29E04CF200EAA3E0 /* CartCellViewModelProtocol.swift */,
-				3F02EB4929E04CD600EAA3E0 /* CartCellViewModel.swift */,
 				3F02EB4329E01E1100EAA3E0 /* Cell */,
 			);
 			path = Cart;
@@ -137,8 +135,10 @@
 		3F02EB4329E01E1100EAA3E0 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				3F02EB4B29E04CF200EAA3E0 /* CartCellViewModelProtocol.swift */,
+				3F02EB4929E04CD600EAA3E0 /* CartCellViewModel.swift */,
 				3F69B22B299EA10500372CF8 /* MyCartVCTableViewCell.swift */,
-				3F69B22E299ECCC200372CF8 /* CustomStepper.swift */,
+				3F24A9AA29EC7C2300ABF21F /* CustomStepper */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -184,6 +184,14 @@
 				3F02EB3D29E0064700EAA3E0 /* CollectionViewCellModel.swift */,
 			);
 			path = CellSection3;
+			sourceTree = "<group>";
+		};
+		3F24A9AA29EC7C2300ABF21F /* CustomStepper */ = {
+			isa = PBXGroup;
+			children = (
+				3F69B22E299ECCC200372CF8 /* CustomStepper.swift */,
+			);
+			path = CustomStepper;
 			sourceTree = "<group>";
 		};
 		3F4A8ED028AFC01E00B5E646 = {

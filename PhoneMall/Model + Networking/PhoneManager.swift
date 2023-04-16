@@ -13,10 +13,9 @@ import UIKit
 //    func didFailWithError(error: Error)
 //}
 
-//class PhoneManager {
-////  Массивчик, в который будет погружаться все что мы парсим
-//    var phonesArray = [HomeVCData]()
-////
+class PhoneManager {
+  //Массивчик, в который будет погружаться все что мы парсим
+    var phonesArray = [HomeVCData]()
 ////    var delegate: PhoneManagerDelegate? //свойство для делегирования по протоколу
 //
 //    let phoneURL = "https://run.mocky.io/v3/654bd15e-b121-49ba-a588-960956b15175"
@@ -41,6 +40,6 @@ import UIKit
 //        .resume()
 //    }
 //
-//}
+}
 
 
