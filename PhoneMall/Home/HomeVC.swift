@@ -5,30 +5,19 @@ import UIKit
 import SwiftUI
 //
 
-class HomeVC : UICollectionViewController{
+class HomeVC : UICollectionViewController {
     
     private var viewModel = HomeViewModel()
-    
-    let headerID = "HeaderID"
-    static let categoryHeaderId = "CategoryHeaderID"
-    
-    private let cellId = "CellId"
-    
+        
+    var phoneManager : PhoneManager?
+        
     //MARK: - ViewDidLoad, надо рефакторить
     override func viewDidLoad() {
-        
         super.viewDidLoad()
-        collectionView.backgroundColor = UIColor(named: "snowyWhite")
-        navigationItem.title = "Select category"
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId) // рег ячейку
-        collectionView.register(CustomCellSection1.self, forCellWithReuseIdentifier: CustomCellSection1.identifire)
-        collectionView.register(CustomCellSection2.self, forCellWithReuseIdentifier: CustomCellSection2.identifire)
-        collectionView.register(CustomCellSection3.self, forCellWithReuseIdentifier: CustomCellSection3.identifire)
-        collectionView.register(Header.self, forSupplementaryViewOfKind: HomeVC.categoryHeaderId, withReuseIdentifier: headerID) // рег заголовок
-    
-        navigationController?.navigationBar.prefersLargeTitles = true
-//        navigationController?.navigationItem.hidesBackButton = true
-        //PhoneManager().getJSON(with: PhoneManager().phoneURL)
+        setupCollectionView()
+        setupNavigationController()
+        self.collectionView.reloadData()
+        //PhoneManager.getHomeScreenData(PhoneManager)
     }
     
     init(){
@@ -36,85 +25,98 @@ class HomeVC : UICollectionViewController{
         super.init(collectionViewLayout: HomeVC.createLayout())
     }
     
-    
     //MARK: - Создает композишен лейаут
     static func createLayout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { sectionNumber, evf in
     // первый ряд
             if sectionNumber == 0 {
                 let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.25), heightDimension: .estimated(120))) //item берет размеры от group. A group уже от view
-                item.contentInsets.trailing = 11.5
-                item.contentInsets.leading = 11.5
-                item.contentInsets.bottom = 5
+                item.contentInsets = NSDirectionalEdgeInsets(top: 0,
+                                                             leading: 12,
+                                                             bottom: 5,
+                                                             trailing: 12)
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(120)), subitems: [item])
             let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
+                
+                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50)), elementKind: HeaderSelectCategory.headerID, alignment: .top)]
             return section
                 
             } else {
                 // второй ряд
             if sectionNumber == 1 {
             let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))) //item берет размеры от group. A group уже от view
-                item.contentInsets.trailing = 2
-                item.contentInsets.leading = 2
-                item.contentInsets.bottom = 4
+                item.contentInsets = NSDirectionalEdgeInsets(top: 0,
+                                                             leading: 12,
+                                                             bottom: 4,
+                                                             trailing: 12)
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(200)), subitems: [item])
             let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .paging
+                
+                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(120)), elementKind: HeaderHotSales.headerID, alignment: .top)]
             return section
                 
             } else {
                 // третий ряд
                 let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(4/9))) //item берет размеры от group. A group уже от view
-                    item.contentInsets.trailing = 16
-                    item.contentInsets.leading = 16
-                    item.contentInsets.bottom = 10
-                    item.contentInsets.top = 10
+                item.contentInsets = NSDirectionalEdgeInsets(top: 10,
+                                                             leading: 12,
+                                                             bottom: 10,
+                                                             trailing: 12)
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(500)), subitems: [item])
                     let section = NSCollectionLayoutSection(group: group)
                
                 // втыкаем заголовок для второго ряда
-                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50)), elementKind: categoryHeaderId, alignment: .top)]
+                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50)), elementKind: HeaderBestSeller.headerID, alignment: .top)]
                     return section
                 }
          }
      }
   }
     
-    //MARK: - создает какой-то реюзабл вью
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerID, for: indexPath)
-        header.backgroundColor = .clear
-        return header
+    func setupCollectionView() {
+        collectionView.backgroundColor = UIColor(named: "snowyWhite")
+        
+        collectionView.register(CategoryCell.self, forCellWithReuseIdentifier: CategoryCell.identifire)
+        collectionView.register(HomeStoreCell.self, forCellWithReuseIdentifier: HomeStoreCell.identifire)
+        collectionView.register(BestSellerCell.self, forCellWithReuseIdentifier: BestSellerCell.identifire)
+        // рег заголовок
+        collectionView.register(HeaderBestSeller.self, forSupplementaryViewOfKind: HeaderBestSeller.headerID, withReuseIdentifier: HeaderBestSeller.headerID)
+        collectionView.register(HeaderHotSales.self, forSupplementaryViewOfKind: HeaderHotSales.headerID, withReuseIdentifier: HeaderHotSales.headerID)
+        collectionView.register(HeaderSelectCategory.self, forSupplementaryViewOfKind: HeaderSelectCategory.headerID, withReuseIdentifier: HeaderSelectCategory.headerID)
     }
     
-    //MARK: - количество секций
+    func setupNavigationController() {
+        navigationItem.hidesSearchBarWhenScrolling = true
+        navigationController?.navigationBar.prefersLargeTitles = false
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+//MARK: - Delegate, DataSource
+extension HomeVC {
+    
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return viewModel.numberOfSections()
     }
     
-    //MARK: - колиечество ячеек в секции
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        if section == 0 {
-//            return 5
-//        } else {
-//        if section == 1 {
-//            return 3
-//        } else {
-//            return 4
-//        }
-//    }
+
         switch section {
         case 0 : return 5
         case 1 : return 3
         default : return 4
         }
-}
-    //MARK: - создает ячейку
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 // ячейки в 0 секции
         if indexPath.section == 0 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CustomCellSection1.identifire, for: indexPath) as! CustomCellSection1
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifire, for: indexPath) as! CategoryCell
             cell.clipsToBounds = true
             //cell.layer.cornerRadius = cell.frame.width/2
             if indexPath.row == 0 {
@@ -139,7 +141,7 @@ class HomeVC : UICollectionViewController{
             return cell
             // ячейки в 1 секции
         } else if indexPath.section == 1 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CustomCellSection2.identifire, for: indexPath) as! CustomCellSection2
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeStoreCell.identifire, for: indexPath) as! HomeStoreCell
             cell.clipsToBounds = true
             cell.layer.cornerRadius = 15
             cell.backgroundColor = .brown
@@ -164,7 +166,7 @@ class HomeVC : UICollectionViewController{
             return cell
             //ячейки во 2 секции
         } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CustomCellSection3.identifire, for: indexPath) as! CustomCellSection3
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BestSellerCell.identifire, for: indexPath) as! BestSellerCell
             cell.layer.cornerRadius = 15
             cell.clipsToBounds = true
             cell.backgroundColor = .white
@@ -194,63 +196,37 @@ class HomeVC : UICollectionViewController{
         
     }
     
-    //MARK: - чо будет по клику на ячейку
+    // What will happen on click
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         let vc = ProductDetailsVC()
         navigationController?.pushViewController(vc, animated: true)
-}
+    }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    //reusable view
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+        case HeaderBestSeller.headerID:
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderBestSeller.headerID, for: indexPath)
+        header.backgroundColor = .clear
+        return header
+        case HeaderHotSales.headerID:
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderHotSales.headerID, for: indexPath)
+            header.backgroundColor = .clear
+            return header
+        case HeaderSelectCategory.headerID:
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderSelectCategory.headerID, for: indexPath)
+            header.backgroundColor = .clear
+            return header
+        default:
+            fatalError("Unexpected element kind: \(kind)")
+    }
+    
     }
 }
 
-// класс для кастомного хедера
-class Header : UICollectionReusableView {
-    
-    private let label : UILabel = {
-        let label = UILabel()
-        label.text = "Best seller"
-        label.textColor = .black
-        label.font = UIFont.markProFont(size: 20, weight: .heavy)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let button : UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(systemName: "star.fill"), for: .normal)
-        button.backgroundColor = .clear
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        addSubview(button)
-        addSubview(label)
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-      
-        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
-        label.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
-        button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
-        button.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
 
 //struct ViewControllerProvider : PreviewProvider {
 //    static var previews: some View {
 //        HomeVC().showPreview()
-//    
 //    }
 //}

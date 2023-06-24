@@ -3,7 +3,7 @@
 import UIKit
 import SwiftUI
 
-class CustomCellSection2: UICollectionViewCell {
+class HomeStoreCell: UICollectionViewCell {
     
     static let identifire = "CustomCellSection2"
 
@@ -15,8 +15,8 @@ class CustomCellSection2: UICollectionViewCell {
 //        fatalError("init(coder:) has not been implemented")
 //    }
     
-    var mainImage : UIImageView = {
-        let image = UIImageView()
+    var mainImage : WebImageView = {
+        let image = WebImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()

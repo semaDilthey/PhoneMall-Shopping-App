@@ -9,10 +9,14 @@ import Foundation
 import UIKit
 
 
+protocol Networking {
+    func request(path: String, completion: @escaping (Data?, Error?) -> Void)
+}
+
 protocol GetData {
-    func getHomeScreenData(response: @escaping (HomeVCData?, Error?) -> Void)
-    func getDetailsScreenData(response: @escaping (ProductDetailsVCData?, Error?) -> Void)
-    func getCartScreenData(response: @escaping (HomeVCData?, Error?) -> Void)
+    func getHomeScreenData(response: @escaping (HomeVCData?) -> Void)
+    func getDetailsScreenData(response: @escaping (ProductDetailsVCData?) -> Void)
+    func getCartScreenData(response: @escaping (HomeVCData?) -> Void)
 }
 
 //protocol PhoneManagerDelegate {
@@ -21,6 +25,12 @@ protocol GetData {
 //}
 
 class PhoneManager: GetData {
+  
+    let networking: Networking
+    
+    init(networking: Networking) {
+        self.networking = networking
+    }
     
   //Массивчик, в который будет погружаться все что мы парсим
     var phonesArray = [HomeVCData]()
@@ -48,14 +58,24 @@ class PhoneManager: GetData {
 //        .resume()
 //    }
 //
-    func getHomeScreenData(response: @escaping (HomeVCData?, Error?) -> Void){
+    
+    func getHomeScreenData(response: @escaping (HomeVCData?) -> Void){
+        networking.request(path: API.home) { (data, error) in
+            if let error = error {
+                print("Error recieved requesting data : \(error.localizedDescription)")
+                response(nil)
+            }
+            let decoded = self.decodeJSON(type: HomeVCData.self, from: data)
+            response(decoded)
+            print("AAAAAA")
+        }
     }
     
-    func getDetailsScreenData(response: @escaping (ProductDetailsVCData?, Error?) -> Void) {
+    func getDetailsScreenData(response: @escaping (ProductDetailsVCData?) -> Void) {
         
     }
     
-    func getCartScreenData(response: @escaping (HomeVCData?, Error?) -> Void) {
+    func getCartScreenData(response: @escaping (HomeVCData?) -> Void) {
         
     }
     

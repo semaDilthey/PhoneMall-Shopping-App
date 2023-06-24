@@ -7,6 +7,7 @@ protocol StepperDelegate {
     func increaseNumber(stepper: CustomStepper, by number: Int)
     func decreaseNumber(cell: CustomStepper, by number: Int)
 }
+
 //MARK: - CustomStepper settings
 class CustomStepper : UIView {
     

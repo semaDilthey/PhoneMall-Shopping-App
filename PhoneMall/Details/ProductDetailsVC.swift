@@ -31,7 +31,7 @@ class ProductDetailsVC : UICollectionViewController {
     // создаем Layout который будет туда сюда ходить
     static func createScrollableLayout() -> UICollectionViewCompositionalLayout {
         let compositionalLayout: UICollectionViewCompositionalLayout = {
-            let fraction: CGFloat = 4.0 / 8.0
+            let fraction: CGFloat = 0.65
             
             // Item
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
@@ -43,7 +43,7 @@ class ProductDetailsVC : UICollectionViewController {
             
             // Section
             let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 80, bottom: 0, trailing: 2.5)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 25, leading: 80, bottom: 0, trailing: 2.5)
             section.orthogonalScrollingBehavior = .continuous
             
             // creating transformableScrolling
@@ -584,11 +584,11 @@ class ProductDetailsVC : UICollectionViewController {
     }
 }
 
-struct ViewControllerProvider : PreviewProvider {
-    static var previews: some View {
-        ProductDetailsVC().showPreview()
-    }
-}
+//struct ViewControllerProvider : PreviewProvider {
+//    static var previews: some View {
+//        ProductDetailsVC().showPreview()
+//    }
+//}
 
 
 

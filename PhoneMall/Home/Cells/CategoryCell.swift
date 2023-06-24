@@ -2,7 +2,7 @@
 
 import UIKit
 
-class CustomCellSection1: UICollectionViewCell {
+class CategoryCell: UICollectionViewCell {
     
     
     override init(frame: CGRect) {
@@ -27,10 +27,10 @@ class CustomCellSection1: UICollectionViewCell {
     lazy var label : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.markProFont(size: 13, weight: .medium)
+        label.font = UIFont.markProFont(size: 12, weight: .plain)
         label.text = "Phones"
         label.textColor = UIColor.customDarkBlue
-        //label.textAlignment = .center
+        label.textAlignment = .center
         return label
     }()
     
@@ -50,13 +50,14 @@ class CustomCellSection1: UICollectionViewCell {
         contentView.addSubview(label)
         contentView.addSubview(image)
         
+        view.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
         view.widthAnchor.constraint(equalTo: contentView.widthAnchor).isActive = true
         view.heightAnchor.constraint(equalTo: contentView.widthAnchor).isActive = true
         
         image.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         image.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
-        label.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 25).isActive = true
+        label.topAnchor.constraint(equalTo: view.bottomAnchor, constant: 3).isActive = true
         label.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
         
     }

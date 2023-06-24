@@ -9,11 +9,11 @@ import Foundation
 
 struct HomeVCData : Decodable {
     
-    let homeStore : [HomeStore]
-    let bestSeller : [BestSeller]
+    let homeStore : [HomeStoreItem]
+    let bestSeller : [BestSellerItem]
 }
 
-struct HomeStore : Decodable {
+struct HomeStoreItem : Decodable {
     let id : Int
     let title : String
     let subtitle : String
@@ -22,7 +22,7 @@ struct HomeStore : Decodable {
     let isBuy : Bool
 }
 
-struct BestSeller : Decodable {
+struct BestSellerItem : Decodable {
     let id : Int
     let isFavorites : Bool
     let title : String
