@@ -8,12 +8,20 @@
 import Foundation
 import UIKit
 
+
+protocol GetData {
+    func getHomeScreenData(response: @escaping (HomeVCData?, Error?) -> Void)
+    func getDetailsScreenData(response: @escaping (ProductDetailsVCData?, Error?) -> Void)
+    func getCartScreenData(response: @escaping (HomeVCData?, Error?) -> Void)
+}
+
 //protocol PhoneManagerDelegate {
 //    func didUpdatePhone(_ phoneManager: PhoneManager)
 //    func didFailWithError(error: Error)
 //}
 
-class PhoneManager {
+class PhoneManager: GetData {
+    
   //Массивчик, в который будет погружаться все что мы парсим
     var phonesArray = [HomeVCData]()
 ////    var delegate: PhoneManagerDelegate? //свойство для делегирования по протоколу
@@ -40,6 +48,22 @@ class PhoneManager {
 //        .resume()
 //    }
 //
+    func getHomeScreenData(response: @escaping (HomeVCData?, Error?) -> Void){
+    }
+    
+    func getDetailsScreenData(response: @escaping (ProductDetailsVCData?, Error?) -> Void) {
+        
+    }
+    
+    func getCartScreenData(response: @escaping (HomeVCData?, Error?) -> Void) {
+        
+    }
+    
+    private func decodeJSON <T: Decodable>(type: T.Type, from data: Data?) -> T? {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase 
+        guard let data = data, let response = try? decoder.decode(type.self, from: data) else { return nil }
+        return response
+    }
 }
-
 

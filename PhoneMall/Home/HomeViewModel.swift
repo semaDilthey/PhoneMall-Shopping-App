@@ -10,7 +10,7 @@ protocol HomeViewModelProtocol {
     func numberOfSections() -> Int
     func numberOfItemsInSection() -> Int
     func cellViewModel(forIndexPath IndexPath: IndexPath) -> CollectionViewCellModelProtocol?
-    func setIndex(setIndex setIndex: IndexPath) -> Int
+    func setIndex(setIndex: IndexPath) -> Int
 }
 
 class HomeViewModel : HomeViewModelProtocol {
@@ -20,19 +20,19 @@ class HomeViewModel : HomeViewModelProtocol {
     var phones : PhoneManager?
     
     func setIndex(setIndex: IndexPath) -> Int {
-        <#code#>
+        1
     }
     
     func numberOfSections() -> Int {
-        phones?.phonesArray.count ?? 0
+        3
     }
     
     func numberOfItemsInSection() -> Int {
-        <#code#>
+        phones?.phonesArray.count ?? 0
     }
     
     func cellViewModel(forIndexPath IndexPath: IndexPath) -> CollectionViewCellModelProtocol? {
-        <#code#>
+        return nil
     }
     
     

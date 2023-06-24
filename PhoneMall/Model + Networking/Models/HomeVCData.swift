@@ -7,37 +7,22 @@
 
 import Foundation
 
-struct HomeVCData : Codable {
+struct HomeVCData : Decodable {
     
-    let homeStore : [Store]
-    let bestSeller : [Seller]
-
-    enum CodingKeys :  String, CodingKey {
-        case homeStore = "home_store"
-        case bestSeller = "best_seller"
-    }
+    let homeStore : [HomeStore]
+    let bestSeller : [BestSeller]
 }
 
-struct Store : Codable {
+struct HomeStore : Decodable {
     let id : Int
     let title : String
     let subtitle : String
     let isNew : Bool?
     let picture : String
     let isBuy : Bool
-
-    enum CodingKeys : String, CodingKey {
-        case isNew = "is_new"
-        case isBuy = "is_buy"
-        case id = "id"
-        case title = "title"
-        case subtitle = "subtitle"
-        case picture = "picture"
-    }
-
 }
 
-struct Seller : Codable {
+struct BestSeller : Decodable {
     let id : Int
     let isFavorites : Bool
     let title : String
@@ -45,12 +30,4 @@ struct Seller : Codable {
     let discountPrice : Int
     let picture : String
 
-    enum CodingKeys : String, CodingKey {
-        case id = "id"
-        case title = "title"
-        case isFavorites = "is_favorites"
-        case priceWithoutDiscount = "price_without_discount"
-        case discountPrice = "discount_price"
-        case picture = "picture"
-    }
 }

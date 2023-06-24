@@ -7,6 +7,8 @@ import SwiftUI
 
 class HomeVC : UICollectionViewController{
     
+    private var viewModel = HomeViewModel()
+    
     let headerID = "HeaderID"
     static let categoryHeaderId = "CategoryHeaderID"
     
@@ -14,6 +16,7 @@ class HomeVC : UICollectionViewController{
     
     //MARK: - ViewDidLoad, надо рефакторить
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         collectionView.backgroundColor = UIColor(named: "snowyWhite")
         navigationItem.title = "Select category"
@@ -87,20 +90,25 @@ class HomeVC : UICollectionViewController{
     
     //MARK: - количество секций
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 3
+        return viewModel.numberOfSections()
     }
     
     //MARK: - колиечество ячеек в секции
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0 {
-            return 5
-        } else {
-        if section == 1 {
-            return 3
-        } else {
-            return 4
+//        if section == 0 {
+//            return 5
+//        } else {
+//        if section == 1 {
+//            return 3
+//        } else {
+//            return 4
+//        }
+//    }
+        switch section {
+        case 0 : return 5
+        case 1 : return 3
+        default : return 4
         }
-    }
 }
     //MARK: - создает ячейку
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

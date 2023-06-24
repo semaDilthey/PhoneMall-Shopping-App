@@ -514,7 +514,7 @@ class ProductDetailsVC : UICollectionViewController {
             ])
         // для лейбла Select color and capacity
         NSLayoutConstraint.activate([
-            colorCapacityLabel.topAnchor.constraint(equalTo: optionsStack.bottomAnchor, constant: 29),
+            colorCapacityLabel.topAnchor.constraint(equalTo: optionsStack.bottomAnchor, constant: 15),
             colorCapacityLabel.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 30)
         ])
             
@@ -584,11 +584,11 @@ class ProductDetailsVC : UICollectionViewController {
     }
 }
 
-//struct ViewControllerProvider : PreviewProvider {
-//    static var previews: some View {
-//        ProductDetailsVC().showPreview()
-//    }
-//}
+struct ViewControllerProvider : PreviewProvider {
+    static var previews: some View {
+        ProductDetailsVC().showPreview()
+    }
+}
 
 
 

@@ -23,6 +23,7 @@
 		3F4A8EFB28B3B2C700B5E646 /* PhoneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4A8EFA28B3B2C700B5E646 /* PhoneManager.swift */; };
 		3F4A8F0228B6986F00B5E646 /* CustomCellSection1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4A8F0128B6986F00B5E646 /* CustomCellSection1.swift */; };
 		3F4A8F0428B6A64500B5E646 /* CustomCellSection2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4A8F0328B6A64500B5E646 /* CustomCellSection2.swift */; };
+		3F5510882A4605CD00C51E05 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5510872A4605CD00C51E05 /* API.swift */; };
 		3F5B2BFA29AFA2F900E8F0CC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F5B2BF929AFA2F900E8F0CC /* Launch Screen.storyboard */; };
 		3F69B22C299EA10500372CF8 /* MyCartVCTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F69B22B299EA10500372CF8 /* MyCartVCTableViewCell.swift */; };
 		3F69B22F299ECCC200372CF8 /* CustomStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F69B22E299ECCC200372CF8 /* CustomStepper.swift */; };
@@ -35,7 +36,6 @@
 		3F89B8CF29DB4FAB00B361B1 /* ProductDetailsVCData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F89B8CE29DB4FAB00B361B1 /* ProductDetailsVCData.swift */; };
 		3F89B8D129DB4FED00B361B1 /* CartData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F89B8D029DB4FED00B361B1 /* CartData.swift */; };
 		3FA5FE1929D9F6310026EFB7 /* extension + UICollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA5FE1829D9F6310026EFB7 /* extension + UICollectionViewCell.swift */; };
-		3FAF71B82989B8E400253164 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FAF71B72989B8E400253164 /* TabBarViewController.swift */; };
 		3FB8FBE428B6AF7A003F8D1D /* CustomCellSection3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB8FBE328B6AF7A003F8D1D /* CustomCellSection3.swift */; };
 		3FD5A01A28C7B31F005D6F6C /* EasyPhoneData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD5A01928C7B31F005D6F6C /* EasyPhoneData.swift */; };
 		3FDFEC552991415E005EBE01 /* extension+UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDFEC542991415E005EBE01 /* extension+UIColor.swift */; };
@@ -61,6 +61,7 @@
 		3F4A8EFA28B3B2C700B5E646 /* PhoneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneManager.swift; sourceTree = "<group>"; };
 		3F4A8F0128B6986F00B5E646 /* CustomCellSection1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCellSection1.swift; sourceTree = "<group>"; };
 		3F4A8F0328B6A64500B5E646 /* CustomCellSection2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCellSection2.swift; sourceTree = "<group>"; };
+		3F5510872A4605CD00C51E05 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		3F5B2BF929AFA2F900E8F0CC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		3F69B22B299EA10500372CF8 /* MyCartVCTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCartVCTableViewCell.swift; sourceTree = "<group>"; };
 		3F69B22E299ECCC200372CF8 /* CustomStepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStepper.swift; sourceTree = "<group>"; };
@@ -73,7 +74,6 @@
 		3F89B8CE29DB4FAB00B361B1 /* ProductDetailsVCData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsVCData.swift; sourceTree = "<group>"; };
 		3F89B8D029DB4FED00B361B1 /* CartData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartData.swift; sourceTree = "<group>"; };
 		3FA5FE1829D9F6310026EFB7 /* extension + UICollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "extension + UICollectionViewCell.swift"; sourceTree = "<group>"; };
-		3FAF71B72989B8E400253164 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TabBarViewController.swift; path = PhoneMall/TabBarViewController.swift; sourceTree = SOURCE_ROOT; };
 		3FB8FBE328B6AF7A003F8D1D /* CustomCellSection3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCellSection3.swift; sourceTree = "<group>"; };
 		3FD5A01928C7B31F005D6F6C /* EasyPhoneData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasyPhoneData.swift; sourceTree = "<group>"; };
 		3FDFEC542991415E005EBE01 /* extension+UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "extension+UIColor.swift"; sourceTree = "<group>"; };
@@ -194,6 +194,13 @@
 			path = CustomStepper;
 			sourceTree = "<group>";
 		};
+		3F24A9AB29ED71B200ABF21F /* TabBarVC */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = TabBarVC;
+			sourceTree = "<group>";
+		};
 		3F4A8ED028AFC01E00B5E646 = {
 			isa = PBXGroup;
 			children = (
@@ -213,7 +220,7 @@
 		3F4A8EDB28AFC01E00B5E646 /* PhoneMall */ = {
 			isa = PBXGroup;
 			children = (
-				3FAF71B72989B8E400253164 /* TabBarViewController.swift */,
+				3F24A9AB29ED71B200ABF21F /* TabBarVC */,
 				3F02EB3F29E01B6000EAA3E0 /* Home */,
 				3F02EB4029E01B6C00EAA3E0 /* Details */,
 				3F02EB4129E01B7300EAA3E0 /* Cart */,
@@ -243,6 +250,7 @@
 				3F89B8D229DB503000B361B1 /* Models */,
 				3FD5A01928C7B31F005D6F6C /* EasyPhoneData.swift */,
 				3F4A8EFA28B3B2C700B5E646 /* PhoneManager.swift */,
+				3F5510872A4605CD00C51E05 /* API.swift */,
 			);
 			path = "Model + Networking";
 			sourceTree = "<group>";
@@ -349,6 +357,7 @@
 				3FA5FE1929D9F6310026EFB7 /* extension + UICollectionViewCell.swift in Sources */,
 				3F4A8F0428B6A64500B5E646 /* CustomCellSection2.swift in Sources */,
 				3F02EB4C29E04CF200EAA3E0 /* CartCellViewModelProtocol.swift in Sources */,
+				3F5510882A4605CD00C51E05 /* API.swift in Sources */,
 				3F4A8EF828B280EE00B5E646 /* HomeVCData.swift in Sources */,
 				3F89B8CF29DB4FAB00B361B1 /* ProductDetailsVCData.swift in Sources */,
 				3FB8FBE428B6AF7A003F8D1D /* CustomCellSection3.swift in Sources */,
@@ -365,7 +374,6 @@
 				3F4A8EDD28AFC01E00B5E646 /* AppDelegate.swift in Sources */,
 				3F02EB4A29E04CD600EAA3E0 /* CartCellViewModel.swift in Sources */,
 				3F02EB3B29E0054100EAA3E0 /* HomeViewModel.swift in Sources */,
-				3FAF71B82989B8E400253164 /* TabBarViewController.swift in Sources */,
 				3F4A8EDF28AFC01E00B5E646 /* SceneDelegate.swift in Sources */,
 				3F69B22C299EA10500372CF8 /* MyCartVCTableViewCell.swift in Sources */,
 				3FF67DCF28D34F1F0034CD19 /* ProductDetailsCustomCell.swift in Sources */,

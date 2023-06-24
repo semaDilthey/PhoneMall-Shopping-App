@@ -7,13 +7,13 @@
 
 import Foundation
 
-struct CartData: Codable {
+struct CartData: Decodable {
     let basket: [BasketCartData]
     let delivery: String
     let total: Int
 }
 
-struct BasketCartData: Codable {
+struct BasketCartData: Decodable {
     let id: Int
     let images: String
     let price: Int
