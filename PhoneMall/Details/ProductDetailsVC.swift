@@ -4,24 +4,19 @@ import Foundation
 import UIKit
 import SwiftUI
 
-class ProductDetailsVC : UICollectionViewController {
+class ProductDetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // рег ячейку
-        collectionView.register(ProductDetailsCustomCell.self, forCellWithReuseIdentifier: ProductDetailsCustomCell.identife)
+       
+        setupCollectionView()
         
-        collectionView.isScrollEnabled = false // выключает скролл по вертикали
-        
-       // настройка всего вью
-        setupVIew()
-        
-        // тут настройка кнопки назад
-        navigationItem.hidesBackButton = true
-        backButtonSetup()
-        shopCartButtonSetup()
+        setupUI()
+
+        setupGestureRecognizer()
         
     }
+    
     
     // layout inizialization
     init(){
@@ -31,14 +26,15 @@ class ProductDetailsVC : UICollectionViewController {
     // создаем Layout который будет туда сюда ходить
     static func createScrollableLayout() -> UICollectionViewCompositionalLayout {
         let compositionalLayout: UICollectionViewCompositionalLayout = {
-            let fraction: CGFloat = 0.65
             
-            // Item
+            let fractionSize: CGFloat = 0.65
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(fractionSize),heightDimension: .fractionalWidth(fractionSize))
+          
+            // Item
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             
             // Group
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(fraction), heightDimension: .fractionalWidth(fraction))
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
             
             // Section
@@ -58,34 +54,27 @@ class ProductDetailsVC : UICollectionViewController {
             }
             return UICollectionViewCompositionalLayout(section: section)
         }()
-        
         return compositionalLayout
     }
     
-    //MARK: - Создаем кастомную вью под коллекшеном вью
+    //MARK: - creating NavBar
     // кастомная кнопка назад
     lazy var backButton : UIButton = {
         let but = UIButton(type: .custom)
         but.backgroundColor = .customDarkBlue
         but.setImage(UIImage(named: "Vector"), for: .normal)
         but.translatesAutoresizingMaskIntoConstraints = false
-        but.widthAnchor.constraint(equalToConstant: 37).isActive = true
-        but.heightAnchor.constraint(equalToConstant: 37).isActive = true
         but.layer.cornerRadius = 11
         but.tintColor = .white
         but.clipsToBounds = true
+        but.widthAnchor.constraint(equalToConstant: 37).isActive = true
+        but.heightAnchor.constraint(equalToConstant: 37).isActive = true
         return but
     }()
     
-    // обжС функция для селектора кнопки backButton
+    // метод для кнопки backButton
     @objc func backButtonPresentingVC() {
         navigationController?.popToRootViewController(animated: true)
-    }
-    // что происходит по клику на кнопку назад
-    func backButtonSetup() {
-        backButton.addTarget(self, action: #selector(backButtonPresentingVC), for: .touchUpInside)
-        let backBarButtonItems = UIBarButtonItem(customView: backButton)
-        navigationItem.leftBarButtonItem = backBarButtonItems
     }
     
     lazy var shopCartButton : UIButton = {
@@ -93,11 +82,11 @@ class ProductDetailsVC : UICollectionViewController {
         but.backgroundColor = .customOrange
         but.setImage(UIImage(named: "shopCart"), for: .normal)
         but.translatesAutoresizingMaskIntoConstraints = false
-        but.widthAnchor.constraint(equalToConstant: 37).isActive = true
-        but.heightAnchor.constraint(equalToConstant: 37).isActive = true
         but.layer.cornerRadius = 11
         but.clipsToBounds = true
         but.layer.shouldRasterize = false
+        but.widthAnchor.constraint(equalToConstant: 37).isActive = true
+        but.heightAnchor.constraint(equalToConstant: 37).isActive = true
         return but
     }()
     
@@ -106,26 +95,21 @@ class ProductDetailsVC : UICollectionViewController {
         
     }
     
-    func shopCartButtonSetup() {
-        let rightBarButton = UIBarButtonItem(customView: shopCartButton)
-        navigationItem.setRightBarButton(rightBarButton, animated: true)
-        shopCartButton.addTarget(self, action: #selector(shopCartButtonPresentingVC), for: .touchUpInside)
-      
-    }
-    
-  
     // Product details label that in the top center
-    let detailsLabel : UILabel = {
+    let detailsNavBarLabel : UILabel = {
         let label = UILabel()
         label.backgroundColor = .clear
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.markProFont(size: 18, weight: .medium)
         label.text = "Product details"
-        label.textColor = .black
+        label.textColor = .customDarkBlue
         return label
     }()
-    // Наш основной нижний view в котором все находится
-    lazy var someView: UIView = {
+    
+    
+    //MARK: - CardView
+    
+    private let cardView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -137,23 +121,30 @@ class ProductDetailsVC : UICollectionViewController {
         return view
     }()
     
+    //MARK: - First Level
+    // Простой контейнер для удобства заполнения
+    private let firstLevelView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
     // Лейбл с названием телефона
-    lazy var phoneLabel: UILabel = {
+    let phoneLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = .clear
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
         label.layer.cornerRadius = 5
-        label.textColor = UIColor(red: 0.004, green: 0, blue: 0.208, alpha: 1)
+        label.textColor = .customDarkBlue
         label.font = UIFont.markProFont(size: 22, weight: .medium)
         label.textAlignment = .center
-        label.attributedText = NSMutableAttributedString(string: "Galaxy Note 20 Ultra", attributes: [NSAttributedString.Key.kern: -0.33])
+        label.text = "Galaxy Note 20 Ultra"
         label.layer.shouldRasterize = false
         return label
     }()
-    //Cоздаем 5 картинок звезды
     
+    //Cоздаем 5 картинок звезды
     static func createStarImage () -> UIImageView {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
@@ -161,7 +152,6 @@ class ProductDetailsVC : UICollectionViewController {
         image.clipsToBounds = true
         image.widthAnchor.constraint(equalToConstant:20).isActive = true
         image.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        image.backgroundColor = .clear
         return image
     }
     
@@ -176,98 +166,185 @@ class ProductDetailsVC : UICollectionViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "favIcon"), for: .normal)
-        button.widthAnchor.constraint(equalToConstant: 37).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 33).isActive = true
-        button.backgroundColor = .white
-        button.layer.backgroundColor = UIColor(red: 0.004, green: 0, blue: 0.208, alpha: 1).cgColor
+        button.layer.backgroundColor = UIColor.customDarkBlue?.cgColor
         button.layer.cornerRadius = 10
+        button.widthAnchor.constraint(equalToConstant: 37).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 37).isActive = true
         return button
     }()
     
-    //кнопки Shop, Details, Features
-    
-    static func createShopDetailsFeaturesButton(string : String) -> UIButton {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .clear
-        button.titleLabel?.font = UIFont.markProFont(size: 20, weight: .heavy)
-        button.setTitleColor(UIColor(red: 0, green: 0, blue: 0, alpha: 0.5), for: .normal)
-        button.titleLabel?.textAlignment = .center
-//        button.titleLabel?.attributedText = NSMutableAttributedString(string: string, attributes: [NSAttributedString.Key.kern: -0.33])
-        button.setTitle(string, for: .normal)
-        return button
-    }
-    let shopButton = createShopDetailsFeaturesButton(string: "Shop")
-    let detailsButton = createShopDetailsFeaturesButton(string: "Details")
-    let featuresButton = createShopDetailsFeaturesButton(string: "Features")
-        
+    //MARK: - Second Level
+    // Простой контейнер для удобства заполнения
+    private let secondLevelView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
 
+    //кнопки Shop, Details, Features
+    private let shopLabel : UILabel = {
+        let label = UILabel()
+        label.text = "Shop"
+        label.font = UIFont.markProFont(size: 20, weight: .heavy)
+        label.textColor = .customDarkBlue
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let detailsLabel : UILabel = {
+        let label = UILabel()
+        label.text = "Details"
+        label.font = UIFont.markProFont(size: 20, weight: .plain)
+        label.textColor = .gray
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let featuresLabel : UILabel = {
+        let label = UILabel()
+        label.text = "Features"
+        label.font = UIFont.markProFont(size: 20, weight: .plain)
+        label.textColor = .gray
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    // ползун под надписью
+    private let underLining : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .customOrange
+        view.clipsToBounds = true
+        view.layer.cornerRadius = 3
+        return view
+    }()
+    
+    //MARK: - Third Level
+    
+    private let thirdLevelView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
     // Label Select color and Capacity
-    
     let colorCapacityLabel: UILabel = {
         let label = UILabel()
-        label.backgroundColor = .clear
         label.text = "Select color and capacity"
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.markProFont(size: 16, weight: .medium)
         return label
     }()
+    
     // создаем лейблы 2х цветов
-    lazy var circleLabelBrown: UILabel = {
+    let circleLabelBrown: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.backgroundColor = .brown
         label.clipsToBounds = true
+        label.layer.cornerRadius = 20
         label.widthAnchor.constraint(equalToConstant: 39).isActive = true
         label.heightAnchor.constraint(equalToConstant: 39).isActive = true
-        label.layer.cornerRadius = 20
         return label
     }()
     
-    lazy var circleLabelBlack: UILabel = {
+    let circleLabelBlack: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.backgroundColor = .black
         label.clipsToBounds = true
+        label.layer.cornerRadius = 20
         label.widthAnchor.constraint(equalToConstant: 39).isActive = true
         label.heightAnchor.constraint(equalToConstant: 39).isActive = true
-        label.layer.cornerRadius = 20
         return label
     }()
     
     // создадим 2 по сути одинаковые кнопки, но одна будет нажата, а другая нет
     
-    lazy var gb128Button: UILabel = {
-        let button = UILabel()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.backgroundColor = UIColor(named: "customOrange")?.cgColor
-        button.layer.cornerRadius = 10
-        button.widthAnchor.constraint(equalToConstant: 71).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        button.font = UIFont.markProFont(size: 12, weight: .medium)
-        button.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
-        button.textAlignment = .center
-        button.attributedText =  NSMutableAttributedString(string: "128 GB", attributes: [NSAttributedString.Key.kern: -0.33])
-        return button
+    lazy var gb128Label: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.backgroundColor = .customOrange
+        label.clipsToBounds = true
+        label.layer.cornerRadius = 10
+        label.font = UIFont.markProFont(size: 12, weight: .medium)
+        label.textAlignment = .center
+        label.textColor = .white
+        label.textAlignment = .center
+        label.text = "128 GB"
+        label.widthAnchor.constraint(equalToConstant: 71).isActive = true
+        label.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        label.isUserInteractionEnabled = true
+
+        return label
     }()
     
-    lazy var gb256Button: UILabel = {
-        let button = UILabel()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.backgroundColor = UIColor.clear.cgColor
-        button.layer.cornerRadius = 10
-        button.widthAnchor.constraint(equalToConstant: 71).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        button.font = UIFont.markProFont(size: 12, weight: .medium)
-        button.textColor = UIColor(red: 0.554, green: 0.554, blue: 0.554, alpha: 1)
-        button.textAlignment = .center
-        button.attributedText = NSMutableAttributedString(string: "256 GB", attributes: [NSAttributedString.Key.kern: -0.33])
-        return button
+    lazy var gb256Label: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.backgroundColor = .clear
+        label.clipsToBounds = true
+        label.layer.cornerRadius = 10
+        label.font = UIFont.markProFont(size: 12, weight: .medium)
+        label.textAlignment = .center
+        label.textColor = UIColor.gray
+        label.text = "256 GB"
+        label.widthAnchor.constraint(equalToConstant: 71).isActive = true
+        label.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        label.isUserInteractionEnabled = true
+
+        return label
     }()
+    
+    // это надо потом во вью модель
+    @objc func changeLabelColor(sender: UITapGestureRecognizer) {
+        if let label = sender.view as? UILabel {
+            if label == gb128Label { // выбран первый лейбл (128гб)
+   
+                    self.gb128Label.backgroundColor = .customOrange
+                    self.gb256Label.backgroundColor = .clear
+                    self.gb128Label.textColor = .white
+                    self.gb256Label.textColor = .gray
+               
+            } else {
+          
+                    // выбран второй лейбл (256гб)
+                gb256Label.backgroundColor = .customOrange
+                gb128Label.backgroundColor = .clear
+                gb256Label.textColor = .white
+                gb128Label.textColor = .gray
+                
+            }
+        }
+    }
+    
+    // и это тож во вью модель
+    func setupGestureRecognizer() {
+        let tapGesture1 = UITapGestureRecognizer(target: self, action: #selector(changeLabelColor))
+        let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(changeLabelColor))
+        gb256Label.addGestureRecognizer(tapGesture2)
+        gb128Label.addGestureRecognizer(tapGesture1)
+
+        tapGesture1.delegate = self
+        tapGesture2.delegate = self
+    }
+    
+    
+    
+    
+    //MARK: - Fourth Level
+    
+    private let forthLevelView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     
     //добавляет Label Add to Cart в кнопке
-    lazy var addLabel: UILabel = {
+    lazy var addToCartLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = .clear
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -366,9 +443,9 @@ class ProductDetailsVC : UICollectionViewController {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
-        stack.distribution = .fillEqually
+        stack.distribution = .equalSpacing
         stack.alignment = .center
-        stack.spacing = 20
+        stack.spacing = 15
         stack.backgroundColor = .clear
         stack.addArrangedSubview(stack1)
         stack.addArrangedSubview(stack2)
@@ -386,9 +463,9 @@ class ProductDetailsVC : UICollectionViewController {
     private func makeButtonStackView() -> UIStackView {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .horizontal
-        stackView.distribution = .equalSpacing
-        stackView.alignment = .center
+        //.axis = .horizontal
+        //stackView.distribution = .equalSpacing
+        //stackView.alignment = .center
         stackView.backgroundColor = .clear
         return stackView
     }
@@ -415,150 +492,197 @@ class ProductDetailsVC : UICollectionViewController {
         stack.backgroundColor = .clear
         return stack
     }
-    
+
+
+  
+
     //MARK: - setup UI
     //настройка якорей
-    func setupVIew () {
+    func setupUI () {
+        setupNavigationBar()
         
-        // стак для кнопки
-        let addButtonStuck = makeButtonStackView()
-        addButtonStuck.addArrangedSubview(addLabel)
-        addButtonStuck.addArrangedSubview(priceLabel)
-        addToCartButton.addSubview(addButtonStuck)
+        setupCardView()
+        setupFirstLevel()
+        setupSecondLevel()
+        setupThirdLevel()
+        setupFourthLevel()
+    }
+    
+    // Настройка якорей в навБаре и действий для кнопок
+    func setupNavigationBar() {
+        view.addSubview(detailsNavBarLabel)
+        view.addSubview(shopCartButton)
+    
+        detailsNavBarLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        detailsNavBarLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 55).isActive = true
         
-        //стак для звезд
+        // кнопка в корзину верх право
+        shopCartButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 55).isActive = true
+        shopCartButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15).isActive = true
+        
+        navigationItem.hidesBackButton = true
+
+        // что происходит по клику на кнопку назад
+        backButton.addTarget(self, action: #selector(backButtonPresentingVC), for: .touchUpInside)
+        let backBarButtonItems = UIBarButtonItem(customView: backButton)
+        navigationItem.leftBarButtonItem = backBarButtonItems
+        
+        // что происходит по клику на корзину
+        let rightBarButton = UIBarButtonItem(customView: shopCartButton)
+        navigationItem.setRightBarButton(rightBarButton, animated: true)
+        shopCartButton.addTarget(self, action: #selector(shopCartButtonPresentingVC), for: .touchUpInside)
+    }
+    
+    func setupCardView() {
+        view.addSubview(cardView)
+        cardView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        cardView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        cardView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        cardView.topAnchor.constraint(equalTo: view.topAnchor, constant: 400).isActive = true
+    }
+    
+    func setupFirstLevel() {
+        cardView.addSubview(firstLevelView)
+        firstLevelView.addSubview(phoneLabel)
+        firstLevelView.addSubview(favButton)
         let addStarsStuck = makeStartsStackView()
         addStarsStuck.addArrangedSubview(star1ImageView)
         addStarsStuck.addArrangedSubview(star2ImageView)
         addStarsStuck.addArrangedSubview(star3ImageView)
         addStarsStuck.addArrangedSubview(star4ImageView)
         addStarsStuck.addArrangedSubview(star5ImageView)
-        someView.addSubview(addStarsStuck)
+        firstLevelView.addSubview(addStarsStuck)
+
+        firstLevelView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor).isActive = true
+        firstLevelView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
+        firstLevelView.topAnchor.constraint(equalTo: cardView.topAnchor).isActive = true
+        firstLevelView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
-        // стак для shop, details, features
-        let addSDFStuck = makeStartsStackView()
-        addSDFStuck.addArrangedSubview(shopButton)
-        addSDFStuck.addArrangedSubview(detailsButton)
-        addSDFStuck.addArrangedSubview(featuresButton)
-        someView.addSubview(addSDFStuck)
+        phoneLabel.topAnchor.constraint(equalTo: firstLevelView.topAnchor, constant: 20).isActive = true
+        phoneLabel.leadingAnchor.constraint(equalTo: firstLevelView.leadingAnchor, constant: 30).isActive = true
+        
+        addStarsStuck.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 6).isActive = true
+        addStarsStuck.leadingAnchor.constraint(equalTo: firstLevelView.leadingAnchor, constant: 30).isActive = true
+        
+        favButton.topAnchor.constraint(equalTo: firstLevelView.topAnchor, constant: 28).isActive = true
+        favButton.trailingAnchor.constraint(equalTo: firstLevelView.trailingAnchor, constant: -40).isActive = true
+    }
+    
+    func setupSecondLevel() {
+        cardView.addSubview(secondLevelView)
+        secondLevelView.addSubview(underLining)
+        secondLevelView.addSubview(optionsStack)
+      
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.distribution = .equalSpacing
+        stack.addArrangedSubview(shopLabel)
+        stack.addArrangedSubview(detailsLabel)
+        stack.addArrangedSubview(featuresLabel)
+        secondLevelView.addSubview(stack)
+        
+        secondLevelView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor).isActive = true
+        secondLevelView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
+        secondLevelView.topAnchor.constraint(equalTo: firstLevelView.bottomAnchor).isActive = true
+        secondLevelView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        
+        stack.topAnchor.constraint(equalTo: secondLevelView.topAnchor, constant: 20).isActive = true
+        stack.leadingAnchor.constraint(equalTo: secondLevelView.leadingAnchor, constant: 30).isActive = true
+        stack.trailingAnchor.constraint(equalTo: secondLevelView.trailingAnchor, constant: -30).isActive = true
+        stack.centerXAnchor.constraint(equalTo: secondLevelView.centerXAnchor).isActive = true
+        
+        underLining.leadingAnchor.constraint(equalTo: secondLevelView.leadingAnchor, constant: 30).isActive = true
+        underLining.widthAnchor.constraint(equalTo: shopLabel.widthAnchor).isActive = true
+        underLining.heightAnchor.constraint(equalToConstant: 3).isActive = true
+        underLining.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 3).isActive = true
+        
+        optionsStack.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 35).isActive = true
+        optionsStack.leadingAnchor.constraint(equalTo: secondLevelView.leadingAnchor, constant: 30).isActive = true
+        optionsStack.trailingAnchor.constraint(equalTo: secondLevelView.trailingAnchor, constant: -30).isActive = true
+     
+        
+    }
+    
+    func setupThirdLevel() {
+        cardView.addSubview(thirdLevelView)
+        thirdLevelView.addSubview(colorCapacityLabel)
         
         //стак для кругляшек
         let circlesStack = circlesStack()
         circlesStack.addArrangedSubview(circleLabelBrown)
         circlesStack.addArrangedSubview(circleLabelBlack)
-        someView.addSubview(circlesStack)
+        thirdLevelView.addSubview(circlesStack)
 
         //стак для гигов
-        let gbStack = makeStartsStackView()
-        gbStack.addArrangedSubview(gb128Button)
-        gbStack.addArrangedSubview(gb256Button)
-        someView.addSubview(gbStack)
-        
-        // закидываем someView, phoneLabel и прочиее на вью
-        someView.addSubview(phoneLabel) // phone label
-        someView.addSubview(favButton) // favorites button
-        someView.addSubview(colorCapacityLabel)
-        someView.addSubview(optionsStack)
-        view.addSubview(someView)
-        someView.addSubview(addToCartButton)
-        view.addSubview(detailsLabel)
-        view.addSubview(shopCartButton)
+        var gbStack = makeStartsStackView()
+        gbStack.addArrangedSubview(gb128Label)
+        gbStack.spacing = 6
+        gbStack.addArrangedSubview(gb256Label)
+        thirdLevelView.addSubview(gbStack)
         
         
-        // констрейнты
-        // для лейбла Продукт Детаилис
-        NSLayoutConstraint.activate([
-            detailsLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            detailsLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 55)
-        ])
-        // кнопка в корзину верх право
-        NSLayoutConstraint.activate([
-            shopCartButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 55),
-            shopCartButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15)
-        ])
+        thirdLevelView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor).isActive = true
+        thirdLevelView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
+        thirdLevelView.topAnchor.constraint(equalTo: secondLevelView.bottomAnchor).isActive = true
+        thirdLevelView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
-        NSLayoutConstraint.activate([
-            // для вью
-            someView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            someView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            someView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            someView.topAnchor.constraint(equalTo: view.topAnchor, constant: 400)
-           ])
-        // лейбл названия телефон
-        NSLayoutConstraint.activate([
-            phoneLabel.topAnchor.constraint(equalTo: someView.topAnchor, constant: 20),
-            phoneLabel.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 30)
-            ])
-        // стак звезд
-        NSLayoutConstraint.activate([
-            addStarsStuck.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 6),
-            addStarsStuck.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 30)
-            ])
-        // для кнопки избранного
-        NSLayoutConstraint.activate([
-            favButton.topAnchor.constraint(equalTo: someView.topAnchor, constant: 28),
-            favButton.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -40)
-            ])
-        // для стака шоп детаилс фючерс
-        NSLayoutConstraint.activate([
-            addSDFStuck.topAnchor.constraint(equalTo: addStarsStuck.topAnchor, constant: 32),
-            addSDFStuck.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 20),
-            addSDFStuck.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -30),
-            addSDFStuck.centerXAnchor.constraint(equalTo: someView.centerXAnchor)
-            ])
-        // стак для проца, памяти, фото и оперативки
-        NSLayoutConstraint.activate([
-            optionsStack.topAnchor.constraint(equalTo: addSDFStuck.bottomAnchor, constant: 43),
-            optionsStack.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 30),
-            optionsStack.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -30)
-            ])
-        // для лейбла Select color and capacity
-        NSLayoutConstraint.activate([
-            colorCapacityLabel.topAnchor.constraint(equalTo: optionsStack.bottomAnchor, constant: 15),
-            colorCapacityLabel.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 30)
-        ])
-            
-            
-//
-            // для стака кругляшей с выбором цвета
-        NSLayoutConstraint.activate([
-            circlesStack.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 30),
-            circlesStack.bottomAnchor.constraint(equalTo: addToCartButton.topAnchor, constant: -27),
-            
-            
-            ])
-       
-            // стак для гигов сюда
-        NSLayoutConstraint.activate([
-            gbStack.bottomAnchor.constraint(equalTo: addToCartButton.topAnchor, constant: -27),
-            gbStack.leadingAnchor.constraint(equalTo: circlesStack.trailingAnchor, constant: 55),
-            gbStack.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -63),
-        ])
+        colorCapacityLabel.topAnchor.constraint(equalTo: thirdLevelView.topAnchor, constant: 5).isActive = true
+        colorCapacityLabel.leadingAnchor.constraint(equalTo: thirdLevelView.leadingAnchor, constant: 30).isActive = true
         
-        // для кнопки
-    NSLayoutConstraint.activate([
-        addToCartButton.bottomAnchor.constraint(equalTo: someView.bottomAnchor, constant: -35),
-        addToCartButton.leadingAnchor.constraint(equalTo: someView.leadingAnchor, constant: 30),
-        addToCartButton.trailingAnchor.constraint(equalTo: someView.trailingAnchor, constant: -30),
-        addToCartButton.heightAnchor.constraint(equalToConstant: 54)
-        ])
-        // для лейблов в стаке кнопки
-    NSLayoutConstraint.activate([
-        addLabel.leadingAnchor.constraint(equalTo: addToCartButton.leadingAnchor, constant: 45),
-        addLabel.centerYAnchor.constraint(equalTo: addToCartButton.centerYAnchor),
+        circlesStack.leadingAnchor.constraint(equalTo: thirdLevelView.leadingAnchor, constant: 30).isActive = true
+        circlesStack.bottomAnchor.constraint(equalTo: thirdLevelView.bottomAnchor, constant: -16).isActive = true
         
-        priceLabel.trailingAnchor.constraint(equalTo: addToCartButton.trailingAnchor, constant: -38)
-        ])
+        gbStack.bottomAnchor.constraint(equalTo: thirdLevelView.bottomAnchor, constant: -16).isActive = true
+        gbStack.leadingAnchor.constraint(equalTo: circlesStack.trailingAnchor, constant: 55).isActive = true
+        gbStack.trailingAnchor.constraint(equalTo: thirdLevelView.trailingAnchor, constant: -63).isActive = true
+        
+    }
+    
+    func setupFourthLevel() {
+        cardView.addSubview(forthLevelView)
+        forthLevelView.addSubview(addToCartButton)
+        forthLevelView.addSubview(addToCartLabel)
+        forthLevelView.addSubview(priceLabel)
+    
+        forthLevelView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor).isActive = true
+        forthLevelView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
+        forthLevelView.topAnchor.constraint(equalTo: thirdLevelView.bottomAnchor).isActive = true
+        forthLevelView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        
+        addToCartButton.bottomAnchor.constraint(equalTo: forthLevelView.bottomAnchor, constant: -35).isActive = true
+        addToCartButton.leadingAnchor.constraint(equalTo: forthLevelView.leadingAnchor, constant: 30).isActive = true
+        addToCartButton.trailingAnchor.constraint(equalTo: forthLevelView.trailingAnchor, constant: -30).isActive = true
+        addToCartButton.heightAnchor.constraint(equalToConstant: 54).isActive = true
+        
+        addToCartLabel.leadingAnchor.constraint(equalTo: addToCartButton.leadingAnchor, constant: 45).isActive = true
+        addToCartLabel.centerYAnchor.constraint(equalTo: addToCartButton.centerYAnchor).isActive = true
+        
+        priceLabel.trailingAnchor.constraint(equalTo: addToCartButton.trailingAnchor, constant: -38).isActive = true
+        priceLabel.centerYAnchor.constraint(equalTo: addToCartButton.centerYAnchor).isActive = true
+
+    }
+  
+    func setupCollectionView () {
+        collectionView.register(ProductDetailsCustomCell.self, forCellWithReuseIdentifier: ProductDetailsCustomCell.identife)
+        collectionView.isScrollEnabled = false // выключает скролл по вертикали
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    //MARK: - скока секций
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    //MARK: - какая ячейка тама будет
+   
+}
+
+
+
+
+
+
+
+
+//MARK: - CollectionView Delegate
+extension ProductDetailsVC {
+    
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductDetailsCustomCell.identife, for: indexPath) as? ProductDetailsCustomCell else { fatalError("Failed to get expected kind of reusable cell from the tableView. Expected type `ProductDetailsCustomCell`")}
         cell.clipsToBounds = true
@@ -566,18 +690,16 @@ class ProductDetailsVC : UICollectionViewController {
         cell.addShadow()
         return cell
     }
-    //MARK: - Количество объектов в скроле
+    
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 9
     }
     
-    //MARK: - чо будет по клику на ячейку
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let vc = UIViewController()
-//        print("This cell #\(indexPath.row) located in section #\(indexPath.section)")
-//        vc.view.backgroundColor = indexPath.section == 0 ? .yellow : .systemGray
-//        navigationController?.pushViewController(vc, animated: true)
-        
         let vc = MyCartVC()
         navigationController?.pushViewController(vc, animated: true)
         //present(vc, animated: true, completion: nil)
@@ -586,9 +708,14 @@ class ProductDetailsVC : UICollectionViewController {
 
 //struct ViewControllerProvider : PreviewProvider {
 //    static var previews: some View {
-//        ProductDetailsVC().showPreview()
+//        Group {
+//            ProductDetailsVC().showPreview()
+//            ProductDetailsVC().showPreview()
+//        }
 //    }
 //}
+
+
 
 
 

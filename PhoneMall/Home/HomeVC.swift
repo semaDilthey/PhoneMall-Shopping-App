@@ -225,8 +225,8 @@ extension HomeVC {
 }
 
 
-//struct ViewControllerProvider : PreviewProvider {
-//    static var previews: some View {
-//        HomeVC().showPreview()
-//    }
-//}
+struct ViewControllerProvider : PreviewProvider {
+    static var previews: some View {
+        HomeVC().showPreview()
+    }
+}

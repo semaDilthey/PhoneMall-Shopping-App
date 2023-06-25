@@ -21,11 +21,15 @@ class BestSellerCell: UICollectionViewCell {
     // значения для кнопки надо сохранять в юзерДефолтс
     lazy var isFavoritesButton : UIButton = {
         let butt = UIButton()
-        butt.backgroundColor = UIColor.snowyWhite
-        butt.setImage(UIImage(systemName: "heart"), for: .normal)
+        butt.backgroundColor = .white
+        butt.setImage(UIImage(named: "heartEmpty"), for: .normal)
         butt.clipsToBounds = true
-        butt.layer.cornerRadius = 16
+        butt.layer.cornerRadius = 12
         butt.translatesAutoresizingMaskIntoConstraints = false
+        butt.layer.shadowColor = UIColor.black.cgColor
+        butt.layer.shadowOpacity = 0.5
+        butt.layer.shadowOffset = CGSize.zero
+        butt.layer.shadowRadius = 12
         return butt
     }()
     
@@ -83,8 +87,8 @@ class BestSellerCell: UICollectionViewCell {
             
             isFavoritesButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             isFavoritesButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            isFavoritesButton.widthAnchor.constraint(equalToConstant: 30),
-            isFavoritesButton.heightAnchor.constraint(equalToConstant: 30),
+            isFavoritesButton.widthAnchor.constraint(equalToConstant: 24),
+            isFavoritesButton.heightAnchor.constraint(equalToConstant: 24),
             
             priceLabel.topAnchor.constraint(equalTo: image.bottomAnchor, constant: -5),
             priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 21),
