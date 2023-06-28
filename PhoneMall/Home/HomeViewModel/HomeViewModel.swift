@@ -9,7 +9,7 @@ import Foundation
 protocol HomeViewModelProtocol {
     func numberOfSections() -> Int
     func numberOfItemsInSection() -> Int
-    func cellViewModel(forIndexPath IndexPath: IndexPath) -> CollectionViewCellModelProtocol?
+//    func cellViewModel(forIndexPath IndexPath: IndexPath) -> CollectionViewCellModelProtocol?
     func setIndex(setIndex: IndexPath) -> Int
 }
 
@@ -31,9 +31,9 @@ class HomeViewModel : HomeViewModelProtocol {
         phones?.phonesArray.count ?? 0
     }
     
-    func cellViewModel(forIndexPath IndexPath: IndexPath) -> CollectionViewCellModelProtocol? {
-        return nil
-    }
+//    func cellViewModel(forIndexPath IndexPath: IndexPath) -> CollectionViewCellModelProtocol? {
+//        return nil
+//    }
     
     
 }

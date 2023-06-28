@@ -20,12 +20,13 @@ class MyCartVC : UIViewController {
         super.viewDidLoad()
         setupUI()
         
-        tableView.register(MyCartVCTableViewCell.self, forCellReuseIdentifier: MyCartVCTableViewCell.identifire)
+        tableView.register(MyCartCell.self, forCellReuseIdentifier: MyCartCell.identifire)
         
         navigationItem.hidesBackButton = true
         backButtonSetup()
         }
     
+    // NavBar
     lazy var backButton : UIButton = {
         let but = UIButton(type: .custom)
         but.backgroundColor = .customDarkBlue
@@ -38,6 +39,16 @@ class MyCartVC : UIViewController {
         but.clipsToBounds = true
         return but
     }()
+    
+    @objc func handlePresentingVC() {
+        navigationController?.popToRootViewController(animated: true)
+    }
+    
+    func backButtonSetup() {
+        backButton.addTarget(self, action: #selector(handlePresentingVC), for: .touchUpInside)
+        let backBarButtonItems = UIBarButtonItem(customView: backButton)
+        navigationItem.leftBarButtonItem = backBarButtonItems
+    }
     
     lazy var addressButton : UIButton = {
         let but = UIButton()
@@ -64,30 +75,85 @@ class MyCartVC : UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "My Cart"
-        label.font = UIFont(name: "DSLCLU+MarkPro-Heavy", size: 30)
+        label.font = UIFont.markProFont(size: 30, weight: .heavy)
         label.textColor = UIColor(named: "customDarkBlue")
         return label
     }()
     
-    lazy var scrollView : UIView = { // non scrollable, just view
+    // Добавляем вью, на которую закинием tableView
+    private let cardView : UIView = { // non scrollable, just view
         let scroll = UIView()
-        scroll.backgroundColor = UIColor(named: "customDarkBlue")
+        scroll.backgroundColor = .customDarkBlue
         scroll.translatesAutoresizingMaskIntoConstraints = false
         scroll.clipsToBounds = true
         scroll.layer.cornerRadius = 15
         return scroll
     }()
     
+     lazy var tableView : UITableView = {
+        let table = UITableView()
+        table.translatesAutoresizingMaskIntoConstraints = false
+        table.backgroundColor = .customDarkBlue
+        table.layer.cornerRadius = 15
+        table.dataSource = self
+        table.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner] // округляет только левый верхний и правый углы через cornerRadius
+        table.clipsToBounds = true
+        return table
+    }()
+    
+    // линия над Total
+    private let lineUpper : UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    // линия под total/Delivery
+    private let lineLower : UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+  
+    // c
+    private let StackTotalPrice : UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.distribution = .equalCentering
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    private let StackDeliveryCost : UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.distribution = .equalCentering
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
+    func createLabel (text: String, font: UIFont) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.font = font
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .white
+        return label
+    }
+    
     lazy var checkoutButton : UIButton = {
         let button = UIButton()
-        button.backgroundColor = UIColor(named: "customOrange")
+        button.backgroundColor = .customOrange
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.titleLabel?.font = UIFont(name: "DSLCLU+MarkPro-Medium", size: 20)
-        button.setTitleColor(UIColor(red: 0, green: 0, blue: 0, alpha: 0.5), for: .normal)
+        button.titleLabel?.font = UIFont.markProFont(size: 20, weight: .medium)
+        button.setTitleColor(UIColor.white, for: .normal)
         button.titleLabel?.textAlignment = .center
         button.clipsToBounds = true
         button.layer.cornerRadius = 15
         button.setTitle("Checkout", for: .normal)
+        
         // giving a config to style our button
         var config = UIButton.Configuration.filled()
         config.buttonSize = .large
@@ -120,97 +186,15 @@ class MyCartVC : UIViewController {
         return button
     }()
     
-    private let lineLabel1 : UILabel = {
-        let label = UILabel()
-        label.backgroundColor = .white
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private let lineLabel2 : UILabel = {
-        let label = UILabel()
-        label.backgroundColor = .white
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    lazy var tableView : UITableView = {
-        let table = UITableView()
-        table.translatesAutoresizingMaskIntoConstraints = false
-        table.backgroundColor = .customDarkBlue
-        table.layer.cornerRadius = 15
-        table.dataSource = self
-        table.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner] // округляет только левый верхний и правый углы через cornerRadius
-        table.clipsToBounds = true
-        return table
-    }()
-    
-    let stackView1 : UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.distribution = .equalCentering
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
-    }()
-    
-    let stackView2 : UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.distribution = .equalCentering
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
-    }()
-
-    func createLabel (text: String, font: UIFont) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = font
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .white
-        return label
-    }
-
-    
-    @objc func handlePresentingVC() {
-        navigationController?.popToRootViewController(animated: true)
-    }
-    
-    func backButtonSetup() {
-        backButton.addTarget(self, action: #selector(handlePresentingVC), for: .touchUpInside)
-        let backBarButtonItems = UIBarButtonItem(customView: backButton)
-        navigationItem.leftBarButtonItem = backBarButtonItems
-    }
-    
     func setupUI() {
         view.backgroundColor = .white
+        
+        //MARK: - Setting NavBar/ TopView
         view.addSubview(backButton)
         view.addSubview(addressButton)
         view.addSubview(addAdressLabel)
         view.addSubview(myCartLabel)
-        view.addSubview(scrollView)
-        view.addSubview(checkoutButton)
-        view.addSubview(lineLabel1)
-        view.addSubview(lineLabel2)
-        view.addSubview(tableView)
-
-        // тут стакВью идут
-        // ----------------------------------------------------------------------------------------------------------------
-        view.addSubview(stackView1)
-        view.addSubview(stackView2)
         
-        let labelTotal1 = createLabel(text: "Total", font: .markProFont(size: 14, weight: .plain)!)
-        let labelPrice1 = createLabel(text: "$6,000 us", font: .markProFont(size: 14, weight: .medium)!)
-        stackView1.addArrangedSubview(labelTotal1)
-        stackView1.setCustomSpacing(190, after: labelTotal1)
-        stackView1.addArrangedSubview(labelPrice1)
-        
-        let labetDelivery2 = createLabel(text: "Delivery", font: .markProFont(size: 14, weight: .plain)!)
-        let labelPrice2 = createLabel(text: "Free", font: .markProFont(size: 14, weight: .medium)!)
-        stackView2.addArrangedSubview(labetDelivery2)
-        stackView2.addArrangedSubview(labelPrice2)
-        //-------------------------------------------------------------
-        
-    
         NSLayoutConstraint.activate([
             backButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 65),
             backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 42),
@@ -221,43 +205,79 @@ class MyCartVC : UIViewController {
             addAdressLabel.centerYAnchor.constraint(equalTo: addressButton.centerYAnchor),
             addAdressLabel.trailingAnchor.constraint(equalTo: addressButton.leadingAnchor, constant: -9),
             
+            myCartLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 42),
+            myCartLabel.bottomAnchor.constraint(equalTo: view.topAnchor, constant: 180)])
+        
+        //MARK: - Setting CardView and TableView
+        view.addSubview(cardView)
+        view.addSubview(tableView)
+        view.addSubview(lineUpper)
+
+        NSLayoutConstraint.activate([
+            cardView.topAnchor.constraint(equalTo: myCartLabel.bottomAnchor, constant: 49),
+            cardView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            cardView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            cardView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
             
             tableView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            tableView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 15), // to my (equalTo: myCartLabel.bottomAnchor, constant: 49)
-            tableView.bottomAnchor.constraint(equalTo: lineLabel2.topAnchor),
+            tableView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 15),
+            tableView.bottomAnchor.constraint(equalTo: lineUpper.topAnchor),
+            ])
+        
+        //MARK: - Setting block with lines, Total, Delivery label
+        
+        view.addSubview(lineLower)
+
+        // тут стакВью идут
+        view.addSubview(StackTotalPrice)
+        view.addSubview(StackDeliveryCost)
+        
+        //view.addSubview(lineLower)
+        
+        view.addSubview(checkoutButton)
+        
+        let total = createLabel(text: "Total", font: .markProFont(size: 14, weight: .plain)!)
+        let totalPrice = createLabel(text: "$6,000 us", font: .markProFont(size: 14, weight: .medium)!)
+        StackTotalPrice.addArrangedSubview(total)
+        StackTotalPrice.setCustomSpacing(190, after: total)
+        StackTotalPrice.addArrangedSubview(totalPrice)
+        
+        let deliveryLabel = createLabel(text: "Delivery", font: .markProFont(size: 14, weight: .plain)!)
+        let deliveryPrice = createLabel(text: "Free", font: .markProFont(size: 14, weight: .medium)!)
+        
+        StackDeliveryCost.addArrangedSubview(deliveryLabel)
+        StackDeliveryCost.addArrangedSubview(deliveryPrice)
+        
+    
+        NSLayoutConstraint.activate([
+            lineUpper.widthAnchor.constraint(equalTo: view.widthAnchor),
+            lineUpper.bottomAnchor.constraint(equalTo: checkoutButton.topAnchor, constant: -27),
+            lineUpper.heightAnchor.constraint(equalToConstant: 0.2),
+          
+            StackTotalPrice.topAnchor.constraint(equalTo: lineLower.bottomAnchor, constant: 15),
+            StackTotalPrice.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 55),
+            StackTotalPrice.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35),
             
-            myCartLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 42),
-            myCartLabel.bottomAnchor.constraint(equalTo: view.topAnchor, constant: 180),
+            StackDeliveryCost.topAnchor.constraint(equalTo: StackTotalPrice.bottomAnchor, constant: 15),
+            StackDeliveryCost.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 55),
+            StackDeliveryCost.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35),
             
-            scrollView.topAnchor.constraint(equalTo: myCartLabel.bottomAnchor, constant: 49),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            lineLower.widthAnchor.constraint(equalTo: view.widthAnchor),
+            lineLower.bottomAnchor.constraint(equalTo: checkoutButton.topAnchor, constant: -118),
+            lineLower.heightAnchor.constraint(equalToConstant: 0.2),
             
             checkoutButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 44),
             checkoutButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -44),
             checkoutButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -77),
             checkoutButton.heightAnchor.constraint(equalToConstant: 54),
-            
-            lineLabel1.widthAnchor.constraint(equalTo: view.widthAnchor),
-            lineLabel1.bottomAnchor.constraint(equalTo: checkoutButton.topAnchor, constant: -27),
-            lineLabel1.heightAnchor.constraint(equalToConstant: 0.2),
-            
-            lineLabel2.widthAnchor.constraint(equalTo: view.widthAnchor),
-            lineLabel2.bottomAnchor.constraint(equalTo: checkoutButton.topAnchor, constant: -118),
-            lineLabel2.heightAnchor.constraint(equalToConstant: 0.2),
-            
-            stackView1.topAnchor.constraint(equalTo: lineLabel2.bottomAnchor, constant: 15),
-            stackView1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 55),
-            stackView1.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35),
-            
-            stackView2.topAnchor.constraint(equalTo: stackView1.bottomAnchor, constant: 15),
-            stackView2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 55),
-            stackView2.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35),
         ])
         
     }
 }
+
+
+
 
 //MARK: - Delegate, DataSource
 extension MyCartVC : UITableViewDelegate, UITableViewDataSource {
@@ -266,15 +286,18 @@ extension MyCartVC : UITableViewDelegate, UITableViewDataSource {
         return 2
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: MyCartVCTableViewCell.identifire, for: indexPath) as! MyCartVCTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: MyCartCell.identifire, for: indexPath) as! MyCartCell
         cell.clipsToBounds = true
+        cell.phonePicture.image = EasyHomeStoreData.picture[1]
+        cell.phoneNameLabel.text = "Phone Name"
+        cell.phonePriceLabel.text = "$1000"
         return cell
     }
 }
 
 
-//struct ViewControllerProvider : PreviewProvider {
-//    static var previews: some View {
-//        MyCartVC().showPreview()
-//    }
-//}
+struct ViewControllerProvider : PreviewProvider {
+    static var previews: some View {
+        MyCartVC().showPreview()
+    }
+}

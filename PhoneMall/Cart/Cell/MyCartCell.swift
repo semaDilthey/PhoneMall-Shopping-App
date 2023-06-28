@@ -2,11 +2,13 @@
 import UIKit
 
 
-class MyCartVCTableViewCell: UITableViewCell {
+class MyCartCell: UITableViewCell {
         
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
+        stepper.counter = "1"
+
     }
     
     required init?(coder: NSCoder) {
@@ -22,10 +24,9 @@ class MyCartVCTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    lazy var image : UIImageView = {
+    lazy var phonePicture : UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
-        image.image = EasyHomeStoreData.picture[1]
         image.clipsToBounds = true
         image.layer.cornerRadius = 10
         image.widthAnchor.constraint(equalToConstant: 100).isActive = true
@@ -36,7 +37,6 @@ class MyCartVCTableViewCell: UITableViewCell {
     lazy var phoneNameLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Phone Name"
         label.textColor = .white
         label.font = UIFont.markProFont(size: 25, weight: .medium)
         return label
@@ -45,8 +45,7 @@ class MyCartVCTableViewCell: UITableViewCell {
     lazy var phonePriceLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "$1000"
-        label.font = UIFont.markProFont(size: 15, weight: .plain)
+        label.font = UIFont.markProFont(size: 20, weight: .medium)
         label.textColor = .customOrange
         return label
     }()
@@ -69,14 +68,13 @@ class MyCartVCTableViewCell: UITableViewCell {
     
     func setupUI() {
         contentView.backgroundColor = .customDarkBlue
-        stepper.counter = "1"
-        contentView.addSubview(image)
-                image.anchor(top: contentView.topAnchor,
+        contentView.addSubview(phonePicture)
+                phonePicture.anchor(top: contentView.topAnchor,
                                         leading: contentView.leadingAnchor,
                                         bottom: contentView.bottomAnchor,
                                         trailing: nil,
                                         padding: UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 0))
-                image.widthAnchor.constraint(equalTo: image.heightAnchor).isActive = true
+                phonePicture.widthAnchor.constraint(equalTo: phonePicture.heightAnchor).isActive = true
                 
                 contentView.addSubview(phoneNameLabel)
 //                phoneNameLabel.anchor(top: contentView.topAnchor,

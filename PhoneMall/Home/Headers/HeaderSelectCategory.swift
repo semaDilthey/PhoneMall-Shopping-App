@@ -12,6 +12,11 @@ class HeaderSelectCategory: UICollectionReusableView {
     
     static let headerID = "HeaderSelectCategory"
     
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    
     var locationLabel : UILabel = {
         let label = UILabel()
         label.text = "Zihuatanejo" + "," + " " + "Gro"
@@ -41,15 +46,24 @@ class HeaderSelectCategory: UICollectionReusableView {
         return button
     }()
     
+//    @objc func filterButtonTapped() {
+//        print("Header")
+//        print(filterButton.state)
+//        delegate?.filtersButtonTapped()
+//    }
+//    
     lazy var filterButton : UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
         button.translatesAutoresizingMaskIntoConstraints = false
         button.contentHorizontalAlignment = .left
         button.contentVerticalAlignment = .center
+        button.isUserInteractionEnabled = true
+        button.isEnabled = true
         button.setImage(UIImage(named: "filter"), for: .normal)
         return button
     }()
+
     
     private let labelBestSeller : UILabel = {
         let label = UILabel()
@@ -74,13 +88,6 @@ class HeaderSelectCategory: UICollectionReusableView {
     }()
     
     
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        
-    }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         setupUI()
@@ -91,7 +98,7 @@ class HeaderSelectCategory: UICollectionReusableView {
         addSubview(locationLabel)
         addSubview(locationImage)
         addSubview(chooseLocationButton)
-        addSubview(filterButton)
+        //addSubview(filterButton)
         addSubview(seeMoreButton)
         addSubview(labelBestSeller)
       
@@ -107,9 +114,9 @@ class HeaderSelectCategory: UICollectionReusableView {
         chooseLocationButton.bottomAnchor.constraint(equalTo: labelBestSeller.topAnchor, constant: -1).isActive = true
         chooseLocationButton.frame.size = CGSize(width: 12, height: 7)
         
-        filterButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -35).isActive = true
-        filterButton.topAnchor.constraint(equalTo: topAnchor, constant: -21).isActive = true
-        filterButton.frame.size = CGSize(width: 11, height: 13)
+//        filterButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -35).isActive = true
+//        filterButton.topAnchor.constraint(equalTo: topAnchor, constant: -21).isActive = true
+//        filterButton.frame.size = CGSize(width: 11, height: 13)
 
 
         

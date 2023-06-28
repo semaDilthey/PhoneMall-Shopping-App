@@ -8,7 +8,7 @@ import SwiftUI
 class HomeVC : UICollectionViewController {
     
     private var viewModel = HomeViewModel()
-        
+  
     var phoneManager : PhoneManager?
         
     //MARK: - ViewDidLoad, надо рефакторить
@@ -59,18 +59,18 @@ class HomeVC : UICollectionViewController {
                 
             } else {
                 // третий ряд
-                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(4/9))) //item берет размеры от group. A group уже от view
-                item.contentInsets = NSDirectionalEdgeInsets(top: 10,
-                                                             leading: 12,
-                                                             bottom: 10,
-                                                             trailing: 12)
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(500)), subitems: [item])
-                    let section = NSCollectionLayoutSection(group: group)
-               
-                // втыкаем заголовок для второго ряда
-                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50)), elementKind: HeaderBestSeller.headerID, alignment: .top)]
-                    return section
-                }
+            let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(4/9))) //item берет размеры от group. A group уже от view
+            item.contentInsets = NSDirectionalEdgeInsets(top: 10,
+                                                         leading: 12,
+                                                         bottom: 10,
+                                                         trailing: 12)
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(500)), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+           
+            // втыкаем заголовок для второго ряда
+            section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50)), elementKind: HeaderBestSeller.headerID, alignment: .top)]
+                return section
+            }
          }
      }
   }
@@ -90,11 +90,31 @@ class HomeVC : UICollectionViewController {
     func setupNavigationController() {
         navigationItem.hidesSearchBarWhenScrolling = true
         navigationController?.navigationBar.prefersLargeTitles = false
+        let barButton = UIBarButtonItem(customView: filterButton)
+        barButton.imageInsets = UIEdgeInsets(top: -15, left: 15, bottom: 0, right: 0)
+        navigationItem.rightBarButtonItem = barButton
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    lazy var filterButton : UIButton = {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(named: "filter"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isUserInteractionEnabled = true
+        button.addTarget(self, action: #selector(filtersButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc func filtersButtonTapped() {
+         print ("/n/n filterButton was tapped /n/n")
+         let vc = MyCartVC()
+        vc.modalPresentationStyle = .popover
+         present(vc, animated: true)
+     }
+    
 }
 
 //MARK: - Delegate, DataSource
@@ -195,6 +215,8 @@ extension HomeVC {
         }
         
     }
+
+    
     
     // What will happen on click
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -216,6 +238,10 @@ extension HomeVC {
         case HeaderSelectCategory.headerID:
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderSelectCategory.headerID, for: indexPath)
             header.backgroundColor = .clear
+            header.addSubview(filterButton)
+            header.isUserInteractionEnabled = true
+            filterButton.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -35).isActive = true
+            filterButton.topAnchor.constraint(equalTo: header.topAnchor, constant: -20).isActive = true
             return header
         default:
             fatalError("Unexpected element kind: \(kind)")
@@ -225,8 +251,9 @@ extension HomeVC {
 }
 
 
-struct ViewControllerProvider : PreviewProvider {
-    static var previews: some View {
-        HomeVC().showPreview()
-    }
-}
+
+//struct ViewControllerProvider : PreviewProvider {
+//    static var previews: some View {
+//        HomeVC().showPreview()
+//    }
+//}

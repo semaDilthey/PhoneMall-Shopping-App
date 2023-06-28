@@ -663,7 +663,7 @@ class ProductDetailsVC : UICollectionViewController, UIGestureRecognizerDelegate
     }
   
     func setupCollectionView () {
-        collectionView.register(ProductDetailsCustomCell.self, forCellWithReuseIdentifier: ProductDetailsCustomCell.identife)
+        collectionView.register(ProductDetailsCell.self, forCellWithReuseIdentifier: ProductDetailsCell.identife)
         collectionView.isScrollEnabled = false // выключает скролл по вертикали
     }
     
@@ -684,7 +684,7 @@ class ProductDetailsVC : UICollectionViewController, UIGestureRecognizerDelegate
 extension ProductDetailsVC {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductDetailsCustomCell.identife, for: indexPath) as? ProductDetailsCustomCell else { fatalError("Failed to get expected kind of reusable cell from the tableView. Expected type `ProductDetailsCustomCell`")}
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductDetailsCell.identife, for: indexPath) as? ProductDetailsCell else { fatalError("Failed to get expected kind of reusable cell from the tableView. Expected type `ProductDetailsCustomCell`")}
         cell.clipsToBounds = true
         cell.layer.cornerRadius = 10
         cell.addShadow()

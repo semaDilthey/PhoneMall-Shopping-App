@@ -7,6 +7,8 @@
 
 import Foundation
 
+
+
 struct HomeVCData : Decodable {
     
     let homeStore : [HomeStoreItem]
