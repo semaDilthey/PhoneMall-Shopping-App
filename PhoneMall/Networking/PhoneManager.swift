@@ -10,7 +10,7 @@ import UIKit
 
 
 protocol Networking {
-    func request(path: String, completion: @escaping (Data?, Error?) -> Void)
+    func request(url: String, completion: @escaping (Data?, Error?) -> Void)
 }
 
 protocol GetData {
@@ -60,14 +60,10 @@ class PhoneManager: GetData {
 //
     
     func getHomeScreenData(response: @escaping (HomeVCData?) -> Void){
-        networking.request(path: API.home) { (data, error) in
-            if let error = error {
-                print("Error recieved requesting data : \(error.localizedDescription)")
-                response(nil)
+        networking.request(url: API.home) { (data, error) in
+            guard let url = url else { return }
             }
-            let decoded = self.decodeJSON(type: HomeVCData.self, from: data)
-            response(decoded)
-            print("AAAAAA")
+            
         }
     }
     

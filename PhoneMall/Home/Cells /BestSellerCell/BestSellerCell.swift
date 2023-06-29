@@ -8,7 +8,12 @@ class BestSellerCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+    }
+    
+    func set(viewModel: BestSellerCellViewModel) {
+        priceLabel.text = viewModel.fullPrice
+        discountPriceLabel.text = viewModel.discountPrice
+        nameLabel.text = viewModel.title
     }
     
     lazy var image : WebImageView = {

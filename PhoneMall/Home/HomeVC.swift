@@ -7,7 +7,7 @@ import SwiftUI
 
 class HomeVC : UICollectionViewController {
     
-    private var viewModel = HomeViewModel()
+    private var bestSellerCellViewModel : BestSellerCellViewModel?
   
     var phoneManager : PhoneManager?
         
@@ -190,6 +190,8 @@ extension HomeVC {
             cell.layer.cornerRadius = 15
             cell.clipsToBounds = true
             cell.backgroundColor = .white
+            let viewModel = bestSellerCellViewModel[indexPath.row]
+            cell.set(viewModel: viewModel)
             if indexPath.row == 0 {
                 cell.image.image = EasyHomeStoreData.picture[1]
                 cell.discountPriceLabel.text = EasyHomeStoreData.discountPrice[1] + "$"
