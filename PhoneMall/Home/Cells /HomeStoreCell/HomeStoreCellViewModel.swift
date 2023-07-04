@@ -7,7 +7,7 @@
 
 import Foundation
 
-class HomeStoreCellViewModel {
+class HomeStoreCellViewModel: InputHomeCellProtocol {
     
     let title : String?
     let subtitle : String?

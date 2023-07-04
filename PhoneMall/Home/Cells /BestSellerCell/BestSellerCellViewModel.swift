@@ -6,8 +6,13 @@
 
 import Foundation
 
-class BestSellerCellViewModel {
-    
+protocol InputHomeCellProtocol {
+    var title : String? { get }
+    var picture : String? { get }
+}
+
+class BestSellerCellViewModel: InputHomeCellProtocol {
+ 
     let title : String?
     let discountPrice : String?
     let fullPrice : String?

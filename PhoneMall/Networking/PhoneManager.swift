@@ -24,7 +24,7 @@ protocol GetData {
 //    func didFailWithError(error: Error)
 //}
 
-class PhoneManager: GetData {
+class PhoneManager/* : GetData*/ {
   
     let networking: Networking
     
@@ -59,12 +59,23 @@ class PhoneManager: GetData {
 //    }
 //
     
-    func getHomeScreenData(response: @escaping (HomeVCData?) -> Void){
-        networking.request(url: API.home) { (data, error) in
-            guard let url = url else { return }
-            }
-            
+//    func getHomeScreenData(response: @escaping (HomeVCData?) -> Void){
+    func getHomeScreenData(){
+        guard let url = URL(string: API.home) else {
+            fatalError("guard URL failed")
         }
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let data = data {
+                guard let phone = try? self.decodeJSON(type: HomeVCData.self, from: data) else {
+                    fatalError("Something went wrong with JSON Decoder, code : \(error)")
+                }
+                print(phone)
+//                DispatchQueue.main.async {
+//                    BestSellerCellViewModel(data: re)
+//                }
+            }
+        }.resume()
+        
     }
     
     func getDetailsScreenData(response: @escaping (ProductDetailsVCData?) -> Void) {

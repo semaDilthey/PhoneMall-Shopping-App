@@ -7,21 +7,22 @@ import SwiftUI
 
 class HomeVC : UICollectionViewController {
     
+    var viewModel = HomeViewModel()
+    
     private var bestSellerCellViewModel : BestSellerCellViewModel?
   
     var phoneManager : PhoneManager?
         
-    //MARK: - ViewDidLoad, надо рефакторить
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
         setupNavigationController()
         self.collectionView.reloadData()
-        //PhoneManager.getHomeScreenData(PhoneManager)
+        phoneManager?.getHomeScreenData()
     }
     
+    //MARK: - init comp layout
     init(){
-        //MARK: - init comp layout
         super.init(collectionViewLayout: HomeVC.createLayout())
     }
     
@@ -190,8 +191,7 @@ extension HomeVC {
             cell.layer.cornerRadius = 15
             cell.clipsToBounds = true
             cell.backgroundColor = .white
-            let viewModel = bestSellerCellViewModel[indexPath.row]
-            cell.set(viewModel: viewModel)
+            //cell.set(viewModel: bestSellerCellViewModel!)
             if indexPath.row == 0 {
                 cell.image.image = EasyHomeStoreData.picture[1]
                 cell.discountPriceLabel.text = EasyHomeStoreData.discountPrice[1] + "$"
