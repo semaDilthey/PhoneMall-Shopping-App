@@ -28,7 +28,8 @@ class HomeViewModel : HomeViewModelProtocol {
     }
     
     func numberOfItemsInSection() -> Int {
-        phones?.phonesArray.count ?? 0
+        //phones?.phonesArray.count ?? 0
+        return 3
     }
     
 //    func cellViewModel(forIndexPath IndexPath: IndexPath) -> CollectionViewCellModelProtocol? {

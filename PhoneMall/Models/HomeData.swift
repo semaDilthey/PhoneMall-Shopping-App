@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 
-struct HomeVCData : Decodable {
+struct HomeData : Decodable {
     
     let homeStore : [HomeStoreItem]
     let bestSeller : [BestSellerItem]

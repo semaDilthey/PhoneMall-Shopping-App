@@ -18,7 +18,13 @@ class HomeVC : UICollectionViewController {
         setupCollectionView()
         setupNavigationController()
         self.collectionView.reloadData()
-        phoneManager?.getHomeScreenData()
+        phoneManager?.getHomeScreenData(path: API.home, completion: { (data, error) in
+            if let error = error {
+                print("error \(error)")
+            } else {
+                print(data)
+            }
+        })
     }
     
     //MARK: - init comp layout
@@ -32,6 +38,7 @@ class HomeVC : UICollectionViewController {
     // первый ряд
             if sectionNumber == 0 {
                 let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.25), heightDimension: .estimated(120))) //item берет размеры от group. A group уже от view
+                
                 item.contentInsets = NSDirectionalEdgeInsets(top: 0,
                                                              leading: 12,
                                                              bottom: 5,

@@ -614,7 +614,7 @@ class ProductDetailsVC : UICollectionViewController, UIGestureRecognizerDelegate
         thirdLevelView.addSubview(circlesStack)
 
         //стак для гигов
-        var gbStack = makeStartsStackView()
+        let gbStack = makeStartsStackView()
         gbStack.addArrangedSubview(gb128Label)
         gbStack.spacing = 6
         gbStack.addArrangedSubview(gb256Label)

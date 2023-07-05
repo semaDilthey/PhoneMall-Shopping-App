@@ -14,17 +14,16 @@ protocol Networking {
 }
 
 protocol GetData {
-    func getHomeScreenData(response: @escaping (HomeVCData?) -> Void)
-    func getDetailsScreenData(response: @escaping (ProductDetailsVCData?) -> Void)
-    func getCartScreenData(response: @escaping (HomeVCData?) -> Void)
+    func getHomeScreenData(response: @escaping (HomeData?) -> Void)
+    func getDetailsScreenData(response: @escaping (ProductDetailsData?) -> Void)
+    func getCartScreenData(response: @escaping (HomeData?) -> Void)
 }
 
-//protocol PhoneManagerDelegate {
-//    func didUpdatePhone(_ phoneManager: PhoneManager)
-//    func didFailWithError(error: Error)
-//}
 
-class PhoneManager/* : GetData*/ {
+
+class PhoneManager /*Networking*/ {
+    
+    var homePhones : [HomeData] = []
   
     let networking: Networking
     
@@ -33,7 +32,7 @@ class PhoneManager/* : GetData*/ {
     }
     
   //Массивчик, в который будет погружаться все что мы парсим
-    var phonesArray = [HomeVCData]()
+    
 ////    var delegate: PhoneManagerDelegate? //свойство для делегирования по протоколу
 //
 //    let phoneURL = "https://run.mocky.io/v3/654bd15e-b121-49ba-a588-960956b15175"
@@ -59,32 +58,43 @@ class PhoneManager/* : GetData*/ {
 //    }
 //
     
-//    func getHomeScreenData(response: @escaping (HomeVCData?) -> Void){
-    func getHomeScreenData(){
-        guard let url = URL(string: API.home) else {
-            fatalError("guard URL failed")
-        }
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let data = data {
-                guard let phone = try? self.decodeJSON(type: HomeVCData.self, from: data) else {
-                    fatalError("Something went wrong with JSON Decoder, code : \(error)")
-                }
-                print(phone)
-//                DispatchQueue.main.async {
-//                    BestSellerCellViewModel(data: re)
-//                }
+    func getHomeScreenData(path: String, completion: @escaping (HomeData?, Error?) -> Void) {
+        var phonesArr = [HomeData]()
+        networking.request(url: path) { (data, error) in
+            guard let url = URL(string: path) else {
+                fatalError("Invalid URL: \(path)")
             }
-        }.resume()
+            URLSession.shared.dataTask(with: url) { (data, response, error) in
+                if let error = error {
+                    completion(nil, error)
+                    return
+                }
+                guard let data = data else {
+                    completion(nil, NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data received"]))
+                    return
+                }
+                do {
+                    let homeVCData = try? self.decodeJSON(type: HomeData.self, from: data)
+                    completion(homeVCData, nil)
+                    //self.homePhones = homeVCData
+                   // print(phonesArr)
+                } catch {
+                    completion(nil, error)
+                }
+                
+            }.resume()
+        }
+    }
+    
+    func getDetailsScreenData(response: @escaping (ProductDetailsData?) -> Void) {
         
     }
     
-    func getDetailsScreenData(response: @escaping (ProductDetailsVCData?) -> Void) {
+    func getCartScreenData(response: @escaping (HomeData?) -> Void) {
         
     }
     
-    func getCartScreenData(response: @escaping (HomeVCData?) -> Void) {
-        
-    }
+
     
     private func decodeJSON <T: Decodable>(type: T.Type, from data: Data?) -> T? {
         let decoder = JSONDecoder()
