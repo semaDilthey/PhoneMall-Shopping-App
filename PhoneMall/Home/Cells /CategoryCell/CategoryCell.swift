@@ -4,14 +4,12 @@ import UIKit
 
 class CategoryCell: UICollectionViewCell {
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
-
         layoutSubviews()
-        
     }
     
+    var viewModel = CategoryCellViewModel()
     
     static let identifire = "CustomCellSection1"
     
@@ -40,6 +38,7 @@ class CategoryCell: UICollectionViewCell {
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
+    
 
     
     //MARK: - Расстановка лэйаута для наших сабВьюх

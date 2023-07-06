@@ -13,7 +13,7 @@ protocol CommonCellViewModel {
     var picture : String { get }
     
     func numberOfSections() -> Int
-    func numberOfItemsInSection(in section: Int) -> Int
+    func numberOfItemsInSection() -> Int
     func configure(cell: UICollectionViewCell, at indexPath: IndexPath)
     
 }
@@ -28,7 +28,7 @@ class CategoryCellViewModel : CommonCellViewModel {
         1
     }
 
-    func numberOfItemsInSection(in section: Int) -> Int {
+    func numberOfItemsInSection() -> Int {
         CategoryCellTitles.allCases.count
     }
 

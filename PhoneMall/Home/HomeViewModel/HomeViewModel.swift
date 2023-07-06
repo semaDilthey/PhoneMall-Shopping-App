@@ -14,6 +14,8 @@ protocol HomeViewModelProtocol {
 }
 
 class HomeViewModel : HomeViewModelProtocol {
+    
+    var categoryCellViewModel = CategoryCellViewModel()
   
     
     

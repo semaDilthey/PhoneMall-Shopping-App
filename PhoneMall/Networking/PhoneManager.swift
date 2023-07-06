@@ -14,7 +14,7 @@ protocol Networking {
 }
 
 protocol GetData {
-    func getHomeScreenData(response: @escaping (HomeData?) -> Void)
+    func getHomeScreenData(completion: @escaping (Result<Data, Error>) -> Void)
     func getDetailsScreenData(response: @escaping (ProductDetailsData?) -> Void)
     func getCartScreenData(response: @escaping (HomeData?) -> Void)
 }
@@ -58,32 +58,40 @@ class PhoneManager /*Networking*/ {
 //    }
 //
     
-    func getHomeScreenData(path: String, completion: @escaping (HomeData?, Error?) -> Void) {
-        var phonesArr = [HomeData]()
-        networking.request(url: path) { (data, error) in
-            guard let url = URL(string: path) else {
-                fatalError("Invalid URL: \(path)")
-            }
-            URLSession.shared.dataTask(with: url) { (data, response, error) in
-                if let error = error {
-                    completion(nil, error)
-                    return
-                }
-                guard let data = data else {
-                    completion(nil, NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data received"]))
-                    return
-                }
-                do {
-                    let homeVCData = try? self.decodeJSON(type: HomeData.self, from: data)
-                    completion(homeVCData, nil)
-                    //self.homePhones = homeVCData
-                   // print(phonesArr)
-                } catch {
-                    completion(nil, error)
-                }
-                
-            }.resume()
+    func getHomeScreenData(completion: @escaping (Result<HomeData, Error>) -> Void) {
+        guard let url = URL(string: API.home) else {
+            completion(.failure(NetworkError.invalidURL))
+            return
         }
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                completion(.failure(error))
+            }
+            
+            guard let httpsResponse = response as? HTTPURLResponse, httpsResponse.statusCode == 200 else {
+                completion(.failure(NetworkError.invalidResponse))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NetworkError.noData))
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                if let parsedData = try? decoder.decode(HomeData.self, from: data) {
+                //if let parsedData = try self.decodeJSON(type: HomeData.self, from: data) {
+                    completion(.success(parsedData))
+                    print(parsedData)
+                } else {
+                    completion(.failure(NetworkError.jsonParsingFailed))
+                }
+            } catch {
+                completion(.failure(NetworkError.jsonParsingFailed))
+            }
+        }.resume()
     }
     
     func getDetailsScreenData(response: @escaping (ProductDetailsData?) -> Void) {
@@ -104,3 +112,10 @@ class PhoneManager /*Networking*/ {
     }
 }
 
+
+enum NetworkError: Error {
+    case invalidURL
+    case invalidResponse
+    case noData
+    case jsonParsingFailed
+}

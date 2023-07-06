@@ -18,11 +18,14 @@ class HomeVC : UICollectionViewController {
         setupCollectionView()
         setupNavigationController()
         self.collectionView.reloadData()
-        phoneManager?.getHomeScreenData(path: API.home, completion: { (data, error) in
-            if let error = error {
-                print("error \(error)")
-            } else {
-                print(data)
+        phoneManager?.getHomeScreenData(completion: { data in
+            DispatchQueue.main.async {
+            switch data {
+            case .success(let data) :
+                print("data : \(data)")
+            case .failure(let error) :
+                print("error")
+            }
             }
         })
     }
@@ -135,7 +138,7 @@ extension HomeVC {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 
         switch section {
-        case 0 : return 5
+        case 0 : return viewModel.categoryCellViewModel.numberOfItemsInSection()
         case 1 : return 3
         default : return 4
         }
