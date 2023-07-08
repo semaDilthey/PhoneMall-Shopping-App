@@ -12,6 +12,23 @@ protocol InputHomeCellProtocol {
 }
 
 class BestSellerCellViewModel: InputHomeCellProtocol {
+    
+    var data : HomeData?
+    let phoneManager = PhoneManager()
+    
+    func fetchData () {
+        phoneManager.getHomeScreenData(completion: { [weak self] data in
+            DispatchQueue.main.async {
+            switch data {
+            case .success(let data) :
+                self?.data = data
+                print(data)
+            case .failure(let error) :
+                print("error")
+            }
+            }
+        })
+    }
  
     let title : String?
     let discountPrice : String?

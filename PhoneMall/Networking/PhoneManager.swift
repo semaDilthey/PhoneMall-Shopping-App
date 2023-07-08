@@ -9,9 +9,6 @@ import Foundation
 import UIKit
 
 
-protocol Networking {
-    func request(url: String, completion: @escaping (Data?, Error?) -> Void)
-}
 
 protocol GetData {
     func getHomeScreenData(completion: @escaping (Result<Data, Error>) -> Void)
@@ -25,11 +22,6 @@ class PhoneManager /*Networking*/ {
     
     var homePhones : [HomeData] = []
   
-    let networking: Networking
-    
-    init(networking: Networking) {
-        self.networking = networking
-    }
     
   //Массивчик, в который будет погружаться все что мы парсим
     
@@ -84,7 +76,6 @@ class PhoneManager /*Networking*/ {
                 if let parsedData = try? decoder.decode(HomeData.self, from: data) {
                 //if let parsedData = try self.decodeJSON(type: HomeData.self, from: data) {
                     completion(.success(parsedData))
-                    print(parsedData)
                 } else {
                     completion(.failure(NetworkError.jsonParsingFailed))
                 }

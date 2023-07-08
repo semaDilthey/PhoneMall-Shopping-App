@@ -26,7 +26,6 @@ class CategoryCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.markProFont(size: 12, weight: .plain)
-        label.text = "Phones"
         label.textColor = UIColor.customDarkBlue
         label.textAlignment = .center
         return label
@@ -34,12 +33,15 @@ class CategoryCell: UICollectionViewCell {
     
     lazy var image : UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(systemName: "house")
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
     
-
+    func configure(viewModel: CategoryCellViewModel, indexPath: IndexPath) {
+            
+        self.label.text = viewModel.categories[indexPath.row].title
+        self.image.image = viewModel.categories[indexPath.row].image
+    }
     
     //MARK: - Расстановка лэйаута для наших сабВьюх
     override func layoutSubviews() {
