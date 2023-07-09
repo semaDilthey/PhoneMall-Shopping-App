@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-
+////
 protocol HomeStoreCellProtocol {
     var title: String { get }
     var subtitle: String { get }
