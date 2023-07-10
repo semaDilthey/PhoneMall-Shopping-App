@@ -37,10 +37,9 @@ class CategoryCell: UICollectionViewCell {
         return image
     }()
     
-    func configure(viewModel: CategoryCellViewModel, indexPath: IndexPath) {
-            
-        self.label.text = viewModel.categories[indexPath.row].title
-        self.image.image = viewModel.categories[indexPath.row].image
+    func set(viewModel: CategoryCellViewModel, indexPath: IndexPath) {
+        self.label.text = viewModel.title
+        self.image.image = viewModel.picture
     }
     
     //MARK: - Расстановка лэйаута для наших сабВьюх

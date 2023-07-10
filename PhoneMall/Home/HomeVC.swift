@@ -9,7 +9,7 @@ class HomeVC : UICollectionViewController {
     
     var viewModel = HomeViewModel()
     
-    private var bestSellerCellViewModel : BestSellerCellViewModel?
+    private var bestSellerCellViewModel : [BestSellerCellViewModel]?
   
     var phoneManager = PhoneManager()
     var data : HomeData?
@@ -23,7 +23,7 @@ class HomeVC : UICollectionViewController {
         
     }
     
-    let catVM = CategoryCellViewModel()
+    let categoryViewModel = CategoryCellViewModel()
     
     func aa () {
         phoneManager.getHomeScreenData(completion: { [weak self] data in
@@ -32,13 +32,13 @@ class HomeVC : UICollectionViewController {
             case .success(let data) :
                 self?.data = data
                 self?.collectionView.reloadData()
-                print(data)
             case .failure(let error) :
                 print("error")
             }
             }
         })
     }
+
     
     //MARK: - init comp layout
     init(){
@@ -162,8 +162,9 @@ extension HomeVC {
         switch indexPath.section {
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifire, for: indexPath) as! CategoryCell
-            let cellViewModel = catVM
-            cell.configure(viewModel: catVM, indexPath: indexPath)
+            let cellViewModel = categoryViewModel
+            cellViewModel.set(indexPath: indexPath)
+            cell.set(viewModel: categoryViewModel, indexPath: indexPath)
             if indexPath.row == 0 {
                 cell.view.backgroundColor = .customOrange
             }
@@ -181,6 +182,7 @@ extension HomeVC {
                            cell.phoneTitleLabel.text! = EasyBestSellerData.titles[0]
                            cell.subtitleLabel.text = EasyBestSellerData.subtitle
                            cell.mainImage.image = EasyBestSellerData.picture[0]
+            
                            //ячейка №1 в 1 секции
                        } else if indexPath.row == 1 {
                            cell.phoneTitleLabel.text! = EasyBestSellerData.titles[1]
@@ -197,36 +199,19 @@ extension HomeVC {
                        return cell
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BestSellerCell.identifire, for: indexPath) as! BestSellerCell
-                        cell.layer.cornerRadius = 15
-                        cell.clipsToBounds = true
-                        cell.backgroundColor = .white
-                        //cell.set(viewModel: bestSellerCellViewModel!)
-                        if indexPath.row == 0 {
-                            cell.image.image = EasyHomeStoreData.picture[1]
-                            cell.discountPriceLabel.text = EasyHomeStoreData.discountPrice[1] + "$"
-                            cell.nameLabel.text = EasyHomeStoreData.titles[1]
-                            cell.priceLabel.text = EasyHomeStoreData.priceWithoutDiscount[1] + "$"
-                        } else if indexPath.row == 1 {
-                            cell.image.image = EasyHomeStoreData.picture[0]
-                            cell.discountPriceLabel.text = EasyHomeStoreData.discountPrice[0] + "$"
-                            cell.nameLabel.text = EasyHomeStoreData.titles[0]
-                            cell.priceLabel.text = EasyHomeStoreData.priceWithoutDiscount[0] + "$"
-                        } else if indexPath.row == 2 {
-                            cell.image.image = EasyHomeStoreData.picture[2]
-                            cell.discountPriceLabel.text = EasyHomeStoreData.discountPrice[2] + "$"
-                            cell.nameLabel.text = EasyHomeStoreData.titles[2]
-                            cell.priceLabel.text = EasyHomeStoreData.priceWithoutDiscount[2] + "$"
-                        } else {
-                            cell.image.image = EasyHomeStoreData.picture[3]
-                            cell.discountPriceLabel.text = EasyHomeStoreData.discountPrice[3] + "$"
-                            cell.nameLabel.text = EasyHomeStoreData.titles[3]
-                            cell.priceLabel.text = EasyHomeStoreData.priceWithoutDiscount[3] + "$"
-                        }
-                        return cell
+                    cell.layer.cornerRadius = 15
+                    cell.clipsToBounds = true
+                    cell.backgroundColor = .white
+            
+            if let cellVM = bestSellerCellViewModel {
+               // cellVM.set(indexPath: indexPath)
+                cell.set(viewModel: cellVM[indexPath.row], indexPath: indexPath)
+            }
+            return cell
         default:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifire, for: indexPath) as! CategoryCell
-            let cellViewModel = catVM
-            cell.configure(viewModel: cellViewModel, indexPath: indexPath)
+            let cellViewModel = categoryViewModel
+            cell.set(viewModel: cellViewModel, indexPath: indexPath)
             return cell
         }
     }

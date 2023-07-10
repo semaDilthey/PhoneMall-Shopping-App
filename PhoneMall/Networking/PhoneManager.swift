@@ -21,7 +21,6 @@ protocol GetData {
 class PhoneManager /*Networking*/ {
     
     var homePhones : [HomeData] = []
-  
     
   //Массивчик, в который будет погружаться все что мы парсим
     

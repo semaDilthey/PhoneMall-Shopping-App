@@ -14,6 +14,6 @@ protocol HomeStoreCellProtocol {
     var picture: String { get }
 }
 
-struct HomeStoreCellModel: HomeStoreCellProtocol {
-    
-}
+//struct HomeStoreCellModel: HomeStoreCellProtocol {
+//
+//}

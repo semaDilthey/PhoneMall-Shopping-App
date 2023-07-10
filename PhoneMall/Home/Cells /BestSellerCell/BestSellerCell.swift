@@ -10,10 +10,12 @@ class BestSellerCell: UICollectionViewCell {
         super.init(frame: frame)
     }
     
-    func set(viewModel: BestSellerCellViewModel) {
+    
+    func set(viewModel: BestSellerCellViewModel, indexPath: IndexPath) {
         priceLabel.text = viewModel.fullPrice
         discountPriceLabel.text = viewModel.discountPrice
         nameLabel.text = viewModel.title
+        image.set(imageURL: viewModel.pictureUrlString)
     }
     
     lazy var image : WebImageView = {

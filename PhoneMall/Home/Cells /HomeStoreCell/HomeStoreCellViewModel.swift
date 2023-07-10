@@ -8,14 +8,13 @@
 import Foundation
 
 class HomeStoreCellViewModel: InputHomeCellProtocol {
-    
+    var pictureUrlString: String?
     let title : String?
     let subtitle : String?
-    let picture : String?
-    
+
     init(data: HomeStoreItem) {
         self.title = data.title
         self.subtitle = data.subtitle
-        self.picture = data.picture
+        self.pictureUrlString = data.picture
     }
 }

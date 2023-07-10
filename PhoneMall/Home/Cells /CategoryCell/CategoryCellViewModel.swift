@@ -15,7 +15,7 @@ protocol CommonCellViewModel {
 }
 
 class CategoryCellViewModel : CommonCellViewModel {
-    
+        
     let categories : [CategoryCellModel] = [
         CategoryCellModel(title: "Phones", image: UIImage(named: "phonesCircle") ?? UIImage()),
         CategoryCellModel(title: "Computer", image: UIImage(named: "computerCircle") ?? UIImage()),
@@ -24,10 +24,19 @@ class CategoryCellViewModel : CommonCellViewModel {
         CategoryCellModel(title: "Others", image: UIImage(named: "others") ?? UIImage())
     ]
     
+    var index = 0
     
-    var title: String = ""
+    var title: String {
+        categories[index].title
+    }
     
-    var picture: String = ""
+    var picture: UIImage {
+        categories[index].image
+    }
+    
+    func set(indexPath: IndexPath) {
+        index = indexPath.row
+    }
     
 
     func numberOfSections() -> Int {
