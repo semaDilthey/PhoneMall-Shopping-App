@@ -6,64 +6,51 @@
 
 import Foundation
 
-protocol InputHomeCellProtocol {
-    var title : String? { get }
+protocol BestSellerCellViewModelProtocol {
+    var title: String? { get }
+    var discountPrice : String? { get }
+    var fullPrice : String? { get }
     var pictureUrlString : String? { get }
+    var isFavorites: Bool? { get set }
 }
 
-class BestSellerCellViewModel: InputHomeCellProtocol {
+class BestSellerCellViewModel: BestSellerCellViewModelProtocol {
     
-    var data : HomeData?
-    let networking : PhoneManager?
-
-    var bestSeller : [BestSellerItem] {
-        data?.bestSeller ?? []
-        
-    }
+    private let isFavoritesKey = "isFavoritesKey"
     
-    var index = 0
+    var title: String?
+    var discountPrice : String?
+    var fullPrice : String?
+    var pictureUrlString : String?
     
-    func set(indexPath: IndexPath){
-        index = indexPath.row
-    }
- 
-    
-    var title: String? {
-        bestSeller[index].title
-        
-    }
-    
-    var discountPrice : String? {
-        String(bestSeller[index].discountPrice)
-    }
-    
-    var fullPrice : String? {
-        String(bestSeller[index].priceWithoutDiscount)
-    }
-    
-    var pictureUrlString : String? {
-        bestSeller[index].picture
-    }
-    
-    
-    init(data: HomeData?, networking: PhoneManager?) {
-        self.data = data
-        self.networking = networking
-        
-        guard let networking = networking else { return }
-        networking.getHomeScreenData(completion: { [weak self] data in
-            DispatchQueue.main.async {
-            switch data {
-            case .success(let data) :
-                self?.data = data
-                print("aaaaaAAAAAaa: \(data)")
-            case .failure(let error) :
-                print("error")
-            }
-                
-            }
-        })
+    var isFavorites: Bool? {
+        didSet {
+            saveIsFavorites()
         }
+    }
+    
+    func saveIsFavorites() {
+        UserDefaults.standard.set(isFavorites, forKey: isFavoritesKey)
+        print("Значение isFavorites сохранено: \(isFavorites ?? false)")
+    }
+    
+    func loadIsFavorites() {
+       isFavorites = UserDefaults.standard.bool(forKey: isFavoritesKey)
+        print("Значение isFavorites загружено: \(isFavorites ?? false)")
+
+    }
+    
+    init(title: String?, discountPrice: String?, fullPrice: String?, pictureUrlString: String?, isFavorites: Bool?) {
+        self.title = title
+        self.discountPrice = discountPrice
+        self.fullPrice = fullPrice
+        self.pictureUrlString = pictureUrlString
+        self.isFavorites = isFavorites
+        
+        loadIsFavorites()
+        
+    }
+
 }
     
 

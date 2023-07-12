@@ -8,22 +8,42 @@ class BestSellerCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        setupButton()
+       // isFavoritesTapped = UserDefaults.standard.bool(forKey: "isFavoritesTapped")
+        
+//        isFavorites = UserDefaults.standard.bool(forKey: "isFavoritesTapped_\(self.tag)")
+//        if isFavorites {
+//                isFavoritesButton.setImage(UIImage(named: "heartFilled"), for: .normal)
+//            } else {
+//                isFavoritesButton.setImage(UIImage(named: "heartEmpty"), for: .normal)
+//            }
     }
     
+    var cellViewModel : BestSellerCellViewModelProtocol? {
+        didSet {
+            priceLabel.text = cellViewModel?.fullPrice
+            discountPriceLabel.text = cellViewModel?.discountPrice
+            nameLabel.text = cellViewModel?.title
+            image.set(imageURL: cellViewModel?.pictureUrlString)
+            
+            updateFavoritesUI()
+        }
+    }
     
-    func set(viewModel: BestSellerCellViewModel, indexPath: IndexPath) {
-        priceLabel.text = viewModel.fullPrice
-        discountPriceLabel.text = viewModel.discountPrice
-        nameLabel.text = viewModel.title
-        image.set(imageURL: viewModel.pictureUrlString)
+    func updateFavoritesUI() {
+        if let cellViewModel = cellViewModel {
+            isFavoritesButton.isSelected = cellViewModel.isFavorites ?? false
+        }
     }
     
     lazy var image : WebImageView = {
         let image = WebImageView()
-        image.image = UIImage(systemName: "house")
+        image.image = UIImage(named: "homeStoreSamsungNote")
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
+    
     
     // значения для кнопки надо сохранять в юзерДефолтс
     lazy var isFavoritesButton : UIButton = {
@@ -37,8 +57,24 @@ class BestSellerCell: UICollectionViewCell {
         butt.layer.shadowOpacity = 0.5
         butt.layer.shadowOffset = CGSize.zero
         butt.layer.shadowRadius = 12
+        var status : Bool = false
         return butt
     }()
+    
+    func setupButton() {
+        isFavoritesButton.addTarget(self, action: #selector(didTappedFavorites), for: .touchUpInside)
+    }
+    
+    @objc func didTappedFavorites() {
+        cellViewModel?.isFavorites = !isFavoritesButton.isSelected
+        isFavoritesButton.isSelected = cellViewModel?.isFavorites ?? false
+        
+        if isFavoritesButton.isSelected {
+            isFavoritesButton.setImage(UIImage(named: "heartFilled"), for: .normal)
+        } else {
+            isFavoritesButton.setImage(UIImage(named: "heartEmpty"), for: .normal)
+        }
+    }
     
     lazy var priceLabel : UILabel = {
         let label = UILabel()
@@ -84,7 +120,11 @@ class BestSellerCell: UICollectionViewCell {
         contentView.addSubview(discountPriceLabel)
         contentView.addSubview(nameLabel)
         
-        image.frame.size = CGSize(width: contentView.frame.width, height: 177)
+        if image.image == UIImage(named: "loading") {
+            image.frame.size = CGSize(width: contentView.frame.width / 2, height: 88)
+        } else {
+            image.frame.size = CGSize(width: contentView.frame.width, height: 177)
+        }
         NSLayoutConstraint.activate([
             image.topAnchor.constraint(equalTo: contentView.topAnchor),
             image.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),

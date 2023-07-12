@@ -7,14 +7,20 @@
 
 import Foundation
 
-class HomeStoreCellViewModel: InputHomeCellProtocol {
+protocol HomeStoreCellViewModelProtocol {
+    var title: String? { get }
+    var subtitle : String? { get }
+    var pictureUrlString : String? { get }
+}
+
+class HomeStoreCellViewModel: HomeStoreCellViewModelProtocol {
     var pictureUrlString: String?
     let title : String?
     let subtitle : String?
 
-    init(data: HomeStoreItem) {
-        self.title = data.title
-        self.subtitle = data.subtitle
-        self.pictureUrlString = data.picture
+    init(title: String, subtitle: String, picture: String) {
+        self.title = title
+        self.subtitle = subtitle
+        self.pictureUrlString = picture
     }
 }

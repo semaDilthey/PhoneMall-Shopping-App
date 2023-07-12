@@ -11,43 +11,17 @@ import UIKit
 
 
 protocol GetData {
-    func getHomeScreenData(completion: @escaping (Result<Data, Error>) -> Void)
-    func getDetailsScreenData(response: @escaping (ProductDetailsData?) -> Void)
-    func getCartScreenData(response: @escaping (HomeData?) -> Void)
+    func getHomeScreenData(completion: @escaping (Result<HomeData, Error>) -> Void)
+    func getDetailsScreenData(response: @escaping (Result<ProductDetailsData, Error>) -> Void)
+    func getCartScreenData(response: @escaping (Result<CartData, Error>) -> Void)
 }
 
 
 
-class PhoneManager /*Networking*/ {
+class NetworkManager /*Networking*/ {
     
     var homePhones : [HomeData] = []
     
-  //Массивчик, в который будет погружаться все что мы парсим
-    
-////    var delegate: PhoneManagerDelegate? //свойство для делегирования по протоколу
-//
-//    let phoneURL = "https://run.mocky.io/v3/654bd15e-b121-49ba-a588-960956b15175"
-//
-//    
-//    func getJSON(with urlString : String) { // функция выполяющая запрос  через URLSession
-//        guard let url = URL(string: urlString) else {
-//                fatalError("guard URL failed")
-//            }
-//        URLSession.shared.dataTask(with: url) { data, response, error in
-//            if let data = data {
-//                guard let phone = try? JSONDecoder().decode(HomeVCData.self, from: data) else {
-//                    fatalError("Something wrong with JSON Decoder, code: \(error!)")
-//                }
-//               DispatchQueue.main.async {
-//                     self.phonesArray.append(phone)
-//                }
-//                print(self.phonesArray)
-//
-//            }
-//        }
-//        .resume()
-//    }
-//
     
     func getHomeScreenData(completion: @escaping (Result<HomeData, Error>) -> Void) {
         guard let url = URL(string: API.home) else {

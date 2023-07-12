@@ -6,14 +6,18 @@ import SwiftUI
 class HomeStoreCell: UICollectionViewCell {
     
     static let identifire = "CustomCellSection2"
-
-//    override init(frame: CGRect) {
-//        super.init(frame: frame)
-//    }
-//
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    var cellViewModel : HomeStoreCellViewModelProtocol? {
+        didSet {
+            mainImage.set(imageURL: cellViewModel?.pictureUrlString)
+            phoneTitleLabel.text = cellViewModel?.title
+            subtitleLabel.text = cellViewModel?.subtitle
+        }
+    }
     
     var mainImage : WebImageView = {
         let image = WebImageView()
@@ -104,6 +108,11 @@ class HomeStoreCell: UICollectionViewCell {
         ])
         
     }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
 }
 
 //struct ViewControllerProvider : PreviewProvider {

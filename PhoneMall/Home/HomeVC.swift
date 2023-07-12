@@ -7,38 +7,50 @@ import SwiftUI
 
 class HomeVC : UICollectionViewController {
     
-    var viewModel = HomeViewModel()
+    var viewModel = {
+        HomeViewModel()
+    }()
     
-    private var bestSellerCellViewModel : [BestSellerCellViewModel]?
+    let categoryViewModel = CategoryCellViewModel()
+    
+    func initViewModel() {
+        viewModel.getBestSeller()
+        
+        viewModel.getHomeStore()
+        
+        viewModel.reloadTableView = { [weak self] in
+            DispatchQueue.main.async {
+                self?.collectionView.reloadData()
+            }
+        }
+        
+    }
   
-    var phoneManager = PhoneManager()
-    var data : HomeData?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
         setupNavigationController()
-        self.collectionView.reloadData()
-        aa()
-        
+        //self.collectionView.reloadData()
+        initViewModel()
     }
     
-    let categoryViewModel = CategoryCellViewModel()
-    
-    func aa () {
-        phoneManager.getHomeScreenData(completion: { [weak self] data in
-            DispatchQueue.main.async {
-            switch data {
-            case .success(let data) :
-                self?.data = data
-                self?.collectionView.reloadData()
-            case .failure(let error) :
-                print("error")
-            }
-            }
-        })
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // Скрытие navigationBar только на этом экране
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Восстановление отображения navigationBar при переходе с этого экрана
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+    
+    
+  
     
     //MARK: - init comp layout
     init(){
@@ -60,7 +72,7 @@ class HomeVC : UICollectionViewController {
             let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
                 
-                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50)), elementKind: HeaderSelectCategory.headerID, alignment: .top)]
+                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(80)), elementKind: HeaderSelectCategory.headerID, alignment: .top)]
             return section
                 
             } else {
@@ -102,21 +114,7 @@ class HomeVC : UICollectionViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    lazy var filterButton : UIButton = {
-        let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "filter"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.isUserInteractionEnabled = true
-        button.addTarget(self, action: #selector(filtersButtonTapped), for: .touchUpInside)
-        return button
-    }()
-    
-    @objc func filtersButtonTapped() {
-         print ("/n/n filterButton was tapped /n/n")
-         let vc = MyCartVC()
-        vc.modalPresentationStyle = .popover
-         present(vc, animated: true)
-     }
+  
     
     func setupCollectionView() {
         collectionView.backgroundColor = UIColor(named: "snowyWhite")
@@ -133,9 +131,6 @@ class HomeVC : UICollectionViewController {
     func setupNavigationController() {
         navigationItem.hidesSearchBarWhenScrolling = true
         navigationController?.navigationBar.prefersLargeTitles = false
-        let barButton = UIBarButtonItem(customView: filterButton)
-        barButton.imageInsets = UIEdgeInsets(top: -15, left: 15, bottom: 0, right: 0)
-        navigationItem.rightBarButtonItem = barButton
     }
     
 }
@@ -153,8 +148,8 @@ extension HomeVC {
 
         switch section {
         case 0 : return viewModel.categoryCellViewModel.numberOfItemsInSection()
-        case 1 : return 3
-        default : return 4
+        case 1 : return viewModel.homeStoreCellViewModels.count
+        default : return viewModel.bestSellerCellViewModels.count
         }
     }
     
@@ -177,41 +172,30 @@ extension HomeVC {
                        cell.clipsToBounds = true
                        cell.layer.cornerRadius = 15
                        cell.backgroundColor = .brown
-                       // ячейка №0 в 1 секции
-                       if indexPath.row == 0 {
-                           cell.phoneTitleLabel.text! = EasyBestSellerData.titles[0]
-                           cell.subtitleLabel.text = EasyBestSellerData.subtitle
-                           cell.mainImage.image = EasyBestSellerData.picture[0]
-            
-                           //ячейка №1 в 1 секции
-                       } else if indexPath.row == 1 {
-                           cell.phoneTitleLabel.text! = EasyBestSellerData.titles[1]
-                           cell.subtitleLabel.text = EasyBestSellerData.subtitle
-                           cell.phoneTitleLabel.text = ""
-                           cell.mainImage.image = EasyBestSellerData.picture[1]
-                           //ячейка №2 в 1 секции
-                       } else {
-                           cell.phoneTitleLabel.text = EasyBestSellerData.titles[2]
-                           cell.subtitleLabel.text = EasyBestSellerData.subtitle
-                           cell.phoneTitleLabel.textColor = .black
-                           cell.mainImage.image = EasyBestSellerData.picture[2]
-                       }
-                       return cell
+//
+            let cellVM = viewModel.getHomeCellViewModel(at: indexPath)
+            cell.cellViewModel = cellVM
+            if indexPath.row == 1 {
+                cell.phoneTitleLabel.text = ""
+            }
+            return cell
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BestSellerCell.identifire, for: indexPath) as! BestSellerCell
                     cell.layer.cornerRadius = 15
                     cell.clipsToBounds = true
                     cell.backgroundColor = .white
-            
-            if let cellVM = bestSellerCellViewModel {
-               // cellVM.set(indexPath: indexPath)
-                cell.set(viewModel: cellVM[indexPath.row], indexPath: indexPath)
+            let cellVM = viewModel.getBestCellViewModel(at: indexPath)
+            cell.cellViewModel = cellVM
+            cell.updateFavoritesUI()
+            if indexPath.row == 3 {
+                cell.image.image = UIImage(named: "homeStoreMotorola")
             }
             return cell
         default:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifire, for: indexPath) as! CategoryCell
             let cellViewModel = categoryViewModel
             cell.set(viewModel: cellViewModel, indexPath: indexPath)
+            
             return cell
         }
     }
@@ -320,12 +304,9 @@ extension HomeVC {
             header.backgroundColor = .clear
             return header
         case HeaderSelectCategory.headerID:
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderSelectCategory.headerID, for: indexPath)
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderSelectCategory.headerID, for: indexPath) as! HeaderSelectCategory
             header.backgroundColor = .clear
-            header.addSubview(filterButton)
-            header.isUserInteractionEnabled = true
-            filterButton.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -35).isActive = true
-            filterButton.topAnchor.constraint(equalTo: header.topAnchor, constant: -20).isActive = true
+            header.delegate = self
             return header
         default:
             fatalError("Unexpected element kind: \(kind)")
@@ -334,6 +315,14 @@ extension HomeVC {
     }
 }
 
+extension HomeVC : ReusableViewDelegate {
+    func didTapButton() {
+        let newVC = MyCartVC()
+        present(newVC, animated: true, completion: nil)
+    }
+    
+    
+}
 
 
 //struct ViewControllerProvider : PreviewProvider {

@@ -8,12 +8,19 @@
 import Foundation
 import UIKit
 
+protocol ReusableViewDelegate: AnyObject {
+    func didTapButton()
+}
+
 class HeaderSelectCategory: UICollectionReusableView {
     
     static let headerID = "HeaderSelectCategory"
     
+    weak var delegate : ReusableViewDelegate?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.bringSubviewToFront(filterButton)
     }
     
     
@@ -46,12 +53,11 @@ class HeaderSelectCategory: UICollectionReusableView {
         return button
     }()
     
-//    @objc func filterButtonTapped() {
-//        print("Header")
-//        print(filterButton.state)
-//        delegate?.filtersButtonTapped()
-//    }
-//    
+    @objc func filtersButtonTapped() {
+        print("aaa")
+        delegate?.didTapButton()
+     }
+    
     lazy var filterButton : UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
@@ -61,6 +67,7 @@ class HeaderSelectCategory: UICollectionReusableView {
         button.isUserInteractionEnabled = true
         button.isEnabled = true
         button.setImage(UIImage(named: "filter"), for: .normal)
+        button.addTarget(self, action: #selector(filtersButtonTapped), for: .touchUpInside)
         return button
     }()
 
@@ -98,32 +105,32 @@ class HeaderSelectCategory: UICollectionReusableView {
         addSubview(locationLabel)
         addSubview(locationImage)
         addSubview(chooseLocationButton)
-        //addSubview(filterButton)
+        addSubview(filterButton)
         addSubview(seeMoreButton)
         addSubview(labelBestSeller)
       
         locationLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        locationLabel.bottomAnchor.constraint(equalTo: labelBestSeller.topAnchor, constant: -12).isActive = true
+        locationLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12).isActive = true
         
         locationImage.trailingAnchor.constraint(equalTo: locationLabel.leadingAnchor, constant: 5).isActive = true
-        locationImage.bottomAnchor.constraint(equalTo: labelBestSeller.topAnchor, constant: 1).isActive = true
+        locationImage.topAnchor.constraint(equalTo: topAnchor, constant: 12).isActive = true
         locationImage.frame.size = CGSize(width: 12, height: 14)
 
         
         chooseLocationButton.leadingAnchor.constraint(equalTo: locationLabel.trailingAnchor, constant: 8).isActive = true
-        chooseLocationButton.bottomAnchor.constraint(equalTo: labelBestSeller.topAnchor, constant: -1).isActive = true
+        chooseLocationButton.topAnchor.constraint(equalTo: topAnchor, constant: 20).isActive = true
         chooseLocationButton.frame.size = CGSize(width: 12, height: 7)
         
-//        filterButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -35).isActive = true
-//        filterButton.topAnchor.constraint(equalTo: topAnchor, constant: -21).isActive = true
-//        filterButton.frame.size = CGSize(width: 11, height: 13)
+        filterButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -35).isActive = true
+        filterButton.topAnchor.constraint(equalTo: topAnchor, constant: 18).isActive = true
+        filterButton.frame.size = CGSize(width: 11, height: 13)
 
 
         
         labelBestSeller.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12).isActive = true
-        labelBestSeller.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
+        labelBestSeller.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
         seeMoreButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
-        seeMoreButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        seeMoreButton.centerYAnchor.constraint(equalTo: labelBestSeller.centerYAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {
