@@ -4,7 +4,7 @@ import Foundation
 import UIKit
 import SwiftUI
 
-class ProductDetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
+class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +20,7 @@ class ProductDetailsVC : UICollectionViewController, UIGestureRecognizerDelegate
     
     // layout inizialization
     init(){
-        super.init(collectionViewLayout: ProductDetailsVC.createScrollableLayout())
+        super.init(collectionViewLayout: DetailsVC.createScrollableLayout())
     }
     
     // создаем Layout который будет туда сюда ходить
@@ -663,7 +663,7 @@ class ProductDetailsVC : UICollectionViewController, UIGestureRecognizerDelegate
     }
   
     func setupCollectionView () {
-        collectionView.register(ProductDetailsCell.self, forCellWithReuseIdentifier: ProductDetailsCell.identife)
+        collectionView.register(DetailsCell.self, forCellWithReuseIdentifier: DetailsCell.identife)
         collectionView.isScrollEnabled = false // выключает скролл по вертикали
     }
     
@@ -681,10 +681,10 @@ class ProductDetailsVC : UICollectionViewController, UIGestureRecognizerDelegate
 
 
 //MARK: - CollectionView Delegate
-extension ProductDetailsVC {
+extension DetailsVC {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductDetailsCell.identife, for: indexPath) as? ProductDetailsCell else { fatalError("Failed to get expected kind of reusable cell from the tableView. Expected type `ProductDetailsCustomCell`")}
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DetailsCell.identife, for: indexPath) as? DetailsCell else { fatalError("Failed to get expected kind of reusable cell from the tableView. Expected type `ProductDetailsCustomCell`")}
         cell.clipsToBounds = true
         cell.layer.cornerRadius = 10
         cell.addShadow()

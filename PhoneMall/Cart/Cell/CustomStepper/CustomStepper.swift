@@ -47,7 +47,7 @@ class CustomStepper : UIView {
 //MARK: - Init
     // инициализирует Степпер, типа viewDidLoad и дает ему значение 1
     init() {
-        counter = "1"
+        //counter = "1"
         super.init(frame: .zero)   // тут же ставим его без рамок
         setup()   // и тут же как во вьюДидЛоад ставим настройки
     }
@@ -68,16 +68,16 @@ class CustomStepper : UIView {
      
      // считает число для counter, увеличивает или уменьшает его
      func changeQuantity(by amount: Int) {
-         var quality = Int(counter)!
-         quality += amount
+         var quantity = Int(counter)!
+         quantity += amount
          let minValue = 0
-     if quality < minValue {
-     quality = 0
+     if quantity < minValue {
+     quantity = 0
          counter = "0"
      } else {
-         counter = "\(quality)"
+         counter = "\(quantity)"
      }
-     delegate?.decreaseNumber(cell: self, by: quality)
+     delegate?.decreaseNumber(cell: self, by: quantity)
      }
     
     // ну и сама функция, которая дает нашим кнопкам действия

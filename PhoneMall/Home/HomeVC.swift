@@ -288,7 +288,7 @@ extension HomeVC {
     
     // What will happen on click
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vc = ProductDetailsVC()
+        let vc = DetailsVC()
         navigationController?.pushViewController(vc, animated: true)
     }
     

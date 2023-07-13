@@ -1,7 +1,7 @@
 
 import UIKit
 
-class ProductDetailsCell: UICollectionViewCell {
+class DetailsCell: UICollectionViewCell {
     
     static let identife = "identifire"
     

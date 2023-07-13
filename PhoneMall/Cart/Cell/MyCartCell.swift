@@ -7,7 +7,7 @@ class MyCartCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
-        stepper.counter = "1"
+        stepper.counter = "2"
 
     }
     
