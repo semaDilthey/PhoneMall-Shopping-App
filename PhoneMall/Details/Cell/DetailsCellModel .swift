@@ -8,26 +8,16 @@
 import Foundation
  
 protocol DetailsCellModelProtocol {
-    var title: String { get }
-    var isFavorites: Bool { get set }
-    var price: Int { get }
-    var images: String { get }
+ 
+    var images: String? { get }
 }
 
 class DetailsCellModel : DetailsCellModelProtocol {
     
-    var title: String
+    var images: String?
     
-    var isFavorites: Bool
-    
-    var price: Int
-    
-    var images: String
-    
-    init(title: String, isFavorites: Bool, price: Int, images: String) {
-        self.title = title
-        self.isFavorites = isFavorites
-        self.price = price
+    init(images: String) {
+     
         self.images = images
     }
     

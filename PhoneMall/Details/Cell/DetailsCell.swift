@@ -5,6 +5,12 @@ class DetailsCell: UICollectionViewCell {
     
     static let identife = "identifire"
     
+    var viewModel : DetailsCellModelProtocol? {
+        didSet {
+            imageView.set(imageURL: viewModel?.images)
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -12,8 +18,8 @@ class DetailsCell: UICollectionViewCell {
     }
     
     
-    lazy var imageView : UIImageView = {
-        let image = UIImageView()
+    lazy var imageView : WebImageView = {
+        let image = WebImageView()
         image.image = UIImage(named: "homeStoreSamsungNote")
         image.translatesAutoresizingMaskIntoConstraints = false
         image.frame = bounds

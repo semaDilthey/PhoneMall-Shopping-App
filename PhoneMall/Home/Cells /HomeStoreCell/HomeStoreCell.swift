@@ -11,7 +11,7 @@ class HomeStoreCell: UICollectionViewCell {
         super.init(frame: frame)
     }
     
-    var cellViewModel : HomeStoreCellViewModelProtocol? {
+    var cellViewModel : HomeStoreCellModelProtocol? {
         didSet {
             mainImage.set(imageURL: cellViewModel?.pictureUrlString)
             phoneTitleLabel.text = cellViewModel?.title

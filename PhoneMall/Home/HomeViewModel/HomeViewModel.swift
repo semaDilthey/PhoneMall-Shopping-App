@@ -31,7 +31,7 @@ class HomeViewModel : HomeViewModelProtocol {
         }
     }
     
-    var homeStoreCellViewModels = [HomeStoreCellViewModelProtocol]() {
+    var homeStoreCellViewModels = [HomeStoreCellModelProtocol]() {
         didSet {
             reloadTableView?()
         }
@@ -52,7 +52,7 @@ class HomeViewModel : HomeViewModelProtocol {
             switch data {
             case .success(let data) :
                 self?.data = data
-                var arr = [HomeStoreCellViewModelProtocol]()
+                var arr = [HomeStoreCellModelProtocol]()
                 for item in data.homeStore {
                     arr.append((self?.createHomeStoreCellModel(data: item))!)
                 }
@@ -90,19 +90,19 @@ class HomeViewModel : HomeViewModelProtocol {
         return BestSellerCellViewModel(title: title, discountPrice: discountPrice, fullPrice: fullPrice, pictureUrlString: picture, isFavorites: isFavorites)
     }
     
-    func createHomeStoreCellModel(data: HomeStoreItem) -> HomeStoreCellViewModelProtocol {
+    func createHomeStoreCellModel(data: HomeStoreItem) -> HomeStoreCellModelProtocol {
         let title = data.title
         let subtitle = data.subtitle
         let picture = data.picture
         
-        return HomeStoreCellViewModel(title: title, subtitle: subtitle, picture: picture)
+        return HomeStoreCellModel(title: title, subtitle: subtitle, picture: picture)
     }
     
     func getBestCellViewModel(at indexPath: IndexPath) -> BestSellerCellViewModelProtocol {
         return bestSellerCellViewModels[indexPath.row]
     }
     
-    func getHomeCellViewModel(at indexPath: IndexPath) -> HomeStoreCellViewModelProtocol? {
+    func getHomeCellViewModel(at indexPath: IndexPath) -> HomeStoreCellModelProtocol? {
         guard indexPath.row < homeStoreCellViewModels.count else { return nil }
         return homeStoreCellViewModels[indexPath.row]
     }

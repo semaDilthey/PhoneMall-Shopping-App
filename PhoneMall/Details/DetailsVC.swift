@@ -15,8 +15,44 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
 
         setupGestureRecognizer()
         
+        initViewModel()
+        
+        //getDetailsPhones()
     }
+//
+//    var networking = NetworkManager()
+//    var data : ProductDetailsData?
+//
+//    func getDetailsPhones() {
+//        networking.getDetailsScreenData(completion: { [weak self] data in
+//            switch data {
+//            case .success(let data):
+//                self?.data = data
+//                var arr : [String] = []
+//                //print("IMAGES \(self?.data?.images)")
+//                for image in data.images {
+//                    arr.append(image)
+//                }
+//                print(arr.first)
+//            case .failure(let error):
+//                print("Error is: \(error)")
+//            }
+//        })
+//    }
+        
+    var viewModel = {
+        DetailsViewModel()
+    }()
     
+    func initViewModel() {
+        viewModel.getDetailsPhones()
+        
+        viewModel.reloadTableView = { [weak self] in
+            DispatchQueue.main.async {
+                self?.collectionView.reloadData()
+            }
+        }
+    }
     
     // layout inizialization
     init(){
@@ -675,19 +711,17 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
 
 
 
-
-
-
-
-
 //MARK: - CollectionView Delegate
 extension DetailsVC {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DetailsCell.identife, for: indexPath) as? DetailsCell else { fatalError("Failed to get expected kind of reusable cell from the tableView. Expected type `ProductDetailsCustomCell`")}
+        let cellVM = viewModel.getDetailsCellViewModel(at: indexPath) as? DetailsCellModelProtocol
+        cell.viewModel = cellVM
         cell.clipsToBounds = true
         cell.layer.cornerRadius = 10
         cell.addShadow()
+        print("Setting cell with indexPath: \(indexPath), cellVM: \(cellVM)")
         return cell
     }
     
@@ -696,7 +730,7 @@ extension DetailsVC {
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 9
+        return viewModel.detailsModel.count ?? 0
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

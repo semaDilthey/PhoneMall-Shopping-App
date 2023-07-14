@@ -7,13 +7,13 @@
 
 import Foundation
 
-protocol HomeStoreCellViewModelProtocol {
+protocol HomeStoreCellModelProtocol {
     var title: String? { get }
     var subtitle : String? { get }
     var pictureUrlString : String? { get }
 }
 
-class HomeStoreCellViewModel: HomeStoreCellViewModelProtocol {
+class HomeStoreCellModel: HomeStoreCellModelProtocol {
     var pictureUrlString: String?
     let title : String?
     let subtitle : String?
