@@ -3,20 +3,14 @@ import UIKit
 
 
 class MyCartCell: UITableViewCell {
-        
+    
+    static let identifire = "MyCartCell"
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
         stepper.counter = "2"
-
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
-    static let identifire = "MyCartCell"
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -24,8 +18,24 @@ class MyCartCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    lazy var phonePicture : UIImageView = {
-        let image = UIImageView()
+    var viewModel : MyCartCellModelProtocol? {
+        didSet {
+            phoneNameLabel.text = viewModel?.title
+            phonePicture.set(imageURL: viewModel?.picture)
+            phonePriceLabel.text = viewModel?.price
+        }
+    }
+    
+    let phoneNameLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .white
+        label.font = UIFont.markProFont(size: 25, weight: .medium)
+        return label
+    }()
+    
+    let phonePicture : WebImageView = {
+        let image = WebImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.clipsToBounds = true
         image.layer.cornerRadius = 10
@@ -34,15 +44,7 @@ class MyCartCell: UITableViewCell {
         return image
     }()
     
-    lazy var phoneNameLabel : UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .white
-        label.font = UIFont.markProFont(size: 25, weight: .medium)
-        return label
-    }()
-    
-    lazy var phonePriceLabel : UILabel = {
+    let phonePriceLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.markProFont(size: 20, weight: .medium)
@@ -109,6 +111,11 @@ class MyCartCell: UITableViewCell {
             phoneNameLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             phoneNameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
-            }
+    }
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
 }

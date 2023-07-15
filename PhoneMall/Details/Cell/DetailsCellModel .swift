@@ -9,14 +9,14 @@ import Foundation
  
 protocol DetailsCellModelProtocol {
  
-    var images: String? { get }
+    var images: [String]? { get }
 }
 
 class DetailsCellModel : DetailsCellModelProtocol {
     
-    var images: String?
+    var images: [String]?
     
-    init(images: String) {
+    init(images: [String]) {
      
         self.images = images
     }

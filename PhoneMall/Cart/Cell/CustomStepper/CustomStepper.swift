@@ -47,7 +47,6 @@ class CustomStepper : UIView {
 //MARK: - Init
     // инициализирует Степпер, типа viewDidLoad и дает ему значение 1
     init() {
-        //counter = "1"
         super.init(frame: .zero)   // тут же ставим его без рамок
         setup()   // и тут же как во вьюДидЛоад ставим настройки
     }
@@ -56,12 +55,10 @@ class CustomStepper : UIView {
         fatalError("init(coder:) has not been implemented")
     }
     //MARK: - Работа с функциями кнопок и counter-ом
-    // функция для #selecor, которая служит как action для кнопки и уменьшает значение counter на 1
     @objc func decreaseFunc() {
      changeQuantity(by: -1)
      }
     
-    // функция для #selecor, которая служит как action для кнопки и увеличивает значение counter на 1
     @objc func increaseFunc() {
      changeQuantity(by: 1)
      }

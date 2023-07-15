@@ -7,7 +7,7 @@ class DetailsCell: UICollectionViewCell {
     
     var viewModel : DetailsCellModelProtocol? {
         didSet {
-            imageView.set(imageURL: viewModel?.images)
+            imageView.set(imageURL: viewModel?.images?[0])
         }
     }
     

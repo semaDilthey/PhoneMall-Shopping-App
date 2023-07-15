@@ -16,29 +16,8 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         setupGestureRecognizer()
         
         initViewModel()
-        
-        //getDetailsPhones()
     }
-//
-//    var networking = NetworkManager()
-//    var data : ProductDetailsData?
-//
-//    func getDetailsPhones() {
-//        networking.getDetailsScreenData(completion: { [weak self] data in
-//            switch data {
-//            case .success(let data):
-//                self?.data = data
-//                var arr : [String] = []
-//                //print("IMAGES \(self?.data?.images)")
-//                for image in data.images {
-//                    arr.append(image)
-//                }
-//                print(arr.first)
-//            case .failure(let error):
-//                print("Error is: \(error)")
-//            }
-//        })
-//    }
+
         
     var viewModel = {
         DetailsViewModel()
@@ -128,7 +107,6 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     
     @objc func shopCartButtonPresentingVC() {
         navigationController?.pushViewController(MyCartVC(), animated: true)
-        
     }
     
     // Product details label that in the top center
@@ -201,13 +179,24 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     lazy var favButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "favIcon"), for: .normal)
+        button.setImage(UIImage(named: "heartEmpty"), for: .normal)
         button.layer.backgroundColor = UIColor.customDarkBlue?.cgColor
         button.layer.cornerRadius = 10
         button.widthAnchor.constraint(equalToConstant: 37).isActive = true
         button.heightAnchor.constraint(equalToConstant: 37).isActive = true
+        button.addTarget(self, action: #selector(didTappedFav), for: .touchUpInside)
         return button
     }()
+    
+    @objc func didTappedFav() {
+        favButton.isSelected = !favButton.isSelected
+        if favButton.isSelected {
+            favButton.setImage(UIImage(named: "heartFilled"), for: .normal)
+        } else {
+            favButton.setImage(UIImage(named: "heartEmpty"), for: .normal)
+        }
+        
+    }
     
     //MARK: - Second Level
     // Простой контейнер для удобства заполнения
@@ -730,13 +719,14 @@ extension DetailsVC {
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.detailsModel.count ?? 0
+        return /*viewModel.detailsModel.count ??*/ 3
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = MyCartVC()
         navigationController?.pushViewController(vc, animated: true)
-        //present(vc, animated: true, completion: nil)
+        present(vc, animated: true, completion: nil)
+     
     }
 }
 
