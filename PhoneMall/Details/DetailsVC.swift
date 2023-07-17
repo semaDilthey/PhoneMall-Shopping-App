@@ -719,13 +719,13 @@ extension DetailsVC {
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return /*viewModel.detailsModel.count ??*/ 3
+        return  viewModel.detailsModel.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+     
         let vc = MyCartVC()
         navigationController?.pushViewController(vc, animated: true)
-        present(vc, animated: true, completion: nil)
      
     }
 }

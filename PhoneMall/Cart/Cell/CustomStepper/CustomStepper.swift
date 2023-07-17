@@ -44,6 +44,7 @@ class CustomStepper : UIView {
            label.translatesAutoresizingMaskIntoConstraints = false
            return label
        }()
+    
 //MARK: - Init
     // инициализирует Степпер, типа viewDidLoad и дает ему значение 1
     init() {

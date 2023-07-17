@@ -25,7 +25,7 @@ class DetailsViewModel : DetailsViewModelProtocol {
     var detailsModel = [DetailsCellModelProtocol]() {
         didSet {
             reloadTableView?()
-            print(detailsModel[0].images)
+            
         }
     }
 
@@ -39,9 +39,9 @@ class DetailsViewModel : DetailsViewModelProtocol {
             case .success(let data):
                 self?.data = data
                 var arr = [DetailsCellModelProtocol]()
-                for i in data.images {
+                //for i in data.images {
                     arr.append(self?.createCellModel(data: data) as! DetailsCellModelProtocol)
-                }
+                //}
                 self?.detailsModel = arr
             case .failure(let error):
                 print("Error is: \(error)")

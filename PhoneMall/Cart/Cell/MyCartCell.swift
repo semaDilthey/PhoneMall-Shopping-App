@@ -22,7 +22,11 @@ class MyCartCell: UITableViewCell {
         didSet {
             phoneNameLabel.text = viewModel?.title
             phonePicture.set(imageURL: viewModel?.picture)
-            phonePriceLabel.text = viewModel?.price
+            if let price = viewModel?.price {
+                phonePriceLabel.text = "$"+String(price)+".00"
+            } else {
+                phonePriceLabel.text = "No data"
+            }
         }
     }
     
@@ -30,7 +34,7 @@ class MyCartCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .white
-        label.font = UIFont.markProFont(size: 25, weight: .medium)
+        label.font = UIFont.markProFont(size: 18, weight: .medium)
         return label
     }()
     
@@ -70,6 +74,7 @@ class MyCartCell: UITableViewCell {
     
     func setupUI() {
         contentView.backgroundColor = .customDarkBlue
+        
         contentView.addSubview(phonePicture)
                 phonePicture.anchor(top: contentView.topAnchor,
                                         leading: contentView.leadingAnchor,
@@ -78,27 +83,28 @@ class MyCartCell: UITableViewCell {
                                         padding: UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 0))
                 phonePicture.widthAnchor.constraint(equalTo: phonePicture.heightAnchor).isActive = true
                 
-                contentView.addSubview(phoneNameLabel)
-//                phoneNameLabel.anchor(top: contentView.topAnchor,
-//                                        leading: image.trailingAnchor,
-//                                        bottom: contentView.centerYAnchor,
-//                                        trailing: nil,
-//                                        padding: UIEdgeInsets(top: 2, left: 16, bottom: 0, right: 0))
-//                phoneNameLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.45).isActive = true
+        contentView.addSubview(phoneNameLabel)
+                phoneNameLabel.anchor(top: contentView.topAnchor,
+                                        leading: phonePicture.trailingAnchor,
+                                        bottom: contentView.centerYAnchor,
+                                        trailing: nil,
+                                        padding: UIEdgeInsets(top: 2, left: 16, bottom: 0, right: 0))
+                phoneNameLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.45).isActive = true
                 
-                contentView.addSubview(phonePriceLabel)
-                phonePriceLabel.anchor(top: phoneNameLabel.bottomAnchor,
-                                  leading: phoneNameLabel.leadingAnchor,
-                                  bottom: contentView.bottomAnchor,
-                                  trailing: nil,
-                                  padding: UIEdgeInsets(top: 4, left: 0, bottom: 8, right: 0),
-                                  size: CGSize(width: 100, height: 0))
+        contentView.addSubview(phonePriceLabel)
                 
-                contentView.addSubview(trashButton)
+//                phonePriceLabel.anchor(top: phoneNameLabel.bottomAnchor,
+//                                  leading: phoneNameLabel.leadingAnchor,
+//                                  bottom: contentView.bottomAnchor,
+//                                  trailing: nil,
+//                                  padding: UIEdgeInsets(top: 4, left: 0, bottom: 8, right: 0),
+//                                  size: CGSize(width: 100, height: 0))
+                
+        contentView.addSubview(trashButton)
                 trashButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
                 trashButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16).isActive = true
                 
-                contentView.addSubview(stepper)
+        contentView.addSubview(stepper)
                 stepper.anchor(top: contentView.topAnchor,
                                  leading: nil,
                                  bottom: contentView.bottomAnchor,
@@ -108,8 +114,8 @@ class MyCartCell: UITableViewCell {
         
         
         NSLayoutConstraint.activate([
-            phoneNameLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            phoneNameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            phonePriceLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            phonePriceLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
     

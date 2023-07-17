@@ -8,6 +8,7 @@ import SwiftUI
 
 class MyCartVC : UIViewController {
     
+    let viewModel = MyCartViewModel()
     // проперти для кнопки, если true, то она грузится, если false, то просто Чекаут
     //var checkingOut = false
     
@@ -24,7 +25,20 @@ class MyCartVC : UIViewController {
         
         navigationItem.hidesBackButton = true
         backButtonSetup()
+        
+        initViewModel()
         }
+    
+    func initViewModel() {
+        viewModel.getCartPhones()
+        
+        viewModel.reloadTableView = { [weak self] in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+            }
+            
+        }
+    }
     
     // NavBar
     lazy var backButton : UIButton = {
@@ -283,14 +297,19 @@ class MyCartVC : UIViewController {
 extension MyCartVC : UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return viewModel.cartPhonesModel.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MyCartCell.identifire, for: indexPath) as! MyCartCell
         cell.clipsToBounds = true
-        cell.phonePicture.image = EasyHomeStoreData.picture[1]
-        cell.phoneNameLabel.text = "Phone Name"
-        cell.phonePriceLabel.text = "$1000"
+        if let cellModel = viewModel.getMyCartCellViewModel(at: indexPath) {
+            cell.viewModel = cellModel
+            print("printe : \(cell.viewModel?.price)")
+
+        }
+//        cell.phonePicture.image = EasyHomeStoreData.picture[1]
+//        cell.phoneNameLabel.text = "Phone Name"
+//        cell.phonePriceLabel.text = "$1000"
         return cell
     }
 }
