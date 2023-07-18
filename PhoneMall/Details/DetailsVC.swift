@@ -23,6 +23,7 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         DetailsViewModel()
     }()
     
+    
     func initViewModel() {
         viewModel.getDetailsPhones()
         
@@ -369,7 +370,7 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     
     
     //добавляет Label Add to Cart в кнопке
-    lazy var addToCartLabel: UILabel = {
+    var addToCartLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = .clear
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -381,7 +382,7 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         return label
     }()
     // добавляет цену в кнопке
-    lazy var priceLabel: UILabel = {
+    var priceLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = .clear
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -403,6 +404,19 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         button.layer.shouldRasterize = false
         return button
     }()
+    
+//    @objc func addToCartButtonTapped () {
+//        var modelForIndexPath : ModelForCartProtocol?
+//        var selectedIndex: IndexPath?
+//        if let index = viewModel.selectedIndexPath {
+//            selectedIndex = index
+//        }
+//        modelForIndexPath = viewModel.getModelForCart(at: selectedIndex?)
+//
+//        if let indexPath = viewModel.selectedIndexPath {
+//            viewModel.delegate?.sendModelToCart(model: model, at: viewModel.selectedIndexPath)
+//        }
+//    }
     
     // Чтобы не  писать кучу строк кода, попробую написать функцию 1)создающую имейджВьюхи и 2)текстовые лейблы
     
@@ -706,6 +720,7 @@ extension DetailsVC {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DetailsCell.identife, for: indexPath) as? DetailsCell else { fatalError("Failed to get expected kind of reusable cell from the tableView. Expected type `ProductDetailsCustomCell`")}
         let cellVM = viewModel.getDetailsCellViewModel(at: indexPath) as? DetailsCellModelProtocol
+        viewModel.selectedIndexPath = indexPath
         cell.viewModel = cellVM
         cell.clipsToBounds = true
         cell.layer.cornerRadius = 10

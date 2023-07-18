@@ -16,7 +16,17 @@ protocol DetailsViewModelProtocol {
     func getDetailsCellViewModel(at: IndexPath) -> DetailsCellModelProtocol?
 }
 
+
+protocol DetailsToMyCartDelegate: AnyObject {
+    func sendModelToCart(model: ModelForCartProtocol, at indexPath: IndexPath) -> MyCartCellModelProtocol?
+      
+}
+
+
+
 class DetailsViewModel : DetailsViewModelProtocol {
+    
+    var delegate : DetailsToMyCartDelegate?
     
     var data : ProductDetailsData?
     
@@ -25,9 +35,16 @@ class DetailsViewModel : DetailsViewModelProtocol {
     var detailsModel = [DetailsCellModelProtocol]() {
         didSet {
             reloadTableView?()
-            
         }
     }
+    
+    var modelForCart = [ModelForCartProtocol]() {
+        didSet {
+            reloadTableView?()
+        }
+    }
+    
+    var selectedIndexPath: IndexPath?
 
     var reloadTableView: (() -> Void)?
     
@@ -38,15 +55,38 @@ class DetailsViewModel : DetailsViewModelProtocol {
             switch data {
             case .success(let data):
                 self?.data = data
-                var arr = [DetailsCellModelProtocol]()
-                //for i in data.images {
-                    arr.append(self?.createCellModel(data: data) as! DetailsCellModelProtocol)
-                //}
-                self?.detailsModel = arr
+                var modelDetails = [DetailsCellModelProtocol]()
+                var modelForCart = [ModelForCartProtocol]()
+                
+                    modelDetails.append(self?.createCellModel(data: data) as! DetailsCellModelProtocol)
+                    self?.detailsModel = modelDetails
+
+                   // modelForCart.append(self?.createModelForCart(data: data) as! ModelForCartProtocol)
+                   // self?.modelForCart = modelForCart
             case .failure(let error):
                 print("Error is: \(error)")
             }
         })
+    }
+    
+    // создаем модель которую будем передавать в cart
+//    func createModelForCart(data: ProductDetailsData) -> ModelForCartProtocol? {
+//        let price = String(data.price)
+//        let title = data.title
+//        let picture : String
+//        for image in data.images {
+//            picture = image
+//        }
+//        return ModelForCart(price: price, title: title, picture: picture)
+//    }
+    
+    func getModelForCart(at indexPath: IndexPath) -> ModelForCartProtocol? {
+        guard let selectedIndexPathRow = selectedIndexPath?.row else { return nil }
+        if selectedIndexPathRow < modelForCart.count {
+            return modelForCart[selectedIndexPathRow]
+        } else {
+            return nil
+        }
     }
     
     func createCellModel(data: ProductDetailsData) -> DetailsCellModelProtocol? {

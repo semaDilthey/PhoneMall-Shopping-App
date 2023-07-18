@@ -9,35 +9,33 @@ class MyCartCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
-        stepper.counter = "2"
+        stepper.counter = "1"
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
     
     var viewModel : MyCartCellModelProtocol? {
         didSet {
             phoneNameLabel.text = viewModel?.title
             phonePicture.set(imageURL: viewModel?.picture)
+            
             if let price = viewModel?.price {
-                phonePriceLabel.text = "$"+String(price)+".00"
+                        self.phonePriceLabel.text = ("$"+String(price)+".00")
             } else {
                 phonePriceLabel.text = "No data"
             }
         }
     }
     
-    let phoneNameLabel : UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .white
-        label.font = UIFont.markProFont(size: 18, weight: .medium)
-        return label
-    }()
+    func updatePrice(by value: Int) {
+        if let price = viewModel?.price {
+            phonePriceLabel.text = "$"+String(value * price)+".00"
+        } else {
+            phonePriceLabel.text = "No data"
+
+        }
+    }
     
+
     let phonePicture : WebImageView = {
         let image = WebImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
@@ -48,10 +46,20 @@ class MyCartCell: UITableViewCell {
         return image
     }()
     
+    let phoneNameLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .white
+        label.numberOfLines = 0
+        label.sizeToFit()
+        label.font = UIFont.markProFont(size: 21, weight: .medium)
+        return label
+    }()
+    
     let phonePriceLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.markProFont(size: 20, weight: .medium)
+        label.font = UIFont.markProFont(size: 18, weight: .medium)
         label.textColor = .customOrange
         return label
     }()
@@ -92,13 +100,9 @@ class MyCartCell: UITableViewCell {
                 phoneNameLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.45).isActive = true
                 
         contentView.addSubview(phonePriceLabel)
-                
-//                phonePriceLabel.anchor(top: phoneNameLabel.bottomAnchor,
-//                                  leading: phoneNameLabel.leadingAnchor,
-//                                  bottom: contentView.bottomAnchor,
-//                                  trailing: nil,
-//                                  padding: UIEdgeInsets(top: 4, left: 0, bottom: 8, right: 0),
-//                                  size: CGSize(width: 100, height: 0))
+                phonePriceLabel.leadingAnchor.constraint(equalTo: phoneNameLabel.leadingAnchor).isActive = true
+                phonePriceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10).isActive = true
+               
                 
         contentView.addSubview(trashButton)
                 trashButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
@@ -112,11 +116,6 @@ class MyCartCell: UITableViewCell {
                                  padding: UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 24),
                                  size: CGSize(width: 26, height: 0))
         
-        
-        NSLayoutConstraint.activate([
-            phonePriceLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            phonePriceLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
-        ])
     }
     
     

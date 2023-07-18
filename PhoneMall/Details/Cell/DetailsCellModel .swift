@@ -8,9 +8,16 @@
 import Foundation
  
 protocol DetailsCellModelProtocol {
- 
     var images: [String]? { get }
 }
+
+
+protocol ModelForCartProtocol {
+    var price: String? { get }
+    var title: String? { get }
+    var picture: String? { get }
+}
+
 
 class DetailsCellModel : DetailsCellModelProtocol {
     
@@ -20,5 +27,16 @@ class DetailsCellModel : DetailsCellModelProtocol {
      
         self.images = images
     }
+    
+}
+
+
+struct ModelForCart: ModelForCartProtocol {
+    
+    var price: String?
+    
+    var title: String?
+    
+    var picture: String?
     
 }

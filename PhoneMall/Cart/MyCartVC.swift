@@ -5,7 +5,6 @@ import UIKit
 import SwiftUI
 
 
-
 class MyCartVC : UIViewController {
     
     let viewModel = MyCartViewModel()
@@ -15,7 +14,7 @@ class MyCartVC : UIViewController {
     var checkingOut : Bool {
         checkoutButton.isTouchInside ? true : false
     }
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +35,6 @@ class MyCartVC : UIViewController {
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
             }
-            
         }
     }
     
@@ -302,14 +300,13 @@ extension MyCartVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MyCartCell.identifire, for: indexPath) as! MyCartCell
         cell.clipsToBounds = true
+        cell.stepper.updatePriceClosure = { [weak self] value in
+            cell.updatePrice(by: value)
+        }
+        
         if let cellModel = viewModel.getMyCartCellViewModel(at: indexPath) {
             cell.viewModel = cellModel
-            print("printe : \(cell.viewModel?.price)")
-
         }
-//        cell.phonePicture.image = EasyHomeStoreData.picture[1]
-//        cell.phoneNameLabel.text = "Phone Name"
-//        cell.phonePriceLabel.text = "$1000"
         return cell
     }
 }

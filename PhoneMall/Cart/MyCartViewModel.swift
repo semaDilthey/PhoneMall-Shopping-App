@@ -8,15 +8,32 @@
 import Foundation
 
 protocol MyCartViewModelProtocol {
-    
     var reloadTableView: (() -> Void)? { get set }
-    
     func getCartPhones()
-    
     func getMyCartCellViewModel(at: IndexPath) -> MyCartCellModelProtocol?
+    func createCellModel(data: BasketCartData) -> MyCartCellModelProtocol?
 }
 
-class MyCartViewModel: MyCartViewModelProtocol {
+protocol MyCartCellProtocol {
+    func removeCell(at indexPath: IndexPath)
+    func updateCellPrice()
+    func getTotalPrice()
+}
+
+class MyCartViewModel: MyCartViewModelProtocol, MyCartCellProtocol {
+    
+    func removeCell(at indexPath: IndexPath) {
+        
+    }
+    
+    func updateCellPrice(){
+        
+    }
+    
+    func getTotalPrice() {
+        
+    }
+    
     
     var data : CartData?
     var networking = NetworkManager()
@@ -26,6 +43,8 @@ class MyCartViewModel: MyCartViewModelProtocol {
             reloadTableView?()
         }
     }
+    
+    //MARK: - MyCartViewModelProtocol
     
     var reloadTableView: (() -> Void)?
     
@@ -63,3 +82,4 @@ class MyCartViewModel: MyCartViewModelProtocol {
     
     
 }
+

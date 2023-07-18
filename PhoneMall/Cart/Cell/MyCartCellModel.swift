@@ -8,7 +8,7 @@ import Foundation
 protocol MyCartCellModelProtocol {
     
     var title : String? { get }
-    var price : Int? { get }
+    var price : Int? { get set }
     var picture : String? { get }
     //var counter : String? { get }  // счетчик товара на +/-
     

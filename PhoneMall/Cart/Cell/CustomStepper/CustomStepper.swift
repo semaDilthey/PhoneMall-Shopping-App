@@ -11,15 +11,19 @@ protocol StepperDelegate {
 //MARK: - CustomStepper settings
 class CustomStepper : UIView {
     
+    var updatePriceClosure: ((Int) -> Void)?
+    
     var delegate : StepperDelegate? // делегируем
+    
+    var viewModel: MyCartCellModelProtocol?
     
     // вот эту хуйню надо разобрать
     var counter: String = "1" {
            didSet {
-               countLabel.text = counter //ну тут текст в степпере должен меняться в зависиомсти от значения counter. А counter откуда берем? 
+               countLabel.text = counter //ну тут текст в степпере должен меняться в зависиомсти от значения counter. А counter откуда берем?
            }
        }
-       
+           
        private let plusButton: UIButton = {
            let button = UIButton()
            button.setTitle("+", for: .normal)
@@ -74,6 +78,7 @@ class CustomStepper : UIView {
          counter = "0"
      } else {
          counter = "\(quantity)"
+         updatePriceClosure?(quantity)
      }
      delegate?.decreaseNumber(cell: self, by: quantity)
      }
