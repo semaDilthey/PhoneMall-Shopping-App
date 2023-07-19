@@ -82,7 +82,7 @@ class CustomStepper : UIView {
      }
      delegate?.decreaseNumber(cell: self, by: quantity)
      }
-    
+    //
     // ну и сама функция, которая дает нашим кнопкам действия
     func counterInProgress() {
     plusButton.addTarget(self, action: #selector(increaseFunc), for: .touchUpInside)
