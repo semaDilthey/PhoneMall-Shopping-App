@@ -7,63 +7,113 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
-class FilterViewController : UIPresentationController {
-    var blurEffectView = UIVisualEffectView()
-    var tapGestureRecognizer : UITapGestureRecognizer = UITapGestureRecognizer()
+class FilterViewController : UIViewController {
     
-    override init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?) {
-        let blurEffect = UIBlurEffect(style: .dark)
-        blurEffectView = UIVisualEffectView(effect: blurEffect)
-        super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
-        tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismiss))
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        self.blurEffectView.isUserInteractionEnabled = true
-        self.blurEffectView.addGestureRecognizer(tapGestureRecognizer)
+    var viewModel : FilterViewModelProtocol?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .systemPink
+        //self.view = UIView(frame: CGRect(x: 0, y: 500, width: self.view.frame.width, height: 400))
+        setupUI()
     }
     
-    override func containerViewWillLayoutSubviews() {
-        super.containerViewWillLayoutSubviews()
+    
+    private lazy var closeButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .customDarkBlue
+        button.setImage(UIImage(named: "x"), for: .normal)
+        button.layer.cornerRadius = 10
+        return button
+    }()
+    
+    private lazy var doneButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .customOrange
+        button.setTitle("Done", for: .normal)
+        button.titleLabel?.font = UIFont.markProFont(size: 20, weight: .medium)
+        button.titleLabel?.textAlignment = .center
+        button.layer.cornerRadius = 10
+        return button
+    }()
+    
+    lazy var pricePicker : UIPickerView = {
+        let picker = UIPickerView()
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        return picker
+    }()
+    
+    lazy var namePicker : UIPickerView = {
+        let picker = UIPickerView()
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        return picker
+    }()
+    
+    lazy var sizePicker : UIPickerView = {
+        let picker = UIPickerView()
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        return picker
+    }()
+    
+    private let label : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.backgroundColor = .clear
+        label.text = "Filter options"
+        label.font = UIFont.markProFont(size: 20, weight: .medium)
+        label.textColor = .customDarkBlue
+        return label
+    }()
+    
+    func setupUI() {
+        view.addSubview(closeButton)
+        view.addSubview(doneButton)
+        view.addSubview(label)
+        view.addSubview(pricePicker)
+        view.addSubview(namePicker)
+        view.addSubview(sizePicker)
         
-        presentedView!.layer.cornerRadius = 10
+        closeButton.anchor(top: view.topAnchor,
+                           leading: view.leadingAnchor,
+                           bottom: nil,
+                           trailing: nil,
+                           padding: UIEdgeInsets(top: 24, left: 44, bottom: 0, right: 0),
+                           size: CGSize(width: 37, height: 37))
+        
+        doneButton.anchor(top: view.topAnchor,
+                           leading: nil,
+                           bottom: nil,
+                          trailing: view.trailingAnchor,
+                           padding: UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 20),
+                           size: CGSize(width: 86, height: 37))
+        
+        label.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        label.centerYAnchor.constraint(equalTo: doneButton.centerYAnchor).isActive = true
+        
+        pricePicker.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        pricePicker.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        namePicker.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        namePicker.topAnchor.constraint(equalTo: pricePicker.topAnchor, constant: 50).isActive = true
+        
+        sizePicker.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        sizePicker.topAnchor.constraint(equalTo: namePicker.topAnchor, constant: 50).isActive = true
+        
+        
     }
-
-    override func containerViewDidLayoutSubviews() {
-        super.containerViewDidLayoutSubviews()
-        self.presentedView?.frame = frameOfPresentedViewInContainerView
-        blurEffectView.frame = containerView!.bounds
-    }
-    
-    @objc func dismiss(){
-            self.presentedViewController.dismiss(animated: true, completion: nil)
-        }
-    
-    override var frameOfPresentedViewInContainerView: CGRect{
-            return CGRect(origin: CGPoint(x: 0, y: self.containerView!.frame.height/2), size: CGSize(width: self.containerView!.frame.width, height: self.containerView!.frame.height/2))
-        }
-        override func dismissalTransitionWillBegin() {
-            self.presentedViewController.transitionCoordinator?.animate(alongsideTransition: { (UIViewControllerTransitionCoordinatorContext) in
-                self.blurEffectView.alpha = 0
-            }, completion: { (UIViewControllerTransitionCoordinatorContext) in
-                self.blurEffectView.removeFromSuperview()
-            })
-        }
-    
-        override func presentationTransitionWillBegin() {
-            self.blurEffectView.alpha = 0
-            self.containerView?.addSubview(blurEffectView)
-            self.presentedViewController.transitionCoordinator?.animate(alongsideTransition: { (UIViewControllerTransitionCoordinatorContext) in
-                self.blurEffectView.alpha = 1
-            }, completion: { (UIViewControllerTransitionCoordinatorContext) in
-
-            })
-        }
 }
 
-extension UIViewControllerTransitioningDelegate {
-    
-    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        return FilterViewController(presentedViewController: presented, presenting: presenting)
+
+
+
+
+
+struct ViewControllerProvider : PreviewProvider {
+    static var previews: some View {
+        FilterViewController().showPreview()
     }
-    
 }

@@ -312,8 +312,8 @@ extension MyCartVC : UITableViewDelegate, UITableViewDataSource {
 }
 
 
-struct ViewControllerProvider : PreviewProvider {
-    static var previews: some View {
-        MyCartVC().showPreview()
-    }
-}
+//struct ViewControllerProvider : PreviewProvider {
+//    static var previews: some View {
+//        MyCartVC().showPreview()
+//    }
+//}

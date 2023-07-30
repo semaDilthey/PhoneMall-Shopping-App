@@ -38,6 +38,8 @@ class CategoryCellViewModel : CommonCellViewModel {
         index = indexPath.row
     }
     
+    
+    
 
     func numberOfSections() -> Int {
         1

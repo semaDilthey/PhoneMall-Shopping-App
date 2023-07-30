@@ -33,6 +33,7 @@
 		3F4A8EFB28B3B2C700B5E646 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F4A8EFA28B3B2C700B5E646 /* NetworkManager.swift */; };
 		3F5510882A4605CD00C51E05 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5510872A4605CD00C51E05 /* API.swift */; };
 		3F5B2BFA29AFA2F900E8F0CC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F5B2BF929AFA2F900E8F0CC /* Launch Screen.storyboard */; };
+		3F61A96E2A73DE1400C15C23 /* FilterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F61A96D2A73DE1400C15C23 /* FilterViewModel.swift */; };
 		3F69B22C299EA10500372CF8 /* MyCartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F69B22B299EA10500372CF8 /* MyCartCell.swift */; };
 		3F69B22F299ECCC200372CF8 /* CustomStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F69B22E299ECCC200372CF8 /* CustomStepper.swift */; };
 		3F69B231299EDAAA00372CF8 /* extension+UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F69B230299EDAAA00372CF8 /* extension+UIView.swift */; };
@@ -84,6 +85,7 @@
 		3F4A8EFA28B3B2C700B5E646 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		3F5510872A4605CD00C51E05 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		3F5B2BF929AFA2F900E8F0CC /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		3F61A96D2A73DE1400C15C23 /* FilterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewModel.swift; sourceTree = "<group>"; };
 		3F69B22B299EA10500372CF8 /* MyCartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCartCell.swift; sourceTree = "<group>"; };
 		3F69B22E299ECCC200372CF8 /* CustomStepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStepper.swift; sourceTree = "<group>"; };
 		3F69B230299EDAAA00372CF8 /* extension+UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "extension+UIView.swift"; sourceTree = "<group>"; };
@@ -174,6 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				3F231D632A4CBE170073A844 /* FilterViewController.swift */,
+				3F61A96D2A73DE1400C15C23 /* FilterViewModel.swift */,
 			);
 			path = Filter;
 			sourceTree = "<group>";
@@ -445,6 +448,7 @@
 				3F231D682A4CBE170073A844 /* HomeStoreCell.swift in Sources */,
 				3F26697D29C33ED6005D93F3 /* extension+UIViewController.swift in Sources */,
 				3F231D752A4CD39B0073A844 /* BestSellerCellViewModel.swift in Sources */,
+				3F61A96E2A73DE1400C15C23 /* FilterViewModel.swift in Sources */,
 				3F4A8EDD28AFC01E00B5E646 /* AppDelegate.swift in Sources */,
 				3F231D6D2A4CBE170073A844 /* FilterViewController.swift in Sources */,
 				3F02EB4A29E04CD600EAA3E0 /* MyCartCellModel.swift in Sources */,

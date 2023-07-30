@@ -199,97 +199,22 @@ extension HomeVC {
             return cell
         }
     }
-    
-//    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//// ячейки в 0 секции
-//        if indexPath.section == 0 {
-//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifire, for: indexPath) as! CategoryCell
-//            cell.clipsToBounds = true
-//            //cell.layer.cornerRadius = cell.frame.width/2
-//            if indexPath.row == 0 {
-//                cell.image.image = UIImage(named: "phonesCircle")
-//                cell.label.text = "Phones"
-//                cell.label.textColor = UIColor(named: "customOrange")
-//                cell.view.backgroundColor = UIColor(named: "customOrange")
-//                //cell.view.backgroundColor = UIColor(named: "customOrange")
-//            } else if indexPath.row == 1 {
-//                cell.image.image = UIImage(named: "computerCircle")
-//                cell.label.text = "Computer"
-//                //cell.view.backgroundColor = .white
-//            } else if indexPath.row == 2 {
-//                cell.image.image = UIImage(named: "healthCircle")
-//                cell.label.text = "Health"
-//                //cell.view.backgroundColor = .white
-//            } else if indexPath.row == 3 {
-//                cell.image.image = UIImage(named: "booksCircle")
-//                cell.label.text = "Books"
-//                //cell.view.backgroundColor = .white
-//            }
-//            return cell
-//            // ячейки в 1 секции
-//        } else if indexPath.section == 1 {
-//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeStoreCell.identifire, for: indexPath) as! HomeStoreCell
-//            cell.clipsToBounds = true
-//            cell.layer.cornerRadius = 15
-//            cell.backgroundColor = .brown
-//            // ячейка №0 в 1 секции
-//            if indexPath.row == 0 {
-//                cell.phoneTitleLabel.text! = EasyBestSellerData.titles[0]
-//                cell.subtitleLabel.text = EasyBestSellerData.subtitle
-//                cell.mainImage.image = EasyBestSellerData.picture[0]
-//                //ячейка №1 в 1 секции
-//            } else if indexPath.row == 1 {
-//                cell.phoneTitleLabel.text! = EasyBestSellerData.titles[1]
-//                cell.subtitleLabel.text = EasyBestSellerData.subtitle
-//                cell.phoneTitleLabel.text = ""
-//                cell.mainImage.image = EasyBestSellerData.picture[1]
-//                //ячейка №2 в 1 секции
-//            } else {
-//                cell.phoneTitleLabel.text = EasyBestSellerData.titles[2]
-//                cell.subtitleLabel.text = EasyBestSellerData.subtitle
-//                cell.phoneTitleLabel.textColor = .black
-//                cell.mainImage.image = EasyBestSellerData.picture[2]
-//            }
-//            return cell
-//            //ячейки во 2 секции
-//        } else {
-//            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BestSellerCell.identifire, for: indexPath) as! BestSellerCell
-//            cell.layer.cornerRadius = 15
-//            cell.clipsToBounds = true
-//            cell.backgroundColor = .white
-//            //cell.set(viewModel: bestSellerCellViewModel!)
-//            if indexPath.row == 0 {
-//                cell.image.image = EasyHomeStoreData.picture[1]
-//                cell.discountPriceLabel.text = EasyHomeStoreData.discountPrice[1] + "$"
-//                cell.nameLabel.text = EasyHomeStoreData.titles[1]
-//                cell.priceLabel.text = EasyHomeStoreData.priceWithoutDiscount[1] + "$"
-//            } else if indexPath.row == 1 {
-//                cell.image.image = EasyHomeStoreData.picture[0]
-//                cell.discountPriceLabel.text = EasyHomeStoreData.discountPrice[0] + "$"
-//                cell.nameLabel.text = EasyHomeStoreData.titles[0]
-//                cell.priceLabel.text = EasyHomeStoreData.priceWithoutDiscount[0] + "$"
-//            } else if indexPath.row == 2 {
-//                cell.image.image = EasyHomeStoreData.picture[2]
-//                cell.discountPriceLabel.text = EasyHomeStoreData.discountPrice[2] + "$"
-//                cell.nameLabel.text = EasyHomeStoreData.titles[2]
-//                cell.priceLabel.text = EasyHomeStoreData.priceWithoutDiscount[2] + "$"
-//            } else {
-//                cell.image.image = EasyHomeStoreData.picture[3]
-//                cell.discountPriceLabel.text = EasyHomeStoreData.discountPrice[3] + "$"
-//                cell.nameLabel.text = EasyHomeStoreData.titles[3]
-//                cell.priceLabel.text = EasyHomeStoreData.priceWithoutDiscount[3] + "$"
-//            }
-//            return cell
-//        }
-//
-//    }
 
     
     
     // What will happen on click
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifire, for: indexPath) as! CategoryCell
+//        let sectins = indexPath.section
+//        if sectins == 0{
+//            switch indexPath.row {
+//            case 0: cell.view.backgroundColor = .purple
+//            default:
+//                cell.view.backgroundColor = .customOrange
+//            }
+//        }
         let vc = DetailsVC()
-        navigationController?.pushViewController(vc, animated: true)
+            navigationController?.pushViewController(vc, animated: true)
     }
     
     //reusable view
@@ -317,7 +242,7 @@ extension HomeVC {
 
 extension HomeVC : ReusableViewDelegate {
     func didTapButton() {
-        let newVC = MyCartVC()
+        let newVC = FilterViewController()
         present(newVC, animated: true, completion: nil)
     }
     

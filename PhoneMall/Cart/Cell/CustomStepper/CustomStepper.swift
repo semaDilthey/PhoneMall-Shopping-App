@@ -11,6 +11,12 @@ protocol StepperDelegate {
 //MARK: - CustomStepper settings
 class CustomStepper : UIView {
     
+    init() {
+        super.init(frame: .zero)   // тут же ставим его без рамок
+        setup()
+        counterInProgress()
+    }
+    
     var updatePriceClosure: ((Int) -> Void)?
     
     var delegate : StepperDelegate? // делегируем
@@ -49,16 +55,7 @@ class CustomStepper : UIView {
            return label
        }()
     
-//MARK: - Init
-    // инициализирует Степпер, типа viewDidLoad и дает ему значение 1
-    init() {
-        super.init(frame: .zero)   // тут же ставим его без рамок
-        setup()   // и тут же как во вьюДидЛоад ставим настройки
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    
     //MARK: - Работа с функциями кнопок и counter-ом
     @objc func decreaseFunc() {
      changeQuantity(by: -1)
@@ -91,7 +88,6 @@ class CustomStepper : UIView {
      
     //MARK: - Констрейнты для всего этого добра
     private func setup() {
-            counterInProgress()
         
            backgroundColor = UIColor(red: 40/255, green: 40/255, blue: 67/255, alpha: 1)
            
@@ -119,5 +115,10 @@ class CustomStepper : UIView {
                              padding: UIEdgeInsets(top: 0, left: 0, bottom: 2, right: 0))
            plusButton.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/3).isActive = true
        }
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
        
 }

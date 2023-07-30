@@ -42,6 +42,13 @@ class CategoryCell: UICollectionViewCell {
         self.image.image = viewModel.picture
     }
     
+//    func setBackgroundColor(at indexPath: IndexPath) {
+//        switch indexPath.row {
+//        case 0: view.backgroundColor = .customOrange, 
+//        case 1: view
+//        }
+//    }
+    
     //MARK: - Расстановка лэйаута для наших сабВьюх
     override func layoutSubviews() {
         super.layoutSubviews()

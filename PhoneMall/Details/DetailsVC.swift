@@ -206,46 +206,93 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-
+    
     //кнопки Shop, Details, Features
-    private let shopLabel : UILabel = {
-        let label = UILabel()
-        label.text = "Shop"
-        label.font = UIFont.markProFont(size: 20, weight: .heavy)
-        label.textColor = .customDarkBlue
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
     
-    private let detailsLabel : UILabel = {
-        let label = UILabel()
-        label.text = "Details"
-        label.font = UIFont.markProFont(size: 20, weight: .plain)
-        label.textColor = .gray
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    private enum Constants {
+            static let segmentedControlHeight: CGFloat = 40
+            static let underlineViewColor: UIColor = .customOrange
+            static let underlineViewHeight: CGFloat = 3
+            static let underlineViewRadius: CGFloat = underlineViewHeight/2
+        }
+
+        // Container view of the segmented control
+        private lazy var segmentedControlContainerView: UIView = {
+            let containerView = UIView()
+            containerView.backgroundColor = .clear
+            containerView.translatesAutoresizingMaskIntoConstraints = false
+            return containerView
+        }()
+
+        // Customised segmented control
+        private lazy var segmentedControl: UISegmentedControl = {
+            let segmentedControl = UISegmentedControl()
+
+            // Remove background and divider colors
+            segmentedControl.backgroundColor = .clear
+            segmentedControl.tintColor = .clear
+
+            // Append segments
+            segmentedControl.insertSegment(withTitle: "Shop", at: 0, animated: true)
+            segmentedControl.insertSegment(withTitle: "Details", at: 1, animated: true)
+            segmentedControl.insertSegment(withTitle: "Features", at: 2, animated: true)
+
+            // Select first segment by default
+            segmentedControl.selectedSegmentIndex = 0
+
+            // Change text color and the font of the NOT selected (normal) segment
+            segmentedControl.setTitleTextAttributes([
+                NSAttributedString.Key.foregroundColor: UIColor.black,
+                NSAttributedString.Key.font: UIFont.markProFont(size: 20, weight: .plain)], for: .normal)
+
+            // Change text color and the font of the selected segment
+            segmentedControl.setTitleTextAttributes([
+                NSAttributedString.Key.foregroundColor: UIColor.customDarkBlue,
+                NSAttributedString.Key.font: UIFont.markProFont(size: 20, weight: .heavy)], for: .selected)
+
+            // Set up event handler to get notified when the selected segment changes
+            segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
+
+            // Return false because we will set the constraints with Auto Layout
+            segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+            // удаляем фон и полоски
+            segmentedControl.setBackgroundImage(UIImage(), for: .normal, barMetrics: .default)
+            segmentedControl.setDividerImage(UIImage(), forLeftSegmentState: .normal, rightSegmentState: .normal, barMetrics: .default)
+            // меняем положение 0 и 2 сегмента в осях Х
+//            segmentedControl.setContentPositionAdjustment(UIOffset(horizontal: -12, vertical: 0), forSegmentType: .left, barMetrics: .default)
+            segmentedControl.setContentPositionAdjustment(UIOffset(horizontal: 5, vertical: 0), forSegmentType: .right, barMetrics: .default)
+            
+            return segmentedControl
+        }()
+
+        // The underline view below the segmented control
+        private lazy var bottomUnderlineView: UIView = {
+            let underlineView = UIView()
+            underlineView.backgroundColor = Constants.underlineViewColor
+            underlineView.layer.cornerRadius = Constants.underlineViewRadius
+            underlineView.translatesAutoresizingMaskIntoConstraints = false
+            return underlineView
+        }()
+
+        private lazy var leadingDistanceConstraint: NSLayoutConstraint = {
+            return bottomUnderlineView.leftAnchor.constraint(equalTo: segmentedControl.leftAnchor)
+        }()
     
-    private let featuresLabel : UILabel = {
-        let label = UILabel()
-        label.text = "Features"
-        label.font = UIFont.markProFont(size: 20, weight: .plain)
-        label.textColor = .gray
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    // ползун под надписью
-    private let underLining : UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .customOrange
-        view.clipsToBounds = true
-        view.layer.cornerRadius = 3
-        return view
-    }()
+        @objc private func segmentedControlValueChanged(_ sender: UISegmentedControl) {
+           changeSegmentedControlLinePosition()
+       }
+
+       // Change position of the underline
+        private func changeSegmentedControlLinePosition() {
+           let segmentIndex = CGFloat(segmentedControl.selectedSegmentIndex)
+           let segmentWidth = segmentedControl.frame.width / CGFloat(segmentedControl.numberOfSegments)
+           let leadingDistance = segmentWidth * segmentIndex
+           UIView.animate(withDuration: 0.3, animations: { [weak self] in
+               self?.leadingDistanceConstraint.constant = leadingDistance
+               self?.collectionView.layoutIfNeeded()
+           })
+       }
+
     
     //MARK: - Third Level
     
@@ -326,24 +373,26 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     
     // это надо потом во вью модель
     @objc func changeLabelColor(sender: UITapGestureRecognizer) {
+        UIView.animate(withDuration: 0.3, animations: { [weak self] in
         if let label = sender.view as? UILabel {
-            if label == gb128Label { // выбран первый лейбл (128гб)
+            if label == self?.gb128Label { // выбран первый лейбл (128гб)
    
-                    self.gb128Label.backgroundColor = .customOrange
-                    self.gb256Label.backgroundColor = .clear
-                    self.gb128Label.textColor = .white
-                    self.gb256Label.textColor = .gray
+                self?.gb128Label.backgroundColor = .customOrange
+                self?.gb256Label.backgroundColor = .clear
+                self?.gb128Label.textColor = .white
+                self?.gb256Label.textColor = .gray
                
             } else {
           
                     // выбран второй лейбл (256гб)
-                gb256Label.backgroundColor = .customOrange
-                gb128Label.backgroundColor = .clear
-                gb256Label.textColor = .white
-                gb128Label.textColor = .gray
+                self?.gb256Label.backgroundColor = .customOrange
+                self?.gb128Label.backgroundColor = .clear
+                self?.gb256Label.textColor = .white
+                self?.gb128Label.textColor = .gray
                 
             }
         }
+    })
     }
     
     // и это тож во вью модель
@@ -609,36 +658,48 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     
     func setupSecondLevel() {
         cardView.addSubview(secondLevelView)
-        secondLevelView.addSubview(underLining)
-        secondLevelView.addSubview(optionsStack)
-      
-        let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.distribution = .equalSpacing
-        stack.addArrangedSubview(shopLabel)
-        stack.addArrangedSubview(detailsLabel)
-        stack.addArrangedSubview(featuresLabel)
-        secondLevelView.addSubview(stack)
         
+        secondLevelView.addSubview(optionsStack)
+        
+        secondLevelView.addSubview(segmentedControlContainerView)
+        segmentedControlContainerView.addSubview(segmentedControl)
+        segmentedControlContainerView.addSubview(bottomUnderlineView)
+        
+        NSLayoutConstraint.activate([
+                    segmentedControlContainerView.topAnchor.constraint(equalTo: secondLevelView.topAnchor, constant: 20),
+                    segmentedControlContainerView.leadingAnchor.constraint(equalTo: secondLevelView.leadingAnchor, constant: 30),
+                    segmentedControlContainerView.trailingAnchor.constraint(equalTo: secondLevelView.trailingAnchor, constant: -30),
+                    segmentedControlContainerView.heightAnchor.constraint(equalToConstant: Constants.segmentedControlHeight)
+                    ])
+
+                // Constrain the segmented control to the container view
+        NSLayoutConstraint.activate([
+                    segmentedControl.topAnchor.constraint(equalTo: segmentedControlContainerView.topAnchor),
+                    segmentedControl.leadingAnchor.constraint(equalTo: segmentedControlContainerView.leadingAnchor),
+                    segmentedControl.centerXAnchor.constraint(equalTo: segmentedControlContainerView.centerXAnchor),
+                    segmentedControl.centerYAnchor.constraint(equalTo: segmentedControlContainerView.centerYAnchor)
+                    ])
+
+                // Constrain the underline view relative to the segmented control
+        NSLayoutConstraint.activate([
+                    bottomUnderlineView.bottomAnchor.constraint(equalTo: segmentedControl.bottomAnchor),
+                    bottomUnderlineView.heightAnchor.constraint(equalToConstant: Constants.underlineViewHeight),
+                    leadingDistanceConstraint,
+                    bottomUnderlineView.widthAnchor.constraint(equalTo: segmentedControl.widthAnchor, multiplier: 1 / CGFloat(segmentedControl.numberOfSegments))
+                    ])
+      
+
+//
         secondLevelView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor).isActive = true
         secondLevelView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
         secondLevelView.topAnchor.constraint(equalTo: firstLevelView.bottomAnchor).isActive = true
         secondLevelView.heightAnchor.constraint(equalToConstant: 150).isActive = true
-        
-        stack.topAnchor.constraint(equalTo: secondLevelView.topAnchor, constant: 20).isActive = true
-        stack.leadingAnchor.constraint(equalTo: secondLevelView.leadingAnchor, constant: 30).isActive = true
-        stack.trailingAnchor.constraint(equalTo: secondLevelView.trailingAnchor, constant: -30).isActive = true
-        stack.centerXAnchor.constraint(equalTo: secondLevelView.centerXAnchor).isActive = true
-        
-        underLining.leadingAnchor.constraint(equalTo: secondLevelView.leadingAnchor, constant: 30).isActive = true
-        underLining.widthAnchor.constraint(equalTo: shopLabel.widthAnchor).isActive = true
-        underLining.heightAnchor.constraint(equalToConstant: 3).isActive = true
-        underLining.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 3).isActive = true
-        
-        optionsStack.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 35).isActive = true
+
+
+        optionsStack.topAnchor.constraint(equalTo: segmentedControlContainerView.bottomAnchor, constant: 35).isActive = true
         optionsStack.leadingAnchor.constraint(equalTo: secondLevelView.leadingAnchor, constant: 30).isActive = true
         optionsStack.trailingAnchor.constraint(equalTo: secondLevelView.trailingAnchor, constant: -30).isActive = true
-     
+//
         
     }
     
@@ -738,10 +799,9 @@ extension DetailsVC {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-     
         let vc = MyCartVC()
         navigationController?.pushViewController(vc, animated: true)
-     
+
     }
 }
 

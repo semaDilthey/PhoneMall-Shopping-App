@@ -13,9 +13,14 @@ protocol CategoryViewModel {
     var image : UIImage { get }
 }
 
-struct CategoryCellModel : CategoryViewModel{
+class CategoryCellModel : CategoryViewModel{
     
     var title : String
     var image: UIImage
 
+    init(title: String, image: UIImage) {
+        self.title = title
+        self.image = image
+
+    }
 }
