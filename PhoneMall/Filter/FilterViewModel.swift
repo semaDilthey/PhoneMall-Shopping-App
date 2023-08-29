@@ -26,7 +26,7 @@ protocol FilterViewModelProtocol {
 
 class FilterViewModel : FilterViewModelProtocol {
     
-    private let brands: [String]
+    private var brands: [String]
     private let prices: [String]
     private let sizes: [String]
     

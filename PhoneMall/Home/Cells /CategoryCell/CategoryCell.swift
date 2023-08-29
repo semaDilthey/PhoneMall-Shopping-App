@@ -8,9 +8,11 @@ class CategoryCell: UICollectionViewCell {
         super.init(frame: frame)
         layoutSubviews()
     }
-    
+    override func prepareForReuse() {
+       view.backgroundColor = .white
+    }
     var viewModel = CategoryCellViewModel()
-    
+     
     static let identifire = "CustomCellSection1"
     
     lazy var view : UIImageView = {
@@ -18,7 +20,7 @@ class CategoryCell: UICollectionViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.clipsToBounds = true
         view.layer.cornerRadius = contentView.frame.width/2
-        view.backgroundColor = .white
+       // view.backgroundColor = .white
         return view
     }()
     
@@ -34,7 +36,10 @@ class CategoryCell: UICollectionViewCell {
     lazy var image : UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
-        return image
+        let newImage = image.image?.withRenderingMode(.alwaysTemplate)
+        let newImageView = UIImageView(image: newImage)
+        newImageView.translatesAutoresizingMaskIntoConstraints = false
+        return newImageView
     }()
     
     func set(viewModel: CategoryCellViewModel, indexPath: IndexPath) {

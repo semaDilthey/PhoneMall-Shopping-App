@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3F010AE8299D71B700B241A9 /* extension+UITabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F010AE7299D71B700B241A9 /* extension+UITabBar.swift */; };
 		3F02EB4A29E04CD600EAA3E0 /* MyCartCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F02EB4929E04CD600EAA3E0 /* MyCartCellModel.swift */; };
+		3F1628292A9CB2B20025D706 /* FilterData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1628282A9CB2B20025D706 /* FilterData.swift */; };
 		3F231D642A4CBE170073A844 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F231D582A4CBE170073A844 /* HomeViewModel.swift */; };
 		3F231D652A4CBE170073A844 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F231D592A4CBE170073A844 /* SearchBar.swift */; };
 		3F231D662A4CBE170073A844 /* BestSellerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F231D5B2A4CBE170073A844 /* BestSellerCell.swift */; };
@@ -59,6 +60,7 @@
 /* Begin PBXFileReference section */
 		3F010AE7299D71B700B241A9 /* extension+UITabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "extension+UITabBar.swift"; sourceTree = "<group>"; };
 		3F02EB4929E04CD600EAA3E0 /* MyCartCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCartCellModel.swift; sourceTree = "<group>"; };
+		3F1628282A9CB2B20025D706 /* FilterData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterData.swift; sourceTree = "<group>"; };
 		3F231D582A4CBE170073A844 /* HomeViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		3F231D592A4CBE170073A844 /* SearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		3F231D5B2A4CBE170073A844 /* BestSellerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BestSellerCell.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 			children = (
 				3F231D632A4CBE170073A844 /* FilterViewController.swift */,
 				3F61A96D2A73DE1400C15C23 /* FilterViewModel.swift */,
+				3F1628282A9CB2B20025D706 /* FilterData.swift */,
 			);
 			path = Filter;
 			sourceTree = "<group>";
@@ -429,6 +432,7 @@
 				3FC535052A47275C00429F68 /* extension+WebImageView.swift in Sources */,
 				3FC34F8C2A5EE8870078ED56 /* TabBarViewViewModel.swift in Sources */,
 				3F231D6A2A4CBE170073A844 /* HeaderHotSales.swift in Sources */,
+				3F1628292A9CB2B20025D706 /* FilterData.swift in Sources */,
 				3F5510882A4605CD00C51E05 /* API.swift in Sources */,
 				3F4A8EF828B280EE00B5E646 /* HomeData.swift in Sources */,
 				3FC34F8A2A5EE87C0078ED56 /* TabBarView.swift in Sources */,

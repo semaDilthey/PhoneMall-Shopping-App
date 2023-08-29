@@ -4,8 +4,14 @@ import Foundation
 import UIKit
 import SwiftUI
 
+protocol MyCartCellDelegate: AnyObject {
+    func updateTotalSum(_ priceCell: Int)
+}
+
 
 class MyCartVC : UIViewController {
+    
+    weak var delegate: MyCartCellDelegate?
     
     let viewModel = MyCartViewModel()
     // проперти для кнопки, если true, то она грузится, если false, то просто Чекаут
@@ -14,23 +20,30 @@ class MyCartVC : UIViewController {
     var checkingOut : Bool {
         checkoutButton.isTouchInside ? true : false
     }
+    // над этими 2 поработать
+    var totalItems : [MyCartCellModelProtocol]?
     
+    var totalItemsCounter : Int? {
+        if totalItems != nil {
+            return totalItems?.count
+        } else {
+            return 0
+        }
+    }
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        
         tableView.register(MyCartCell.self, forCellReuseIdentifier: MyCartCell.identifire)
-        
         navigationItem.hidesBackButton = true
         backButtonSetup()
-        
+    
         initViewModel()
         }
     
     func initViewModel() {
         viewModel.getCartPhones()
-        
         viewModel.reloadTableView = { [weak self] in
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
@@ -128,6 +141,42 @@ class MyCartVC : UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    var totalPrice : UILabel = {
+        let label = UILabel()
+        label.font = .markProFont(size: 14, weight: .medium)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "$6,000 us"
+        label.textColor = .white
+        return label
+    }()
+    
+    let totalLabel : UILabel = {
+        let label = UILabel()
+        label.font = .markProFont(size: 14, weight: .medium)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Total"
+        label.textColor = .white
+        return label
+    }()
+    
+    let deliveryLabel : UILabel = {
+        let label = UILabel()
+        label.font = .markProFont(size: 14, weight: .medium)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Delivery"
+        label.textColor = .white
+        return label
+    }()
+    
+    var deliveryPrice : UILabel = {
+        let label = UILabel()
+        label.font = .markProFont(size: 14, weight: .medium)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Free"
+        label.textColor = .white
+        return label
+    }()
   
     // c
     private let StackTotalPrice : UIStackView = {
@@ -145,15 +194,6 @@ class MyCartVC : UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
-
-    func createLabel (text: String, font: UIFont) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = font
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .white
-        return label
-    }
     
     lazy var checkoutButton : UIButton = {
         let button = UIButton()
@@ -244,19 +284,12 @@ class MyCartVC : UIViewController {
         // тут стакВью идут
         view.addSubview(StackTotalPrice)
         view.addSubview(StackDeliveryCost)
-        
-        //view.addSubview(lineLower)
-        
+                
         view.addSubview(checkoutButton)
         
-        let total = createLabel(text: "Total", font: .markProFont(size: 14, weight: .plain)!)
-        let totalPrice = createLabel(text: "$6,000 us", font: .markProFont(size: 14, weight: .medium)!)
-        StackTotalPrice.addArrangedSubview(total)
-        StackTotalPrice.setCustomSpacing(190, after: total)
+        StackTotalPrice.addArrangedSubview(totalLabel)
+        StackTotalPrice.setCustomSpacing(190, after: totalLabel)
         StackTotalPrice.addArrangedSubview(totalPrice)
-        
-        let deliveryLabel = createLabel(text: "Delivery", font: .markProFont(size: 14, weight: .plain)!)
-        let deliveryPrice = createLabel(text: "Free", font: .markProFont(size: 14, weight: .medium)!)
         
         StackDeliveryCost.addArrangedSubview(deliveryLabel)
         StackDeliveryCost.addArrangedSubview(deliveryPrice)
@@ -286,6 +319,13 @@ class MyCartVC : UIViewController {
         ])
         
     }
+    
+    var arrayOfPrices : [Int] = []
+
+    var totalSum : Int {
+        return viewModel.cartPhonesModel.first?.price ?? 0
+    }
+    
 }
 
 
@@ -297,18 +337,32 @@ extension MyCartVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.cartPhonesModel.count
     }
+    
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MyCartCell.identifire, for: indexPath) as! MyCartCell
-        cell.clipsToBounds = true
-        cell.stepper.updatePriceClosure = { [weak self] value in
-            cell.updatePrice(by: value)
-        }
-        
+        //cell.clipsToBounds = true
         if let cellModel = viewModel.getMyCartCellViewModel(at: indexPath) {
             cell.viewModel = cellModel
+            
+            cell.stepper.updatePriceClosure = { [weak self] value in
+                cell.updatePrice(by: value)
+                print("Price: \(cell.phonePriceLabel.text)")
+//                self?.arrayOfPrices.append(cell.phonePriceLabel.text!)
+//                self?.totalPrice.text = self?.arrayOfPrices.max()
+                self?.delegate?.updateTotalSum(value) 
+               
+            }
+        }
+        if let price = cell.phonePriceLabel.text {
+            cell.addToTotal = { [weak self] pricee in
+                self?.totalPrice.text = pricee
+            }
         }
         return cell
     }
+    
+    
 }
 
 

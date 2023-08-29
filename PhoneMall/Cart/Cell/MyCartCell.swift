@@ -2,7 +2,8 @@
 import UIKit
 
 
-class MyCartCell: UITableViewCell {
+class MyCartCell: UITableViewCell /*, MyCartCellDelegate*/ {
+    
     
     static let identifire = "MyCartCell"
     
@@ -26,16 +27,23 @@ class MyCartCell: UITableViewCell {
         }
     }
     
+    
     func updatePrice(by value: Int) {
         if let price = viewModel?.price {
-            phonePriceLabel.text = "$"+String(value * price)+".00"
+//            phonePriceLabel.text = "$"+String(value * price)+".00"
+                        phonePriceLabel.text = "$" + String(value * price) + ".00"
+            addToTotal(String(price))
         } else {
             phonePriceLabel.text = "No data"
 
         }
     }
     
-
+    var addToTotal : ((String)->())?
+    
+    
+    var cartViewModel: MyCartViewModel?
+    
     let phonePicture : WebImageView = {
         let image = WebImageView()
         image.translatesAutoresizingMaskIntoConstraints = false

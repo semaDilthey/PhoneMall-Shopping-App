@@ -10,23 +10,26 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
        
         setupCollectionView()
-        
         setupUI()
 
         setupGestureRecognizer()
-        
         initViewModel()
-    }
-
+        setupItemsInCart()
         
+        cartVM.counterUpdateHandler = { [weak self] count in
+            self?.itemsCounterLabel.text = String(count)
+        }
+    }
+    
+    var cartVM = MyCartViewModel()
     var viewModel = {
         DetailsViewModel()
     }()
     
+
     
     func initViewModel() {
         viewModel.getDetailsPhones()
-        
         viewModel.reloadTableView = { [weak self] in
             DispatchQueue.main.async {
                 self?.collectionView.reloadData()
@@ -105,6 +108,38 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         but.heightAnchor.constraint(equalToConstant: 37).isActive = true
         return but
     }()
+    
+    var itemsInCartView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.widthAnchor.constraint(equalToConstant: 16).isActive = true
+        view.heightAnchor.constraint(equalToConstant: 16).isActive = true
+        view.layer.cornerRadius = 8
+        view.clipsToBounds = true
+        view.layer.borderWidth = 0.5
+        view.layer.borderColor = UIColor.white.cgColor
+        view.backgroundColor = .customOrange
+        return view
+    }()
+    
+    var itemsCounterLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .white
+        label.font = UIFont.markProFont(size: 12, weight: .medium)
+        return label
+    }()
+    
+    func setupItemsInCart() {
+        shopCartButton.addSubview(itemsInCartView)
+        itemsInCartView.addSubview(itemsCounterLabel)
+        
+        itemsInCartView.topAnchor.constraint(equalTo: shopCartButton.topAnchor, constant: 2).isActive = true
+        itemsInCartView.trailingAnchor.constraint(equalTo: shopCartButton.trailingAnchor, constant: -2).isActive = true
+        
+        itemsCounterLabel.centerXAnchor.constraint(equalTo: itemsInCartView.centerXAnchor).isActive = true
+        itemsCounterLabel.centerYAnchor.constraint(equalTo: itemsInCartView.centerYAnchor, constant: -1).isActive = true
+    }
     
     @objc func shopCartButtonPresentingVC() {
         navigationController?.pushViewController(MyCartVC(), animated: true)
@@ -451,21 +486,16 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         button.clipsToBounds = true
         button.layer.cornerRadius = 10
         button.layer.shouldRasterize = false
+        button.isUserInteractionEnabled = true
+        button.addTarget(self, action: #selector(addToCartButtonTapped), for: .touchUpInside)
         return button
     }()
     
-//    @objc func addToCartButtonTapped () {
-//        var modelForIndexPath : ModelForCartProtocol?
-//        var selectedIndex: IndexPath?
-//        if let index = viewModel.selectedIndexPath {
-//            selectedIndex = index
-//        }
-//        modelForIndexPath = viewModel.getModelForCart(at: selectedIndex?)
-//
-//        if let indexPath = viewModel.selectedIndexPath {
-//            viewModel.delegate?.sendModelToCart(model: model, at: viewModel.selectedIndexPath)
-//        }
-//    }
+    @objc func addToCartButtonTapped() {
+//        guard let newModel = viewModel.convertFromDetailsToCartModel() else { return }
+//        cartViewModel.cartPhonesModel = newModel
+//        print("BOoOOOOOOM : \(newModel)")
+    }
     
     // Чтобы не  писать кучу строк кода, попробую написать функцию 1)создающую имейджВьюхи и 2)текстовые лейблы
     
@@ -804,12 +834,11 @@ extension DetailsVC {
 
     }
 }
-
+//
 //struct ViewControllerProvider : PreviewProvider {
 //    static var previews: some View {
 //        Group {
-//            ProductDetailsVC().showPreview()
-//            ProductDetailsVC().showPreview()
+//            DetailsVC().showPreview()
 //        }
 //    }
 //}

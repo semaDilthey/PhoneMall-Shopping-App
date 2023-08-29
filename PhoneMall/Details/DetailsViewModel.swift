@@ -8,28 +8,15 @@
 import Foundation
 
 protocol DetailsViewModelProtocol {
-    
     var reloadTableView: (() -> Void)? { get set }
-    
     func getDetailsPhones()
-    
     func getDetailsCellViewModel(at: IndexPath) -> DetailsCellModelProtocol?
 }
 
 
-protocol DetailsToMyCartDelegate: AnyObject {
-    func sendModelToCart(model: ModelForCartProtocol, at indexPath: IndexPath) -> MyCartCellModelProtocol?
-      
-}
-
-
-
 class DetailsViewModel : DetailsViewModelProtocol {
-    
-    var delegate : DetailsToMyCartDelegate?
-    
+        
     var data : ProductDetailsData?
-    
     var networking: NetworkManager? = NetworkManager()
     
     var detailsModel = [DetailsCellModelProtocol]() {
@@ -70,15 +57,17 @@ class DetailsViewModel : DetailsViewModelProtocol {
     }
     
     // создаем модель которую будем передавать в cart
-//    func createModelForCart(data: ProductDetailsData) -> ModelForCartProtocol? {
-//        let price = String(data.price)
-//        let title = data.title
-//        let picture : String
-//        for image in data.images {
-//            picture = image
-//        }
-//        return ModelForCart(price: price, title: title, picture: picture)
-//    }
+    func convertFromDetailsToCartModel() -> [MyCartCellModelProtocol]? {
+        var detailModel = detailsModel
+        var cartModel : [MyCartCellModelProtocol] = []
+        for phon in detailModel {
+            //let newPhone = MyCartCellModel(title: phon.title ?? "NaN", picture: phon.images?.first ?? "NaN", price: phon.price ?? 0)
+            let newPhone = MyCartCellModel(title: "NaN", picture: "NaN", price: 0)
+            cartModel.append(newPhone)
+            print(newPhone.price)
+        }
+        return cartModel
+    }
     
     func getModelForCart(at indexPath: IndexPath) -> ModelForCartProtocol? {
         guard let selectedIndexPathRow = selectedIndexPath?.row else { return nil }
@@ -93,7 +82,7 @@ class DetailsViewModel : DetailsViewModelProtocol {
 //        for image in data.images {
 //            return DetailsCellModel(images: image)
 //        }
-        return DetailsCellModel(images: data.images)
+        return DetailsCellModel(images: data.images, price: 12, title: "aaa")
     }
     
     func getDetailsCellViewModel(at indexPath: IndexPath) -> DetailsCellModelProtocol? {
@@ -102,3 +91,4 @@ class DetailsViewModel : DetailsViewModelProtocol {
     }
     
 }
+

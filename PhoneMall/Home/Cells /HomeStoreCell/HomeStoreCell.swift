@@ -9,6 +9,9 @@ class HomeStoreCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        clipsToBounds = true
+        layer.cornerRadius = 15
+        backgroundColor = .brown
     }
     
     var cellViewModel : HomeStoreCellModelProtocol? {

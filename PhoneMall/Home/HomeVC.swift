@@ -25,7 +25,7 @@ class HomeVC : UICollectionViewController {
         }
         
     }
-  
+    let aaa = FilterViewController()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -162,16 +162,15 @@ extension HomeVC {
             cell.set(viewModel: categoryViewModel, indexPath: indexPath)
             if indexPath.row == 0 {
                 cell.view.backgroundColor = .customOrange
+
             }
-            if indexPath.row == 2 {
-                cell.view.backgroundColor = .white
-            }
+         
             return cell
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeStoreCell.identifire, for: indexPath) as! HomeStoreCell
-                       cell.clipsToBounds = true
-                       cell.layer.cornerRadius = 15
-                       cell.backgroundColor = .brown
+//                       cell.clipsToBounds = true
+//                       cell.layer.cornerRadius = 15
+//                       cell.backgroundColor = .brown
 //
             let cellVM = viewModel.getHomeCellViewModel(at: indexPath)
             cell.cellViewModel = cellVM
@@ -181,9 +180,6 @@ extension HomeVC {
             return cell
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BestSellerCell.identifire, for: indexPath) as! BestSellerCell
-                    cell.layer.cornerRadius = 15
-                    cell.clipsToBounds = true
-                    cell.backgroundColor = .white
             let cellVM = viewModel.getBestCellViewModel(at: indexPath)
             cell.cellViewModel = cellVM
             cell.updateFavoritesUI()
@@ -192,11 +188,7 @@ extension HomeVC {
             }
             return cell
         default:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifire, for: indexPath) as! CategoryCell
-            let cellViewModel = categoryViewModel
-            cell.set(viewModel: cellViewModel, indexPath: indexPath)
-            
-            return cell
+            return CategoryCell()
         }
     }
 
@@ -204,18 +196,38 @@ extension HomeVC {
     
     // What will happen on click
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifire, for: indexPath) as! CategoryCell
-//        let sectins = indexPath.section
-//        if sectins == 0{
-//            switch indexPath.row {
-//            case 0: cell.view.backgroundColor = .purple
-//            default:
-//                cell.view.backgroundColor = .customOrange
-//            }
-//        }
-        let vc = DetailsVC()
+        if indexPath.section == 0 {
+            if let cell = collectionView.cellForItem(at: indexPath) as? CategoryCell {
+                cell.view.backgroundColor = .customOrange
+                cell.label.textColor = .customOrange
+                cell.label.font = UIFont.markProFont(size: 12, weight: .heavy)
+                cell.image.tintColor = .red
+                if cell.backgroundColor == .customOrange {
+                    cell.backgroundColor = .white
+                    
+                }
+            }
+            
+        } else {
+            let vc = DetailsVC()
             navigationController?.pushViewController(vc, animated: true)
+        }
     }
+       
+    
+    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if indexPath.section == 0 {
+            if let cell = collectionView.cellForItem(at: indexPath) as? CategoryCell {
+                cell.view.backgroundColor = .white
+                cell.label.textColor = .black
+                cell.label.font = UIFont.markProFont(size: 12, weight: .plain)
+                cell.image.image?.withRenderingMode(.alwaysTemplate)
+                cell.image.image?.withTintColor(.red)
+            }
+        }
+    }
+    
+ 
     
     //reusable view
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -242,10 +254,13 @@ extension HomeVC {
 
 extension HomeVC : ReusableViewDelegate {
     func didTapButton() {
-        let newVC = FilterViewController()
-        present(newVC, animated: true, completion: nil)
+        
+        let sheetViewController = FilterViewController()
+        if let sheet = sheetViewController.sheetPresentationController {
+            sheet.detents = [.medium()]
+        }
+        present(sheetViewController, animated: true)
     }
-    
     
 }
 

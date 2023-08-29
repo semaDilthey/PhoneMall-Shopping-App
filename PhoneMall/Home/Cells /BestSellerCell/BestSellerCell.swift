@@ -9,6 +9,10 @@ class BestSellerCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        layer.cornerRadius = 15
+        clipsToBounds = true
+        backgroundColor = .white
+        
         setupButton()
        // isFavoritesTapped = UserDefaults.standard.bool(forKey: "isFavoritesTapped")
         
