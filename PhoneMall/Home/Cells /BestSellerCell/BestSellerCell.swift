@@ -80,7 +80,7 @@ class BestSellerCell: UICollectionViewCell {
         }
     }
     
-    lazy var priceLabel : UILabel = {
+    let priceLabel : UILabel = {
         let label = UILabel()
         label.text = "1500$"
         label.textColor = .black
@@ -89,7 +89,7 @@ class BestSellerCell: UICollectionViewCell {
         return label
     }()
     
-    lazy var discountPriceLabel : UILabel = {
+    let discountPriceLabel : UILabel = {
         let label = UILabel()
         let attributeString: NSMutableAttributedString = NSMutableAttributedString(string: "$1111")
             attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: 2, range: NSRange(location: 0, length: attributeString.length))
@@ -102,7 +102,7 @@ class BestSellerCell: UICollectionViewCell {
         return label
     }()
   
-    lazy var nameLabel : UILabel = {
+    let nameLabel : UILabel = {
         let label = UILabel()
         label.text = "Phone name lalalalal"
         label.font = UIFont.markProFont(size: 10, weight: .plain)
@@ -112,9 +112,18 @@ class BestSellerCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        
         setupUI()
     }
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+
+//MARK: - SetupUI
+extension BestSellerCell {
     
     func setupUI() {
         
@@ -124,24 +133,18 @@ class BestSellerCell: UICollectionViewCell {
         contentView.addSubview(discountPriceLabel)
         contentView.addSubview(nameLabel)
         
-        if image.image == UIImage(named: "loading") {
-            image.frame.size = CGSize(width: contentView.frame.width / 2, height: 88)
-        } else {
-            image.frame.size = CGSize(width: contentView.frame.width, height: 177)
-        }
         NSLayoutConstraint.activate([
-            image.topAnchor.constraint(equalTo: contentView.topAnchor),
-            image.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            image.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            image.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            image.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            image.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,constant: -20),
             image.bottomAnchor.constraint(equalTo: contentView.topAnchor, constant: 160),
-            
             
             isFavoritesButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             isFavoritesButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             isFavoritesButton.widthAnchor.constraint(equalToConstant: 24),
             isFavoritesButton.heightAnchor.constraint(equalToConstant: 24),
             
-            priceLabel.topAnchor.constraint(equalTo: image.bottomAnchor, constant: -5),
+            priceLabel.topAnchor.constraint(equalTo: image.bottomAnchor, constant: 5),
             priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 21),
             priceLabel.widthAnchor.constraint(equalToConstant: contentView.frame.width/3),
             priceLabel.heightAnchor.constraint(equalToConstant: 20),
@@ -149,14 +152,10 @@ class BestSellerCell: UICollectionViewCell {
             discountPriceLabel.bottomAnchor.constraint(equalTo: priceLabel.bottomAnchor),
             discountPriceLabel.leadingAnchor.constraint(equalTo: priceLabel.trailingAnchor, constant: -4),
             
-            
-            nameLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 3),
-            nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 21)
+            nameLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 0),
+            nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20)
 
         ])
         
-    }
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

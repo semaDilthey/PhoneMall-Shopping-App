@@ -17,7 +17,6 @@ class DetailsCell: UICollectionViewCell {
         self.backgroundColor = .clear
     }
     
-    
     lazy var imageView : WebImageView = {
         let image = WebImageView()
         image.image = UIImage(named: "homeStoreSamsungNote")
@@ -35,7 +34,6 @@ class DetailsCell: UICollectionViewCell {
     
     func setupUI() {
         contentView.addSubview(imageView)
-        
         
         imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true

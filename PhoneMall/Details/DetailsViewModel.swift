@@ -36,14 +36,12 @@ class DetailsViewModel : DetailsViewModelProtocol {
     var reloadTableView: (() -> Void)?
     
     func getDetailsPhones() {
-        print("aaaa")
         networking?.getDetailsScreenData(completion: { [weak self] data in
-            print("aaa")
             switch data {
             case .success(let data):
                 self?.data = data
                 var modelDetails = [DetailsCellModelProtocol]()
-                var modelForCart = [ModelForCartProtocol]()
+                //var modelForCart = [ModelForCartProtocol]()
                 
                     modelDetails.append(self?.createCellModel(data: data) as! DetailsCellModelProtocol)
                     self?.detailsModel = modelDetails
@@ -56,18 +54,6 @@ class DetailsViewModel : DetailsViewModelProtocol {
         })
     }
     
-    // создаем модель которую будем передавать в cart
-    func convertFromDetailsToCartModel() -> [MyCartCellModelProtocol]? {
-        var detailModel = detailsModel
-        var cartModel : [MyCartCellModelProtocol] = []
-        for phon in detailModel {
-            //let newPhone = MyCartCellModel(title: phon.title ?? "NaN", picture: phon.images?.first ?? "NaN", price: phon.price ?? 0)
-            let newPhone = MyCartCellModel(title: "NaN", picture: "NaN", price: 0)
-            cartModel.append(newPhone)
-            print(newPhone.price)
-        }
-        return cartModel
-    }
     
     func getModelForCart(at indexPath: IndexPath) -> ModelForCartProtocol? {
         guard let selectedIndexPathRow = selectedIndexPath?.row else { return nil }
@@ -82,12 +68,19 @@ class DetailsViewModel : DetailsViewModelProtocol {
 //        for image in data.images {
 //            return DetailsCellModel(images: image)
 //        }
-        return DetailsCellModel(images: data.images, price: 12, title: "aaa")
+        return DetailsCellModel(images: data.images, price: data.price, title: data.title)
     }
     
     func getDetailsCellViewModel(at indexPath: IndexPath) -> DetailsCellModelProtocol? {
         guard indexPath.row < detailsModel.count else { return nil }
         return detailsModel[indexPath.row]
+    }
+    
+    func createModelForCart(model: DetailsCellModel) -> MyCartCellModel {
+        let title = model.title!
+        let picture = model.images?.first
+        let price = model.price!
+        return MyCartCellModel(title: title, picture: picture!, price: price)
     }
     
 }

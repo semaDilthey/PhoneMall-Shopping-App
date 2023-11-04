@@ -9,36 +9,21 @@ import Foundation
 import UIKit
 import SwiftUI
 
-enum FilterBrands {
-    case Xiaomi, iPhone, Samsung, Motorolla
-}
-
-enum FilterSizes {
-    case fourDotFive
-    case fiveDotFive
-}
-
-enum FilterPrices {
-    case threeHundred, fiveHundred, sevenHundred, oneThousand, oneThousandFiveHundred
-}
-
-
 class FilterViewController : UIViewController {
     
-    var viewModel : FilterViewModelProtocol?
+    var viewModel = FilterViewModel()
     
-    var filterModel = FilterData()
+    var filterData = FilterData()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .snowyWhite
         setupUI()
         setUpPickers()
-      
     }
     
     func set() {
-        label.text = viewModel?.title
+        label.text = viewModel.title
     }
     
     private lazy var closeButton : UIButton = {
@@ -177,8 +162,75 @@ class FilterViewController : UIViewController {
         return label
     }()
     
+}
+
+extension FilterViewController : UIPickerViewDelegate {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        let phones = filterData.phoneModels[row]
+//        let phones = viewModel.getModels()[row]
+        let options = filterData.optionsSortedByModelsId[0]
+//        let options = viewModel.getSortedModels()[0]
+
+        switch pickerView {
+        case namePicker:
+            filterData.optionsSortedByModelsId = viewModel.getOptions(phone_id: phones.id)
+            nameTextField.text = phones.name
+            nameTextField.resignFirstResponder()
+            nameTextField.textColor = .customDarkBlue
+            sizePicker.reloadAllComponents()
+            pricePicker.reloadAllComponents()
+            sizeTextField.text = "Select size"
+            priceTextField.text = "Select price"
+        case sizePicker:
+            sizeTextField.text = String(options.size) + " inches"
+            sizeTextField.resignFirstResponder()
+            sizeTextField.textColor = .customDarkBlue
+        case pricePicker:
+            priceTextField.text = String(options.price) + "$"
+            priceTextField.resignFirstResponder()
+            priceTextField.textColor = .customDarkBlue
+        default: return
+        }
+    }
+}
+
+
+extension FilterViewController : UIPickerViewDataSource {
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        let phones = filterData.phoneModels[row]
+//        let phones = viewModel.getModels()[row]
+
+        let options = filterData.optionsSortedByModelsId[0]
+//        let options = viewModel.getSortedModels()[0]
+
+        switch pickerView {
+        case namePicker : return phones.name
+        case sizePicker: return String(options.size)
+        case pricePicker: return String(options.price)
+        default: return nil
+        }
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        switch pickerView {
+        case namePicker : return filterData.phoneModels.count
+        case sizePicker : return filterData.optionsSortedByModelsId.count
+        case pricePicker : return filterData.optionsSortedByModelsId.count
+        default: return 1
+        }
+    }
+}
+
+
+//MARK: - SetupUI, SetupPickers
+extension FilterViewController {
+    
     func setUpPickers() {
-        
         pricePicker.dataSource = self
         pricePicker.delegate = self
         sizePicker.dataSource = self
@@ -186,7 +238,9 @@ class FilterViewController : UIViewController {
         namePicker.dataSource = self
         namePicker.delegate = self
     }
+    
     func setupUI() {
+        
         view.addSubview(closeButton)
         view.addSubview(doneButton)
         view.addSubview(label)
@@ -237,68 +291,6 @@ class FilterViewController : UIViewController {
         sizeTextField.leadingAnchor.constraint(equalTo: closeButton.leadingAnchor).isActive = true
         sizeTextField.trailingAnchor.constraint(equalTo: doneButton.trailingAnchor, constant: -5).isActive = true
         sizeTextField.heightAnchor.constraint(equalTo: closeButton.heightAnchor).isActive = true
-        
-      
-        
-        
-    }
-    
-}
-
-extension FilterViewController : UIPickerViewDelegate {
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let phones = filterModel.phones[row]
-        let options = filterModel.optionsByPhones[0]
-
-        switch pickerView {
-        case namePicker:
-            filterModel.optionsByPhones = filterModel.getOptions(phone_id: phones.id)
-            nameTextField.text = phones.name
-            nameTextField.resignFirstResponder()
-            nameTextField.textColor = .customDarkBlue
-            sizePicker.reloadAllComponents()
-            pricePicker.reloadAllComponents()
-            sizeTextField.text = "Select size"
-            priceTextField.text = "Select price"
-        case sizePicker:
-            sizeTextField.text = String(options.size) + " inches"
-            sizeTextField.resignFirstResponder()
-            sizeTextField.textColor = .customDarkBlue
-        case pricePicker:
-            priceTextField.text = String(options.price) + "$"
-            priceTextField.resignFirstResponder()
-            priceTextField.textColor = .customDarkBlue
-        default: return
-        }
-    }
-}
-
-
-extension FilterViewController : UIPickerViewDataSource {
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        let phones = filterModel.phones[row]
-        let options = filterModel.optionsByPhones[0]
-
-        switch pickerView {
-        case namePicker : return phones.name
-        case sizePicker: return String(options.size)
-        case pricePicker: return String(options.price)
-        default: return nil
-        }
-    }
-    
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        switch pickerView {
-        case namePicker : return filterModel.phones.count
-        case sizePicker : return filterModel.optionsByPhones.count
-        case pricePicker : return filterModel.optionsByPhones.count
-        default: return 1
-        }
     }
 }
 

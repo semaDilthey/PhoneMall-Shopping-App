@@ -31,12 +31,12 @@ class BestSellerCellViewModel: BestSellerCellViewModelProtocol {
     
     func saveIsFavorites() {
         UserDefaults.standard.set(isFavorites, forKey: isFavoritesKey)
-        print("Значение isFavorites сохранено: \(isFavorites ?? false)")
+        
     }
     
     func loadIsFavorites() {
        isFavorites = UserDefaults.standard.bool(forKey: isFavoritesKey)
-        print("Значение isFavorites загружено: \(isFavorites ?? false)")
+        
 
     }
     

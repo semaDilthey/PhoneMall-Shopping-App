@@ -4,31 +4,37 @@ import Foundation
 import UIKit
 import SwiftUI
 
-class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-       
-        setupCollectionView()
-        setupUI()
 
-        setupGestureRecognizer()
-        initViewModel()
-        setupItemsInCart()
-        
-        cartVM.counterUpdateHandler = { [weak self] count in
-            self?.itemsCounterLabel.text = String(count)
-        }
-    }
+
+final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     
-    var cartVM = MyCartViewModel()
+    var cartViewModel = MyCartViewModel()
+    
     var viewModel = {
         DetailsViewModel()
     }()
     
-
+    var detailsPhonesArray : [DetailsCellModel] = []
     
-    func initViewModel() {
+    
+    var cartCounter : Int = 0 {
+        willSet {
+            itemsCounterLabel.text = String(newValue)
+        }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupCollectionView()
+        setupNavigationBar()
+        setupUI()
+
+        setupGestureRecognizer()
+        initViewModel()
+
+    }
+    
+    private func initViewModel() {
         viewModel.getDetailsPhones()
         viewModel.reloadTableView = { [weak self] in
             DispatchQueue.main.async {
@@ -39,42 +45,12 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     
     // layout inizialization
     init(){
-        super.init(collectionViewLayout: DetailsVC.createScrollableLayout())
+        super.init(collectionViewLayout: .init())
     }
     
-    // создаем Layout который будет туда сюда ходить
-    static func createScrollableLayout() -> UICollectionViewCompositionalLayout {
-        let compositionalLayout: UICollectionViewCompositionalLayout = {
-            
-            let fractionSize: CGFloat = 0.65
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(fractionSize),heightDimension: .fractionalWidth(fractionSize))
-          
-            // Item
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            
-            // Group
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-            
-            // Section
-            let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = NSDirectionalEdgeInsets(top: 25, leading: 80, bottom: 0, trailing: 2.5)
-            section.orthogonalScrollingBehavior = .continuous
-            
-            // creating transformableScrolling
-            section.visibleItemsInvalidationHandler = { (items, offset, environment) in
-                items.forEach { item in
-                    let distanceFromCenter = abs((item.frame.midX - offset.x) - environment.container.contentSize.width / 2.0)
-                    let minScale: CGFloat = 0.8
-                    let maxScale: CGFloat = 1.1
-                    let scale = max(maxScale - (distanceFromCenter / environment.container.contentSize.width), minScale)
-                    item.transform = CGAffineTransform(scaleX: scale, y: scale)
-                }
-            }
-            return UICollectionViewCompositionalLayout(section: section)
-        }()
-        return compositionalLayout
-    }
+
+    
+
     
     //MARK: - creating NavBar
     // кастомная кнопка назад
@@ -109,6 +85,7 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         return but
     }()
     
+    // view под каунтер корзины
     var itemsInCartView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -122,6 +99,7 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         return view
     }()
     
+    // сам каунтер в корзине
     var itemsCounterLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -131,14 +109,18 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     }()
     
     func setupItemsInCart() {
-        shopCartButton.addSubview(itemsInCartView)
-        itemsInCartView.addSubview(itemsCounterLabel)
         
-        itemsInCartView.topAnchor.constraint(equalTo: shopCartButton.topAnchor, constant: 2).isActive = true
-        itemsInCartView.trailingAnchor.constraint(equalTo: shopCartButton.trailingAnchor, constant: -2).isActive = true
-        
-        itemsCounterLabel.centerXAnchor.constraint(equalTo: itemsInCartView.centerXAnchor).isActive = true
-        itemsCounterLabel.centerYAnchor.constraint(equalTo: itemsInCartView.centerYAnchor, constant: -1).isActive = true
+        if cartCounter != 0 {
+            shopCartButton.addSubview(itemsInCartView)
+            itemsInCartView.addSubview(itemsCounterLabel)
+            
+            itemsInCartView.topAnchor.constraint(equalTo: shopCartButton.topAnchor, constant: 2).isActive = true
+            itemsInCartView.trailingAnchor.constraint(equalTo: shopCartButton.trailingAnchor, constant: -2).isActive = true
+            
+            itemsCounterLabel.centerXAnchor.constraint(equalTo: itemsInCartView.centerXAnchor).isActive = true
+            itemsCounterLabel.centerYAnchor.constraint(equalTo: itemsInCartView.centerYAnchor, constant: -1).isActive = true
+        }
+       
     }
     
     @objc func shopCartButtonPresentingVC() {
@@ -252,7 +234,7 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         }
 
         // Container view of the segmented control
-        private lazy var segmentedControlContainerView: UIView = {
+    private lazy var segmentedControlContainerView: UIView = {
             let containerView = UIView()
             containerView.backgroundColor = .clear
             containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -260,7 +242,7 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         }()
 
         // Customised segmented control
-        private lazy var segmentedControl: UISegmentedControl = {
+    private lazy var segmentedControl: UISegmentedControl = {
             let segmentedControl = UISegmentedControl()
 
             // Remove background and divider colors
@@ -278,12 +260,12 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
             // Change text color and the font of the NOT selected (normal) segment
             segmentedControl.setTitleTextAttributes([
                 NSAttributedString.Key.foregroundColor: UIColor.black,
-                NSAttributedString.Key.font: UIFont.markProFont(size: 20, weight: .plain)], for: .normal)
+                NSAttributedString.Key.font: UIFont.markProFont(size: 20, weight: .plain) as Any], for: .normal)
 
             // Change text color and the font of the selected segment
             segmentedControl.setTitleTextAttributes([
-                NSAttributedString.Key.foregroundColor: UIColor.customDarkBlue,
-                NSAttributedString.Key.font: UIFont.markProFont(size: 20, weight: .heavy)], for: .selected)
+                NSAttributedString.Key.foregroundColor: UIColor.customDarkBlue as Any,
+                NSAttributedString.Key.font: UIFont.markProFont(size: 20, weight: .heavy) as Any], for: .selected)
 
             // Set up event handler to get notified when the selected segment changes
             segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
@@ -301,7 +283,7 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         }()
 
         // The underline view below the segmented control
-        private lazy var bottomUnderlineView: UIView = {
+    private lazy var bottomUnderlineView: UIView = {
             let underlineView = UIView()
             underlineView.backgroundColor = Constants.underlineViewColor
             underlineView.layer.cornerRadius = Constants.underlineViewRadius
@@ -309,16 +291,16 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
             return underlineView
         }()
 
-        private lazy var leadingDistanceConstraint: NSLayoutConstraint = {
+    private lazy var leadingDistanceConstraint: NSLayoutConstraint = {
             return bottomUnderlineView.leftAnchor.constraint(equalTo: segmentedControl.leftAnchor)
         }()
     
-        @objc private func segmentedControlValueChanged(_ sender: UISegmentedControl) {
+    @objc private func segmentedControlValueChanged(_ sender: UISegmentedControl) {
            changeSegmentedControlLinePosition()
        }
 
        // Change position of the underline
-        private func changeSegmentedControlLinePosition() {
+    private func changeSegmentedControlLinePosition() {
            let segmentIndex = CGFloat(segmentedControl.selectedSegmentIndex)
            let segmentWidth = segmentedControl.frame.width / CGFloat(segmentedControl.numberOfSegments)
            let leadingDistance = segmentWidth * segmentIndex
@@ -330,7 +312,6 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
 
     
     //MARK: - Third Level
-    
     private let thirdLevelView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -338,7 +319,7 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     }()
     
     // Label Select color and Capacity
-    let colorCapacityLabel: UILabel = {
+    private let colorCapacityLabel: UILabel = {
         let label = UILabel()
         label.text = "Select color and capacity"
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -407,7 +388,7 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     }()
     
     // это надо потом во вью модель
-    @objc func changeLabelColor(sender: UITapGestureRecognizer) {
+    @objc func changedCapacity(sender: UITapGestureRecognizer) {
         UIView.animate(withDuration: 0.3, animations: { [weak self] in
         if let label = sender.view as? UILabel {
             if label == self?.gb128Label { // выбран первый лейбл (128гб)
@@ -432,8 +413,8 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     
     // и это тож во вью модель
     func setupGestureRecognizer() {
-        let tapGesture1 = UITapGestureRecognizer(target: self, action: #selector(changeLabelColor))
-        let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(changeLabelColor))
+        let tapGesture1 = UITapGestureRecognizer(target: self, action: #selector(changedCapacity))
+        let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(changedCapacity))
         gb256Label.addGestureRecognizer(tapGesture2)
         gb128Label.addGestureRecognizer(tapGesture1)
 
@@ -480,7 +461,7 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     }()
     // добавляет кнопку
     lazy var addToCartButton : UIButton = {
-        let button = UIButton()
+        let button = UIButton(type: .system)
         button.backgroundColor = .orange
         button.translatesAutoresizingMaskIntoConstraints = false
         button.clipsToBounds = true
@@ -492,11 +473,16 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     }()
     
     @objc func addToCartButtonTapped() {
-//        guard let newModel = viewModel.convertFromDetailsToCartModel() else { return }
-//        cartViewModel.cartPhonesModel = newModel
-//        print("BOoOOOOOOM : \(newModel)")
+        cartCounter += 1
+        setupItemsInCart()
+        addToCartButton.startAnimatingPressActions()
+
+        // Закидываем телефоны в массив phonesInCart в файле MyCartViewMode.
+        cartViewModel.cartPhonesModel.append(viewModel.createModelForCart(model: detailsPhonesArray.first!))
+       
+        
     }
-    
+
     // Чтобы не  писать кучу строк кода, попробую написать функцию 1)создающую имейджВьюхи и 2)текстовые лейблы
     
     static func createImagePhoneOptions (name: String, width: Int, height: Int) -> UIImageView { // создает картинку
@@ -572,10 +558,9 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         stack.backgroundColor = .clear
         return stack
     }
+    
     // ну а теперь можно и засунуть
-    
     let optionsStack = makeHorizontalStackOfStacks(stack1: memoryStack, stack2: operativkaStack, stack3: cameraStack, stack4: processorStack)
-    
     
     // Делаем функцию, создающую стак для кнопки
     private func makeButtonStackView() -> UIStackView {
@@ -610,33 +595,115 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         stack.backgroundColor = .clear
         return stack
     }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+       
+}
 
+// создаем Layout который будет туда сюда ходить
+private extension DetailsVC {
+    
+    func createScrollableLayout() -> UICollectionViewCompositionalLayout {
+            let compositionalLayout: UICollectionViewCompositionalLayout = {
+            
+            let fractionSize: CGFloat = 0.65
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(fractionSize),heightDimension: .fractionalWidth(fractionSize))
+          
+            // Item
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            
+            // Group
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+            
+            // Section
+            let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 25, leading: 80, bottom: 0, trailing: 2.5)
+            section.orthogonalScrollingBehavior = .continuous
+            
+            // creating transformableScrolling
+            section.visibleItemsInvalidationHandler = { (items, offset, environment) in
+                items.forEach { item in
+                    let distanceFromCenter = abs((item.frame.midX - offset.x) - environment.container.contentSize.width / 2.0)
+                    let minScale: CGFloat = 0.8
+                    let maxScale: CGFloat = 1.1
+                    let scale = max(maxScale - (distanceFromCenter / environment.container.contentSize.width), minScale)
+                    item.transform = CGAffineTransform(scaleX: scale, y: scale)
+                }
+            }
+            return UICollectionViewCompositionalLayout(section: section)
+        }()
+        return compositionalLayout
+    }
+}
 
-  
+//MARK: - CollectionView Delegate
+extension DetailsVC {
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DetailsCell.identife, for: indexPath) as? DetailsCell else { fatalError("Failed to get expected kind of reusable cell from the tableView. Expected type `ProductDetailsCustomCell`")}
+        let cellVM = viewModel.getDetailsCellViewModel(at: indexPath)
+        viewModel.selectedIndexPath = indexPath
+        cell.viewModel = cellVM
+        cell.clipsToBounds = true
+        cell.layer.cornerRadius = 10
+        cell.addShadow()
+        if let viem = cellVM {
+            detailsPhonesArray.append(viem as! DetailsCellModel)
+        }
+        return cell
+    }
+    
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return  /*viewModel.detailsModel.count*/ 3
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let vc = MyCartVC()
+        navigationController?.pushViewController(vc, animated: true)
 
-    //MARK: - setup UI
-    //настройка якорей
-    func setupUI () {
-        setupNavigationBar()
+    }
+}
+
+//MARK: - Setup Views
+extension DetailsVC {
+    //MARK:  Setup Collection View
+    func setupCollectionView () {
+        collectionView.collectionViewLayout = createScrollableLayout()
         
+        collectionView.register(DetailsCell.self, forCellWithReuseIdentifier: DetailsCell.identife)
+        collectionView.isScrollEnabled = false // выключает скролл по вертикали
+        
+    }
+    
+    //MARK: setup UI
+    func setupUI () {
         setupCardView()
+        
         setupFirstLevel()
         setupSecondLevel()
         setupThirdLevel()
         setupFourthLevel()
     }
     
+    //MARK: setup NavigationBar
     // Настройка якорей в навБаре и действий для кнопок
     func setupNavigationBar() {
-        view.addSubview(detailsNavBarLabel)
-        view.addSubview(shopCartButton)
-    
-        detailsNavBarLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        detailsNavBarLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 55).isActive = true
         
         // кнопка в корзину верх право
+        view.addSubview(shopCartButton)
         shopCartButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 55).isActive = true
         shopCartButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15).isActive = true
+        
+        view.addSubview(detailsNavBarLabel)
+        detailsNavBarLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        detailsNavBarLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 55).isActive = true
         
         navigationItem.hidesBackButton = true
 
@@ -649,190 +716,153 @@ class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
         let rightBarButton = UIBarButtonItem(customView: shopCartButton)
         navigationItem.setRightBarButton(rightBarButton, animated: true)
         shopCartButton.addTarget(self, action: #selector(shopCartButtonPresentingVC), for: .touchUpInside)
+        
+       
     }
     
+    //MARK: setup CardView
     func setupCardView() {
+        
         view.addSubview(cardView)
         cardView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         cardView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         cardView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         cardView.topAnchor.constraint(equalTo: view.topAnchor, constant: 400).isActive = true
+        
+        
     }
     
+    //MARK: setup 1st Level
     func setupFirstLevel() {
+        
         cardView.addSubview(firstLevelView)
+        firstLevelView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor).isActive = true
+        firstLevelView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
+        firstLevelView.topAnchor.constraint(equalTo: cardView.topAnchor).isActive = true
+        firstLevelView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        
         firstLevelView.addSubview(phoneLabel)
+        phoneLabel.topAnchor.constraint(equalTo: firstLevelView.topAnchor, constant: 20).isActive = true
+        phoneLabel.leadingAnchor.constraint(equalTo: firstLevelView.leadingAnchor, constant: 30).isActive = true
+        
         firstLevelView.addSubview(favButton)
+        favButton.topAnchor.constraint(equalTo: firstLevelView.topAnchor, constant: 28).isActive = true
+        favButton.trailingAnchor.constraint(equalTo: firstLevelView.trailingAnchor, constant: -40).isActive = true
+        
         let addStarsStuck = makeStartsStackView()
         addStarsStuck.addArrangedSubview(star1ImageView)
         addStarsStuck.addArrangedSubview(star2ImageView)
         addStarsStuck.addArrangedSubview(star3ImageView)
         addStarsStuck.addArrangedSubview(star4ImageView)
         addStarsStuck.addArrangedSubview(star5ImageView)
+        
         firstLevelView.addSubview(addStarsStuck)
-
-        firstLevelView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor).isActive = true
-        firstLevelView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
-        firstLevelView.topAnchor.constraint(equalTo: cardView.topAnchor).isActive = true
-        firstLevelView.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        
-        phoneLabel.topAnchor.constraint(equalTo: firstLevelView.topAnchor, constant: 20).isActive = true
-        phoneLabel.leadingAnchor.constraint(equalTo: firstLevelView.leadingAnchor, constant: 30).isActive = true
-        
         addStarsStuck.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 6).isActive = true
         addStarsStuck.leadingAnchor.constraint(equalTo: firstLevelView.leadingAnchor, constant: 30).isActive = true
-        
-        favButton.topAnchor.constraint(equalTo: firstLevelView.topAnchor, constant: 28).isActive = true
-        favButton.trailingAnchor.constraint(equalTo: firstLevelView.trailingAnchor, constant: -40).isActive = true
     }
     
+    //MARK: setup 2nd Level
     func setupSecondLevel() {
-        cardView.addSubview(secondLevelView)
         
-        secondLevelView.addSubview(optionsStack)
+        cardView.addSubview(secondLevelView)
+        secondLevelView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor).isActive = true
+        secondLevelView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
+        secondLevelView.topAnchor.constraint(equalTo: firstLevelView.bottomAnchor).isActive = true
+        secondLevelView.heightAnchor.constraint(equalToConstant: 150).isActive = true
         
         secondLevelView.addSubview(segmentedControlContainerView)
-        segmentedControlContainerView.addSubview(segmentedControl)
-        segmentedControlContainerView.addSubview(bottomUnderlineView)
-        
         NSLayoutConstraint.activate([
                     segmentedControlContainerView.topAnchor.constraint(equalTo: secondLevelView.topAnchor, constant: 20),
                     segmentedControlContainerView.leadingAnchor.constraint(equalTo: secondLevelView.leadingAnchor, constant: 30),
                     segmentedControlContainerView.trailingAnchor.constraint(equalTo: secondLevelView.trailingAnchor, constant: -30),
                     segmentedControlContainerView.heightAnchor.constraint(equalToConstant: Constants.segmentedControlHeight)
                     ])
-
-                // Constrain the segmented control to the container view
+        
+        secondLevelView.addSubview(optionsStack)
+        optionsStack.topAnchor.constraint(equalTo: segmentedControlContainerView.bottomAnchor, constant: 35).isActive = true
+        optionsStack.leadingAnchor.constraint(equalTo: secondLevelView.leadingAnchor, constant: 30).isActive = true
+        optionsStack.trailingAnchor.constraint(equalTo: secondLevelView.trailingAnchor, constant: -30).isActive = true
+        
+        // Constrain the segmented control to the container view
+        segmentedControlContainerView.addSubview(segmentedControl)
         NSLayoutConstraint.activate([
-                    segmentedControl.topAnchor.constraint(equalTo: segmentedControlContainerView.topAnchor),
-                    segmentedControl.leadingAnchor.constraint(equalTo: segmentedControlContainerView.leadingAnchor),
-                    segmentedControl.centerXAnchor.constraint(equalTo: segmentedControlContainerView.centerXAnchor),
-                    segmentedControl.centerYAnchor.constraint(equalTo: segmentedControlContainerView.centerYAnchor)
-                    ])
-
-                // Constrain the underline view relative to the segmented control
+            segmentedControl.topAnchor.constraint(equalTo: segmentedControlContainerView.topAnchor),
+            segmentedControl.leadingAnchor.constraint(equalTo: segmentedControlContainerView.leadingAnchor),
+            segmentedControl.centerXAnchor.constraint(equalTo: segmentedControlContainerView.centerXAnchor),
+            segmentedControl.centerYAnchor.constraint(equalTo: segmentedControlContainerView.centerYAnchor)
+            ])
+        
+        // Constrain the underline view relative to the segmented control
+        segmentedControlContainerView.addSubview(bottomUnderlineView)
         NSLayoutConstraint.activate([
                     bottomUnderlineView.bottomAnchor.constraint(equalTo: segmentedControl.bottomAnchor),
                     bottomUnderlineView.heightAnchor.constraint(equalToConstant: Constants.underlineViewHeight),
                     leadingDistanceConstraint,
                     bottomUnderlineView.widthAnchor.constraint(equalTo: segmentedControl.widthAnchor, multiplier: 1 / CGFloat(segmentedControl.numberOfSegments))
                     ])
-      
-
-//
-        secondLevelView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor).isActive = true
-        secondLevelView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
-        secondLevelView.topAnchor.constraint(equalTo: firstLevelView.bottomAnchor).isActive = true
-        secondLevelView.heightAnchor.constraint(equalToConstant: 150).isActive = true
-
-
-        optionsStack.topAnchor.constraint(equalTo: segmentedControlContainerView.bottomAnchor, constant: 35).isActive = true
-        optionsStack.leadingAnchor.constraint(equalTo: secondLevelView.leadingAnchor, constant: 30).isActive = true
-        optionsStack.trailingAnchor.constraint(equalTo: secondLevelView.trailingAnchor, constant: -30).isActive = true
-//
         
     }
     
+    //MARK: setup 3rd Level
     func setupThirdLevel() {
+        
         cardView.addSubview(thirdLevelView)
+        thirdLevelView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor).isActive = true
+        thirdLevelView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
+        thirdLevelView.topAnchor.constraint(equalTo: secondLevelView.bottomAnchor).isActive = true
+        thirdLevelView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        
         thirdLevelView.addSubview(colorCapacityLabel)
+        colorCapacityLabel.topAnchor.constraint(equalTo: thirdLevelView.topAnchor, constant: 5).isActive = true
+        colorCapacityLabel.leadingAnchor.constraint(equalTo: thirdLevelView.leadingAnchor, constant: 30).isActive = true
         
         //стак для кругляшек
         let circlesStack = circlesStack()
         circlesStack.addArrangedSubview(circleLabelBrown)
         circlesStack.addArrangedSubview(circleLabelBlack)
+        
         thirdLevelView.addSubview(circlesStack)
+        circlesStack.leadingAnchor.constraint(equalTo: thirdLevelView.leadingAnchor, constant: 30).isActive = true
+        circlesStack.bottomAnchor.constraint(equalTo: thirdLevelView.bottomAnchor, constant: -16).isActive = true
 
         //стак для гигов
         let gbStack = makeStartsStackView()
         gbStack.addArrangedSubview(gb128Label)
         gbStack.spacing = 6
         gbStack.addArrangedSubview(gb256Label)
+        
         thirdLevelView.addSubview(gbStack)
-        
-        
-        thirdLevelView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor).isActive = true
-        thirdLevelView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
-        thirdLevelView.topAnchor.constraint(equalTo: secondLevelView.bottomAnchor).isActive = true
-        thirdLevelView.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        
-        colorCapacityLabel.topAnchor.constraint(equalTo: thirdLevelView.topAnchor, constant: 5).isActive = true
-        colorCapacityLabel.leadingAnchor.constraint(equalTo: thirdLevelView.leadingAnchor, constant: 30).isActive = true
-        
-        circlesStack.leadingAnchor.constraint(equalTo: thirdLevelView.leadingAnchor, constant: 30).isActive = true
-        circlesStack.bottomAnchor.constraint(equalTo: thirdLevelView.bottomAnchor, constant: -16).isActive = true
-        
         gbStack.bottomAnchor.constraint(equalTo: thirdLevelView.bottomAnchor, constant: -16).isActive = true
         gbStack.leadingAnchor.constraint(equalTo: circlesStack.trailingAnchor, constant: 55).isActive = true
         gbStack.trailingAnchor.constraint(equalTo: thirdLevelView.trailingAnchor, constant: -63).isActive = true
         
     }
     
+    //MARK: setup 4th Level
     func setupFourthLevel() {
+        
         cardView.addSubview(forthLevelView)
-        forthLevelView.addSubview(addToCartButton)
-        forthLevelView.addSubview(addToCartLabel)
-        forthLevelView.addSubview(priceLabel)
-    
         forthLevelView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor).isActive = true
         forthLevelView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
         forthLevelView.topAnchor.constraint(equalTo: thirdLevelView.bottomAnchor).isActive = true
         forthLevelView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
+        forthLevelView.addSubview(addToCartButton)
         addToCartButton.bottomAnchor.constraint(equalTo: forthLevelView.bottomAnchor, constant: -35).isActive = true
         addToCartButton.leadingAnchor.constraint(equalTo: forthLevelView.leadingAnchor, constant: 30).isActive = true
         addToCartButton.trailingAnchor.constraint(equalTo: forthLevelView.trailingAnchor, constant: -30).isActive = true
         addToCartButton.heightAnchor.constraint(equalToConstant: 54).isActive = true
         
+        forthLevelView.addSubview(addToCartLabel)
         addToCartLabel.leadingAnchor.constraint(equalTo: addToCartButton.leadingAnchor, constant: 45).isActive = true
         addToCartLabel.centerYAnchor.constraint(equalTo: addToCartButton.centerYAnchor).isActive = true
         
+        forthLevelView.addSubview(priceLabel)
         priceLabel.trailingAnchor.constraint(equalTo: addToCartButton.trailingAnchor, constant: -38).isActive = true
         priceLabel.centerYAnchor.constraint(equalTo: addToCartButton.centerYAnchor).isActive = true
-
     }
   
-    func setupCollectionView () {
-        collectionView.register(DetailsCell.self, forCellWithReuseIdentifier: DetailsCell.identife)
-        collectionView.isScrollEnabled = false // выключает скролл по вертикали
-    }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-   
-}
-
-
-
-//MARK: - CollectionView Delegate
-extension DetailsVC {
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DetailsCell.identife, for: indexPath) as? DetailsCell else { fatalError("Failed to get expected kind of reusable cell from the tableView. Expected type `ProductDetailsCustomCell`")}
-        let cellVM = viewModel.getDetailsCellViewModel(at: indexPath) as? DetailsCellModelProtocol
-        viewModel.selectedIndexPath = indexPath
-        cell.viewModel = cellVM
-        cell.clipsToBounds = true
-        cell.layer.cornerRadius = 10
-        cell.addShadow()
-        print("Setting cell with indexPath: \(indexPath), cellVM: \(cellVM)")
-        return cell
-    }
-    
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  viewModel.detailsModel.count
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vc = MyCartVC()
-        navigationController?.pushViewController(vc, animated: true)
-
-    }
 }
 //
 //struct ViewControllerProvider : PreviewProvider {

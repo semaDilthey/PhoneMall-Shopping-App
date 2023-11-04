@@ -21,7 +21,7 @@ class HeaderBestSeller : UICollectionReusableView {
         return label
     }()
     
-    private let seeMoreButton : UIButton = {
+    lazy var seeMoreButton : UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -37,21 +37,32 @@ class HeaderBestSeller : UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        addSubview(seeMoreButton)
-        addSubview(labelBestSeller)
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        setupUI()
         
-      
-        labelBestSeller.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12).isActive = true
-        labelBestSeller.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
-        seeMoreButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
-        seeMoreButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+
+//MARK: - SetupUI
+extension HeaderBestSeller {
+    
+    func setupUI() {
+        addSubview(labelBestSeller)
+        labelBestSeller.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12).isActive = true
+        labelBestSeller.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
+        
+        addSubview(seeMoreButton)
+        seeMoreButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
+        seeMoreButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+    }
+    
 }

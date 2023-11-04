@@ -8,7 +8,6 @@ import Foundation
 import UIKit
 
 protocol HomeViewModelProtocol {
-    
     func getBestSeller()
     func getHomeStore()
     func getCategories()
@@ -80,7 +79,7 @@ class HomeViewModel : HomeViewModelProtocol {
         })
     }
     
-    func createBestSellerCellModel(data: BestSellerItem) -> BestSellerCellViewModelProtocol {
+    private func createBestSellerCellModel(data: BestSellerItem) -> BestSellerCellViewModelProtocol {
         let title = data.title
         let picture = data.picture
         let discountPrice = String(data.discountPrice) + "$"

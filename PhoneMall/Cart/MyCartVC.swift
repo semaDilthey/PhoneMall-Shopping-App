@@ -9,38 +9,31 @@ protocol MyCartCellDelegate: AnyObject {
 }
 
 
-class MyCartVC : UIViewController {
+final class MyCartVC : UIViewController, CartCellDelegate {
+    
+    func didTapDeleteButton(cell: MyCartCell) {
+        if let indexPath = tableView.indexPath(for: cell) {
+            viewModel.cartPhonesModel.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+    }
+    
     
     weak var delegate: MyCartCellDelegate?
     
     let viewModel = MyCartViewModel()
-    // проперти для кнопки, если true, то она грузится, если false, то просто Чекаут
-    //var checkingOut = false
     
     var checkingOut : Bool {
         checkoutButton.isTouchInside ? true : false
     }
-    // над этими 2 поработать
-    var totalItems : [MyCartCellModelProtocol]?
-    
-    var totalItemsCounter : Int? {
-        if totalItems != nil {
-            return totalItems?.count
-        } else {
-            return 0
-        }
-    }
-   
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         tableView.register(MyCartCell.self, forCellReuseIdentifier: MyCartCell.identifire)
-        navigationItem.hidesBackButton = true
         backButtonSetup()
-    
         initViewModel()
-        }
+    }
     
     func initViewModel() {
         viewModel.getCartPhones()
@@ -69,10 +62,11 @@ class MyCartVC : UIViewController {
         navigationController?.popToRootViewController(animated: true)
     }
     
-    func backButtonSetup() {
+    private func backButtonSetup() {
         backButton.addTarget(self, action: #selector(handlePresentingVC), for: .touchUpInside)
         let backBarButtonItems = UIBarButtonItem(customView: backButton)
         navigationItem.leftBarButtonItem = backBarButtonItems
+        navigationItem.hidesBackButton = true
     }
     
     lazy var addressButton : UIButton = {
@@ -115,7 +109,7 @@ class MyCartVC : UIViewController {
         return scroll
     }()
     
-     lazy var tableView : UITableView = {
+     private lazy var tableView : UITableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
         table.backgroundColor = .customDarkBlue
@@ -146,12 +140,12 @@ class MyCartVC : UIViewController {
         let label = UILabel()
         label.font = .markProFont(size: 14, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "$6,000 us"
+        label.text = "$ 2326.0"
         label.textColor = .white
         return label
     }()
     
-    let totalLabel : UILabel = {
+    private let totalLabel : UILabel = {
         let label = UILabel()
         label.font = .markProFont(size: 14, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -160,7 +154,7 @@ class MyCartVC : UIViewController {
         return label
     }()
     
-    let deliveryLabel : UILabel = {
+    private let deliveryLabel : UILabel = {
         let label = UILabel()
         label.font = .markProFont(size: 14, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -207,123 +201,21 @@ class MyCartVC : UIViewController {
         button.setTitle("Checkout", for: .normal)
         
         // giving a config to style our button
-        var config = UIButton.Configuration.filled()
-        config.buttonSize = .large
-        config.cornerStyle = .medium
-        config.background.backgroundColor = UIColor(named: "customOrange")
-        config.imagePlacement = .leading
-        config.imagePadding = 5
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-          var outgoing = incoming
-          outgoing.font = UIFont.preferredFont(forTextStyle: .headline)
-          return outgoing
-        }
-        button.configuration = config
-        button.configurationUpdateHandler = { [weak self] button in
-          // 1
-          var config = button.configuration
-
-          // 2
-            config?.showsActivityIndicator = self!.checkingOut
-          // 3
-            config?.title = self!.checkingOut ? "Checking Out..." : "Checkout"
-
-          // 4
-            button.isEnabled = !self!.checkingOut
-
-          // 5
-          button.configuration = config
-        }
-        button.setNeedsUpdateConfiguration()
+        configureButton(button: button)
         return button
     }()
     
-    func setupUI() {
-        view.backgroundColor = .white
-        
-        //MARK: - Setting NavBar/ TopView
-        view.addSubview(backButton)
-        view.addSubview(addressButton)
-        view.addSubview(addAdressLabel)
-        view.addSubview(myCartLabel)
-        
-        NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 65),
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 42),
-            
-            addressButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 65),
-            addressButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
-            
-            addAdressLabel.centerYAnchor.constraint(equalTo: addressButton.centerYAnchor),
-            addAdressLabel.trailingAnchor.constraint(equalTo: addressButton.leadingAnchor, constant: -9),
-            
-            myCartLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 42),
-            myCartLabel.bottomAnchor.constraint(equalTo: view.topAnchor, constant: 180)])
-        
-        //MARK: - Setting CardView and TableView
-        view.addSubview(cardView)
-        view.addSubview(tableView)
-        view.addSubview(lineUpper)
-
-        NSLayoutConstraint.activate([
-            cardView.topAnchor.constraint(equalTo: myCartLabel.bottomAnchor, constant: 49),
-            cardView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            cardView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            cardView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            
-            tableView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            tableView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 15),
-            tableView.bottomAnchor.constraint(equalTo: lineUpper.topAnchor),
-            ])
-        
-        //MARK: - Setting block with lines, Total, Delivery label
-        
-        view.addSubview(lineLower)
-
-        // тут стакВью идут
-        view.addSubview(StackTotalPrice)
-        view.addSubview(StackDeliveryCost)
-                
-        view.addSubview(checkoutButton)
-        
-        StackTotalPrice.addArrangedSubview(totalLabel)
-        StackTotalPrice.setCustomSpacing(190, after: totalLabel)
-        StackTotalPrice.addArrangedSubview(totalPrice)
-        
-        StackDeliveryCost.addArrangedSubview(deliveryLabel)
-        StackDeliveryCost.addArrangedSubview(deliveryPrice)
-        
     
-        NSLayoutConstraint.activate([
-            lineUpper.widthAnchor.constraint(equalTo: view.widthAnchor),
-            lineUpper.bottomAnchor.constraint(equalTo: checkoutButton.topAnchor, constant: -27),
-            lineUpper.heightAnchor.constraint(equalToConstant: 0.2),
-          
-            StackTotalPrice.topAnchor.constraint(equalTo: lineLower.bottomAnchor, constant: 15),
-            StackTotalPrice.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 55),
-            StackTotalPrice.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35),
-            
-            StackDeliveryCost.topAnchor.constraint(equalTo: StackTotalPrice.bottomAnchor, constant: 15),
-            StackDeliveryCost.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 55),
-            StackDeliveryCost.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35),
-            
-            lineLower.widthAnchor.constraint(equalTo: view.widthAnchor),
-            lineLower.bottomAnchor.constraint(equalTo: checkoutButton.topAnchor, constant: -118),
-            lineLower.heightAnchor.constraint(equalToConstant: 0.2),
-            
-            checkoutButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 44),
-            checkoutButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -44),
-            checkoutButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -77),
-            checkoutButton.heightAnchor.constraint(equalToConstant: 54),
-        ])
-        
-    }
     
-    var arrayOfPrices : [Int] = []
-
-    var totalSum : Int {
-        return viewModel.cartPhonesModel.first?.price ?? 0
+    // property observer, считает тотал
+    var total : Double = 0.0 {
+        willSet {
+            if viewModel.cartPhonesModel.count > 0 {
+                totalPrice.text = "$" + " " + String(viewModel.tupleOfPrices.0 + viewModel.tupleOfPrices.1)
+            } else {
+                totalPrice.text = "$" + " " + "0"
+            }
+        }
     }
     
 }
@@ -341,30 +233,139 @@ extension MyCartVC : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MyCartCell.identifire, for: indexPath) as! MyCartCell
-        //cell.clipsToBounds = true
+        cell.delegate = self
         if let cellModel = viewModel.getMyCartCellViewModel(at: indexPath) {
             cell.viewModel = cellModel
             
             cell.stepper.updatePriceClosure = { [weak self] value in
                 cell.updatePrice(by: value)
-                print("Price: \(cell.phonePriceLabel.text)")
-//                self?.arrayOfPrices.append(cell.phonePriceLabel.text!)
-//                self?.totalPrice.text = self?.arrayOfPrices.max()
-                self?.delegate?.updateTotalSum(value) 
+                // если число вещей 0, то они удаляются из таблицы
+                if value == 0 {
+                    self?.viewModel.cartPhonesModel.remove(at: indexPath.row)
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                }
+                // считаем тотал
+                if let phonesPrice = cell.phonePriceLabel.text {
+                    self?.viewModel.countTotal(string: phonesPrice, at: indexPath)
+                    self?.total = 0.0
+                }
+                
+                self?.delegate?.updateTotalSum(value)
                
             }
         }
-        if let price = cell.phonePriceLabel.text {
-            cell.addToTotal = { [weak self] pricee in
-                self?.totalPrice.text = pricee
-            }
-        }
+       
         return cell
     }
     
     
+    
 }
 
+//MARK: - SetupUI
+extension MyCartVC {
+    
+    func setupUI() {
+        view.backgroundColor = .white
+        
+        //MARK: Setting NavBar/ TopView
+        view.addSubview(backButton)
+        backButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 65).isActive = true
+        backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 42).isActive = true
+        
+        view.addSubview(addressButton)
+        addressButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 65).isActive = true
+        addressButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50).isActive = true
+        
+        view.addSubview(addAdressLabel)
+        addAdressLabel.centerYAnchor.constraint(equalTo: addressButton.centerYAnchor).isActive = true
+        addAdressLabel.trailingAnchor.constraint(equalTo: addressButton.leadingAnchor, constant: -9).isActive = true
+        
+        view.addSubview(myCartLabel)
+        myCartLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 42).isActive = true
+        myCartLabel.bottomAnchor.constraint(equalTo: view.topAnchor, constant: 180).isActive = true
+        
+ 
+        
+        //MARK: Setting CardView and TableView
+        view.addSubview(cardView)
+        cardView.topAnchor.constraint(equalTo: myCartLabel.bottomAnchor, constant: 49).isActive = true
+        cardView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        cardView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        cardView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        view.addSubview(checkoutButton)
+        checkoutButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 44).isActive = true
+        checkoutButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -44).isActive = true
+        checkoutButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -77).isActive = true
+        checkoutButton.heightAnchor.constraint(equalToConstant: 54).isActive = true
+        
+        view.addSubview(lineUpper)
+        lineUpper.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        lineUpper.bottomAnchor.constraint(equalTo: checkoutButton.topAnchor, constant: -27).isActive = true
+        lineUpper.heightAnchor.constraint(equalToConstant: 0.2).isActive = true
+        
+        view.addSubview(tableView)
+        tableView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        tableView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 15).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: lineUpper.topAnchor).isActive = true
+
+        view.addSubview(lineLower)
+        lineLower.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        lineLower.bottomAnchor.constraint(equalTo: checkoutButton.topAnchor, constant: -118).isActive = true
+        lineLower.heightAnchor.constraint(equalToConstant: 0.2).isActive = true
+        
+        StackTotalPrice.addArrangedSubview(totalLabel)
+        StackTotalPrice.setCustomSpacing(190, after: totalLabel)
+        StackTotalPrice.addArrangedSubview(totalPrice)
+        
+        view.addSubview(StackTotalPrice)
+        StackTotalPrice.topAnchor.constraint(equalTo: lineLower.bottomAnchor, constant: 15).isActive = true
+        StackTotalPrice.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 55).isActive = true
+        StackTotalPrice.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35).isActive = true
+        
+        StackDeliveryCost.addArrangedSubview(deliveryLabel)
+        StackDeliveryCost.addArrangedSubview(deliveryPrice)
+        
+        view.addSubview(StackDeliveryCost)
+        StackDeliveryCost.topAnchor.constraint(equalTo: StackTotalPrice.bottomAnchor, constant: 15).isActive = true
+        StackDeliveryCost.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 55).isActive = true
+        StackDeliveryCost.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35).isActive = true
+        
+    }
+}
+
+
+private extension MyCartVC {
+    // Конфигурация для кнопки Check out
+    func configureButton(button: UIButton) {
+        var config = UIButton.Configuration.filled()
+        config.buttonSize = .large
+        config.cornerStyle = .medium
+        config.background.backgroundColor = UIColor(named: "customOrange")
+        config.imagePlacement = .leading
+        config.imagePadding = 5
+        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+          var outgoing = incoming
+          outgoing.font = UIFont.preferredFont(forTextStyle: .headline)
+          return outgoing
+        }
+        button.configuration = config
+        button.configurationUpdateHandler = { [weak self] button in
+          // 1
+          var config = button.configuration
+          // 2
+            config?.showsActivityIndicator = self!.checkingOut
+          // 3
+            config?.title = self!.checkingOut ? "Checking Out..." : "Checkout"
+          // 4
+            button.isEnabled = !self!.checkingOut
+          // 5
+          button.configuration = config
+        }
+        button.setNeedsUpdateConfiguration()
+    }
+}
 
 //struct ViewControllerProvider : PreviewProvider {
 //    static var previews: some View {

@@ -16,45 +16,68 @@ enum FilterOptions {
 
 protocol FilterViewModelProtocol {
     var title: String { get }
-    
-    func numberOfRows(_ filter: FilterOptions) -> Int
-    func getRowValue(at index: Int, for filter: FilterOptions) -> String
-    //func getViewModel(for filter: FilterOptions) -> FilterViewModelProtocol
-    
-    init(brands: [String], prices: [String], sizes: [String])
+//    
+//    func numberOfRows(_ filter: FilterOptions) -> Int
+//    func getRowValue(at index: Int, for filter: FilterOptions) -> String
+//    //func getViewModel(for filter: FilterOptions) -> FilterViewModelProtocol
+//    
+//    init(brands: [String], prices: [String], sizes: [String])
 }
 
 class FilterViewModel : FilterViewModelProtocol {
     
-    private var brands: [String]
-    private let prices: [String]
-    private let sizes: [String]
+    let data = FilterData()
+        
+    init() {
+        sortModels()
+    }
     
+    func getModels() -> [PhoneName] {
+        return data.phoneModels
+    }
+    
+    func getSortedModels() -> [PhoneOptions] {
+        return data.optionsSortedByModelsId
+    }
     var title: String {
         "Filter Options"
     }
     
-    func numberOfRows(_ filter: FilterOptions) -> Int {
-        switch filter {
-        case .brand:
-           return brands.count
-        case .price:
-            return prices.count
-        case .size:
-            return  sizes.count
+    
+    func getOptions(phone_id: Int) -> [PhoneOptions] {
+        let optionPhones = data.phoneModelsOptions.filter { (options) in
+            options.phone_id == phone_id
         }
+        return optionPhones
     }
     
-    func getRowValue(at index: Int, for filter: FilterOptions) -> String {
-        switch filter {
-        case .brand:
-            return  brands[index]
-        case .price:
-            return  prices[index]
-        case .size:
-            return  sizes[index]
-        }
+    var optionsSortedByModelsId = [PhoneOptions]()
+    
+    private func sortModels() {
+        self.optionsSortedByModelsId = getOptions(phone_id: data.phoneModels.first!.id)
     }
+    
+//    func numberOfRows(_ filter: FilterOptions) -> Int {
+//        switch filter {
+//        case .brand:
+//           return brands.count
+//        case .price:
+//            return prices.count
+//        case .size:
+//            return  sizes.count
+//        }
+//    }
+//    
+//    func getRowValue(at index: Int, for filter: FilterOptions) -> String {
+//        switch filter {
+//        case .brand:
+//            return  brands[index]
+//        case .price:
+//            return  prices[index]
+//        case .size:
+//            return  sizes[index]
+//        }
+//    }
 //
 //    func getViewModel(for filter: FilterOptions) -> FilterViewModelProtocol {
 //        switch filter {
@@ -67,11 +90,11 @@ class FilterViewModel : FilterViewModelProtocol {
 //        }
 //    }
     
-    required init(brands: [String], prices: [String], sizes: [String]) {
-        self.brands = brands
-        self.prices = prices
-        self.sizes = sizes
-    }
+//    required init(brands: [String], prices: [String], sizes: [String]) {
+//        self.brands = brands
+//        self.prices = prices
+//        self.sizes = sizes
+//    }
     
     
 }

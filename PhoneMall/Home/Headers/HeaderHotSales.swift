@@ -38,7 +38,7 @@ class HeaderHotSales: UICollectionReusableView, UISearchBarDelegate {
         return label
     }()
     
-    private let seeMoreButton : UIButton = {
+    private lazy var seeMoreButton : UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -57,33 +57,35 @@ class HeaderHotSales: UICollectionReusableView, UISearchBarDelegate {
         setupUI()
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+
+//MARK: - SetupUI
+extension HeaderHotSales {
+    
     func setupUI() {
-        addSubview(searchBar)
-        addSubview(qrButton)
         addSubview(labelHotSales)
-        addSubview(seeMoreButton)
+        labelHotSales.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12).isActive = true
+        labelHotSales.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
         
+        addSubview(searchBar)
         searchBar.bottomAnchor.constraint(equalTo: labelHotSales.topAnchor, constant: -24).isActive = true
         searchBar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 32).isActive = true
         searchBar.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -82).isActive = true
         searchBar.heightAnchor.constraint(equalToConstant: 36).isActive = true
         
+        addSubview(seeMoreButton)
+        seeMoreButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
+        seeMoreButton.centerYAnchor.constraint(equalTo: labelHotSales.centerYAnchor).isActive = true
+        
+        addSubview(qrButton)
         qrButton.bottomAnchor.constraint(equalTo: seeMoreButton.topAnchor, constant: -38).isActive = true
         qrButton.leadingAnchor.constraint(equalTo: searchBar.trailingAnchor, constant: 11).isActive = true
         qrButton.frame.size = CGSize(width: 36, height: 36)
-
         
-        labelHotSales.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12).isActive = true
-        labelHotSales.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
-        
-        seeMoreButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
-        seeMoreButton.centerYAnchor.constraint(equalTo: labelHotSales.centerYAnchor).isActive = true
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
     
 }

@@ -9,10 +9,10 @@ import Foundation
 import UIKit
 
 protocol CommonCellViewModel {
- 
     func numberOfSections() -> Int
     func numberOfItemsInSection() -> Int
 }
+
 
 class CategoryCellViewModel : CommonCellViewModel {
         
@@ -21,7 +21,7 @@ class CategoryCellViewModel : CommonCellViewModel {
         CategoryCellModel(title: "Computer", image: UIImage(named: "computerCircle") ?? UIImage()),
         CategoryCellModel(title: "Health", image: UIImage(named: "healthCircle") ?? UIImage()),
         CategoryCellModel(title: "Books", image: UIImage(named: "booksCircle") ?? UIImage()),
-        CategoryCellModel(title: "Others", image: UIImage(named: "others") ?? UIImage())
+        CategoryCellModel(title: "Others", image: UIImage(named: "othersCircle") ?? UIImage())
     ]
     
     var index = 0
@@ -31,7 +31,7 @@ class CategoryCellViewModel : CommonCellViewModel {
     }
     
     var picture: UIImage {
-        categories[index].image
+        categories[index].image.imageWithColor(color: .gray)
     }
     
     func set(indexPath: IndexPath) {

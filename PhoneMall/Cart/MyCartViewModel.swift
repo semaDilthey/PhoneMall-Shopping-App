@@ -13,12 +13,8 @@ protocol MyCartViewModelProtocol {
     func createCellModel(data: BasketCartData) -> MyCartCellModelProtocol?
 }
 
-protocol MyCartCellProtocol {
-    func removeCell(at indexPath: IndexPath)
-}
 
-
-class MyCartViewModel: MyCartCellProtocol {
+class MyCartViewModel {
     
     var data : CartData?
     var networking = NetworkManager()
@@ -28,39 +24,40 @@ class MyCartViewModel: MyCartCellProtocol {
     var cartPhonesModel = [MyCartCellModelProtocol]() {
         didSet {
             reloadTableView?()
-            counterUpdateHandler?(5)
         }
     }
     
-    var totalPrice: String? = ""
-    var counterUpdateHandler: ((Int) -> Void)?
-    
-    func removeCell(at indexPath: IndexPath) {
-    }
-    
+    // Получаем телефоны из Details сюда по нажатию на AddToCart
+    var phonesInCart : [MyCartCellModelProtocol] = []
     
     @objc func deleteRow(at indexPath: IndexPath) {
         cartPhonesModel.remove(at: indexPath.row)
     }
+        
+    
+    var tupleOfPrices : (Double, Double) = (firstPrice : 0, secondPrice : 0)
+    
+    func countTotal(string: String, at indexPath: IndexPath) {
+        let stringWithoutDollarSign = string.replacingOccurrences(of: "$", with: "")
+        
+        if let intValue = Double(stringWithoutDollarSign) {
+            if indexPath.row == 0 {
+                self.tupleOfPrices.0 = intValue
+            }
+            if indexPath.row == 1 {
+                self.tupleOfPrices.1 = intValue
+            }
+           
+            
+        } else {
+            print("Невозможно преобразовать строку в Int")
+        }
+    }
+    
     
 }
     
     
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //MARK: - MyCartViewModelProtocol

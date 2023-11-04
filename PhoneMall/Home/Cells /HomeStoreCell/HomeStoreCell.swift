@@ -28,7 +28,7 @@ class HomeStoreCell: UICollectionViewCell {
         return image
     }()
     
-    lazy var isNewLabel : UILabel = {
+    let isNewLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.backgroundColor = .customOrange
@@ -43,7 +43,7 @@ class HomeStoreCell: UICollectionViewCell {
         return label
     }()
     
-    lazy var phoneTitleLabel : UILabel = {
+    let phoneTitleLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "IPHONE"
@@ -52,7 +52,7 @@ class HomeStoreCell: UICollectionViewCell {
         return label
     }()
     
-    lazy var subtitleLabel : UILabel = {
+    let subtitleLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "some words bout phone"
@@ -78,6 +78,18 @@ class HomeStoreCell: UICollectionViewCell {
         super.layoutSubviews()
         setupUI()
     }
+    
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
+
+
+//MARK: - SetupUI
+extension HomeStoreCell {
     
     func setupUI() {
         
@@ -111,12 +123,9 @@ class HomeStoreCell: UICollectionViewCell {
         ])
         
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
 }
+
+
 
 //struct ViewControllerProvider : PreviewProvider {
 //    static var previews: some View {

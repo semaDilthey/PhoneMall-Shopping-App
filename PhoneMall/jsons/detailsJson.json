@@ -1,0 +1,21 @@
+{
+  "title": "Galaxy Note 20 Ultra",
+  "is_favorites": true,
+  "CPU": "Exynon 990",
+  "camera": "108+12",
+  "sd": "256",
+  "ssd": "8",
+  "capacity": [
+    "128,",
+    "256"
+  ],
+  "color": [
+    "Black",
+    "Brown"
+  ],
+  "price": 1500,
+  "images": [
+    "https://ir.ozone.ru/s3/multimedia-i/wc1000/6449594262.jpg",
+    "https://ir.ozone.ru/s3/multimedia-b/wc1000/6449586227.jpg"
+  ]
+}

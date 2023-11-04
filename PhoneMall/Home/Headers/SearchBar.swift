@@ -11,22 +11,8 @@ class SearchBar: UITextField {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        delegate = self
-        
-        translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = .white
-        placeholder = "Search..."
-        font = UIFont.markProFont(size: 11, weight: .plain)
-        clearButtonMode = .whileEditing
-        borderStyle = .none
-        layer.cornerRadius = 22
-        layer.masksToBounds = true
-        textColor = .black
-        
-        let image = UIImage(named: "search")
-        leftView = UIImageView(image: image)
-        leftView?.frame = CGRect(x: 0, y: 0, width: 14, height: 14)
-        leftViewMode = .always
+        setupSearchBar()
+        setupImageInSearchBar()
     }
     
     override func leftViewRect(forBounds bounds: CGRect) -> CGRect {
@@ -50,5 +36,29 @@ class SearchBar: UITextField {
 
 extension SearchBar: UITextFieldDelegate {
     
+}
 
+//MARK: - Setuping Search Bar and so on
+extension SearchBar {
+    
+    func setupSearchBar() {
+        delegate = self
+        translatesAutoresizingMaskIntoConstraints = false
+        backgroundColor = .white
+        placeholder = "Search..."
+        font = UIFont.markProFont(size: 11, weight: .plain)
+        clearButtonMode = .whileEditing
+        borderStyle = .none
+        layer.cornerRadius = 22
+        layer.masksToBounds = true
+        textColor = .black
+    }
+    
+    func setupImageInSearchBar() {
+        let image = UIImage(named: "search")
+        leftView = UIImageView(image: image)
+        leftView?.frame = CGRect(x: 0, y: 0, width: 14, height: 14)
+        leftViewMode = .always
+    }
+    
 }

@@ -1,0 +1,62 @@
+{
+  "home_store": [
+    {
+      "id": 1,
+      "title": "iPhone 15",
+      "subtitle": "Магия кино",
+      "is_new": true,
+      "picture": "https://www.notebookcheck.com/fileadmin/Notebooks/News/_nc3/Apple_iPhone_15_Pro_Max_Konzeptvideo_zeigt_wie_das_erste_USB_C_iPhone_2023_aussehen_koennte.jpg",
+      "is_buy": true
+    },
+    {
+      "id": 2,
+      "title": "Samsung Galaxy S23",
+      "subtitle": "Улучшая лучшее",
+      "is_new": true,
+      "picture": "https://ir.ozone.ru/s3/multimedia-r/6678387603.jpg",
+      "is_buy": true
+    },
+    {
+      "id": 3,
+      "title": "Xiaomi 13",
+      "subtitle": "Создавая качество",
+      "is_new": true,
+      "picture": "https://gizchina.it/wp-content/uploads/2022/12/Xiaomi-13-pro-global.jpg",
+      "is_buy": true
+    }
+  ],
+  "best_seller": [
+    {
+      "id": 1,
+      "is_favorites": true,
+      "title": "Samsung Galaxy Z Fold4",
+      "price_without_discount": 1289,
+      "discount_price": 1186,
+      "picture": "https://img.computerunivers.net/images/1000/90910530BAB1F6E8FF774AD887069E31.jpg"
+    },
+    {
+      "id": 2,
+      "is_favorites": false,
+      "title": "iPhone 15",
+      "price_without_discount": 1327,
+      "discount_price": 999,
+      "picture": "https://img.computerunivers.net/images/1000/90932953B160893EA7E34CADBCEC4F97.jpg"
+    },
+    {
+      "id": 3,
+      "is_favorites": false,
+      "title": "Motorola Edge 30 Pro",
+      "price_without_discount": 574,
+      "discount_price": 499,
+      "picture": "https://img.computerunivers.net/images/600/90861099DC5978A338D44D7194BEB4A8.jpg"
+    },
+    {
+    "id": 4,
+    "is_favorites": false,
+    "title": "Xiaomi 12T Pro 5G Dual-Sim",
+    "price_without_discount": 799,
+    "discount_price": 699,
+    "picture": "https://img.computerunivers.net/images/900/90916540E39BCDAA9ABE4B43985A21DB.jpg"
+  }
+  ]
+}

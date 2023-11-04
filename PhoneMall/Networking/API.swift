@@ -10,7 +10,8 @@ import UIKit
 
 struct API {
     
-    static let home = "https://run.mocky.io/v3/654bd15e-b121-49ba-a588-960956b15175"
-    static let details = "https://run.mocky.io/v3/6c14c560-15c6-4248-b9d2-b4508df7d4f5"
-    static let cart = "https://run.mocky.io/v3/53539a72-3c5f-4f30-bbb1-6ca10d42c149"
+    //static let homeOutdated = "https://run.mocky.io/v3/654bd15e-b121-49ba-a588-960956b15175"
+    static let home = "https://run.mocky.io/v3/1a62e5a9-c0f2-406a-a4e6-8a5c3849b465"
+    static let details = "https://run.mocky.io/v3/c2eadef7-2e29-4701-aefc-1aaaa8060b62"
+    static let cart = "https://run.mocky.io/v3/20b39c2b-0afa-4775-b0de-c9ff07edcf14"
 }

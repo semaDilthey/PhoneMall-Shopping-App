@@ -1,0 +1,18 @@
+{
+  "basket": [
+    {
+      "id": 1,
+      "images": "https://img.computerunivers.net/images/1000/90932953B160893EA7E34CADBCEC4F97.jpg",
+      "price": 1327,
+      "title": "iPhone"
+    },
+    {
+      "id": 2,
+      "images": "https://img.computerunivers.net/images/900/90916540E39BCDAA9ABE4B43985A21DB.jpg",
+      "price": 999,
+      "title": "Xiaomi"
+    }
+  ],
+  "delivery": "Free",
+  "total": 6000
+}

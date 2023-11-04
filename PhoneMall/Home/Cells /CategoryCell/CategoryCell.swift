@@ -4,27 +4,28 @@ import UIKit
 
 class CategoryCell: UICollectionViewCell {
     
+    static let identifire = "CustomCellSection1"
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         layoutSubviews()
+        view.backgroundColor = .white
     }
+    
     override func prepareForReuse() {
        view.backgroundColor = .white
+        
     }
-    var viewModel = CategoryCellViewModel()
-     
-    static let identifire = "CustomCellSection1"
-    
+         
     lazy var view : UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.clipsToBounds = true
         view.layer.cornerRadius = contentView.frame.width/2
-       // view.backgroundColor = .white
         return view
     }()
     
-    lazy var label : UILabel = {
+    let label : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.markProFont(size: 12, weight: .plain)
@@ -33,13 +34,11 @@ class CategoryCell: UICollectionViewCell {
         return label
     }()
     
-    lazy var image : UIImageView = {
+    let image : UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
-        let newImage = image.image?.withRenderingMode(.alwaysTemplate)
-        let newImageView = UIImageView(image: newImage)
-        newImageView.translatesAutoresizingMaskIntoConstraints = false
-        return newImageView
+        image.image?.withRenderingMode(.alwaysTemplate)
+        return image
     }()
     
     func set(viewModel: CategoryCellViewModel, indexPath: IndexPath) {
@@ -47,12 +46,20 @@ class CategoryCell: UICollectionViewCell {
         self.image.image = viewModel.picture
     }
     
-//    func setBackgroundColor(at indexPath: IndexPath) {
-//        switch indexPath.row {
-//        case 0: view.backgroundColor = .customOrange, 
-//        case 1: view
-//        }
-//    }
+    
+    // Change cell color in HomeVC extensions
+    func changeCellColor(isSelected:Bool, cell: CategoryCell) {
+        if isSelected == true {
+            cell.view.backgroundColor = .customOrange
+            cell.label.textColor = .customOrange
+            cell.label.font = UIFont.markProFont(size: 12, weight: .heavy)
+        } else if isSelected == false {
+            cell.view.backgroundColor = .white
+            cell.label.textColor = .black
+            cell.label.font = UIFont.markProFont(size: 12, weight: .plain)
+            }
+        }
+    
     
     //MARK: - Расстановка лэйаута для наших сабВьюх
     override func layoutSubviews() {

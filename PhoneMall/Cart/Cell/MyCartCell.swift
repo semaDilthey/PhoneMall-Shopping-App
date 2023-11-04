@@ -1,9 +1,13 @@
 
 import UIKit
 
+protocol CartCellDelegate: AnyObject {
+    func didTapDeleteButton(cell: MyCartCell)
+}
 
-class MyCartCell: UITableViewCell /*, MyCartCellDelegate*/ {
+class MyCartCell: UITableViewCell {
     
+    weak var delegate: CartCellDelegate?
     
     static let identifire = "MyCartCell"
     
@@ -13,7 +17,6 @@ class MyCartCell: UITableViewCell /*, MyCartCellDelegate*/ {
         stepper.counter = "1"
     }
 
-    
     var viewModel : MyCartCellModelProtocol? {
         didSet {
             phoneNameLabel.text = viewModel?.title
@@ -21,28 +24,28 @@ class MyCartCell: UITableViewCell /*, MyCartCellDelegate*/ {
             
             if let price = viewModel?.price {
                         self.phonePriceLabel.text = ("$"+String(price)+".00")
+
             } else {
                 phonePriceLabel.text = "No data"
             }
         }
     }
-    
-    
+        
     func updatePrice(by value: Int) {
         if let price = viewModel?.price {
 //            phonePriceLabel.text = "$"+String(value * price)+".00"
                         phonePriceLabel.text = "$" + String(value * price) + ".00"
-            addToTotal(String(price))
+             
         } else {
             phonePriceLabel.text = "No data"
 
         }
     }
     
-    var addToTotal : ((String)->())?
     
+    var vc = MyCartVC()
     
-    var cartViewModel: MyCartViewModel?
+    var cartViewModel = MyCartViewModel()
     
     let phonePicture : WebImageView = {
         let image = WebImageView()
@@ -77,8 +80,14 @@ class MyCartCell: UITableViewCell /*, MyCartCellDelegate*/ {
         butt.translatesAutoresizingMaskIntoConstraints = false
         butt.setImage(UIImage(systemName: "trash"), for: .normal)
         butt.tintColor = UIColor(red: 40/255, green: 40/255, blue: 67/255, alpha: 1)
+        butt.addTarget(self, action: #selector(trashTapped), for: .touchUpInside)
         return butt
     }()
+    
+    @objc func trashTapped() {
+        print("Trash tapped")
+        delegate?.didTapDeleteButton(cell: self)
+    }
 
     lazy var stepper : CustomStepper = {
         let stepper = CustomStepper()
@@ -87,6 +96,28 @@ class MyCartCell: UITableViewCell /*, MyCartCellDelegate*/ {
         return stepper
     }()
     
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//MARK: - SetupUI
+extension MyCartCell {
     
     func setupUI() {
         contentView.backgroundColor = .customDarkBlue
@@ -125,10 +156,4 @@ class MyCartCell: UITableViewCell /*, MyCartCellDelegate*/ {
                                  size: CGSize(width: 26, height: 0))
         
     }
-    
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
 }

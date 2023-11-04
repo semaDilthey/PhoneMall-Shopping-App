@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-protocol ReusableViewDelegate: AnyObject {
+protocol ReusableViewDelegate: AnyObject { //send signal to HomeVC()
     func didTapButton()
 }
 
@@ -23,8 +23,7 @@ class HeaderSelectCategory: UICollectionReusableView {
         self.bringSubviewToFront(filterButton)
     }
     
-    
-    var locationLabel : UILabel = {
+    let locationLabel : UILabel = {
         let label = UILabel()
         label.text = "Zihuatanejo" + "," + " " + "Gro"
         label.textColor = .black
@@ -81,7 +80,7 @@ class HeaderSelectCategory: UICollectionReusableView {
         return label
     }()
     
-    private let seeMoreButton : UIButton = {
+     lazy var seeMoreButton : UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -100,41 +99,41 @@ class HeaderSelectCategory: UICollectionReusableView {
         setupUI()
     }
     
-    func setupUI() {
-        
-        addSubview(locationLabel)
-        addSubview(locationImage)
-        addSubview(chooseLocationButton)
-        addSubview(filterButton)
-        addSubview(seeMoreButton)
-        addSubview(labelBestSeller)
-      
-        locationLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        locationLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12).isActive = true
-        
-        locationImage.trailingAnchor.constraint(equalTo: locationLabel.leadingAnchor, constant: 5).isActive = true
-        locationImage.topAnchor.constraint(equalTo: topAnchor, constant: 12).isActive = true
-        locationImage.frame.size = CGSize(width: 12, height: 14)
-
-        
-        chooseLocationButton.leadingAnchor.constraint(equalTo: locationLabel.trailingAnchor, constant: 8).isActive = true
-        chooseLocationButton.topAnchor.constraint(equalTo: topAnchor, constant: 20).isActive = true
-        chooseLocationButton.frame.size = CGSize(width: 12, height: 7)
-        
-        filterButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -35).isActive = true
-        filterButton.topAnchor.constraint(equalTo: topAnchor, constant: 18).isActive = true
-        filterButton.frame.size = CGSize(width: 11, height: 13)
-
-
-        
-        labelBestSeller.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12).isActive = true
-        labelBestSeller.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
-        seeMoreButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
-        seeMoreButton.centerYAnchor.constraint(equalTo: labelBestSeller.centerYAnchor).isActive = true
-    }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+}
+
+//MARK: - SetupUI
+extension HeaderSelectCategory {
+    
+    func setupUI() {
+        addSubview(locationLabel)
+        locationLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        locationLabel.topAnchor.constraint(equalTo: topAnchor, constant: 12).isActive = true
+        
+        addSubview(locationImage)
+        locationImage.trailingAnchor.constraint(equalTo: locationLabel.leadingAnchor, constant: 5).isActive = true
+        locationImage.topAnchor.constraint(equalTo: topAnchor, constant: 12).isActive = true
+        locationImage.frame.size = CGSize(width: 12, height: 14)
+
+        addSubview(chooseLocationButton)
+        chooseLocationButton.leadingAnchor.constraint(equalTo: locationLabel.trailingAnchor, constant: 8).isActive = true
+        chooseLocationButton.topAnchor.constraint(equalTo: topAnchor, constant: 20).isActive = true
+        chooseLocationButton.frame.size = CGSize(width: 12, height: 7)
+        
+        addSubview(filterButton)
+        filterButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -35).isActive = true
+        filterButton.topAnchor.constraint(equalTo: topAnchor, constant: 18).isActive = true
+        filterButton.frame.size = CGSize(width: 11, height: 13)
+
+        addSubview(labelBestSeller)
+        labelBestSeller.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12).isActive = true
+        labelBestSeller.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
+        
+        addSubview(seeMoreButton)
+        seeMoreButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
+        seeMoreButton.centerYAnchor.constraint(equalTo: labelBestSeller.centerYAnchor).isActive = true
+    }
 }
