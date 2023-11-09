@@ -6,17 +6,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        if let windowScene = scene as? UIWindowScene {
-            let window = UIWindow(windowScene: windowScene)
-           // let navCon = UINavigationController(rootViewController: HomeVC())
-            let home = HomeVC()
-            let navContr = UINavigationController(rootViewController: home)
-//            window.rootViewController = home
-            window.rootViewController = navContr
-            self.window = window
-            window.makeKeyAndVisible()
+        guard let windowScene = scene as? UIWindowScene else { return }
+        let window = UIWindow(windowScene: windowScene)
+        self.window = window
+
+        let coordinator = Coordinator(window: window)
+        coordinator.start(window: window)
 
     }
 
@@ -49,5 +45,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
 
-}
+
 }

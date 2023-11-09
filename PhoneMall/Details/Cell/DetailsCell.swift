@@ -15,6 +15,7 @@ class DetailsCell: UICollectionViewCell {
         super.init(frame: frame)
         setupUI()
         self.backgroundColor = .clear
+        self.addShadow()
     }
     
     lazy var imageView : WebImageView = {

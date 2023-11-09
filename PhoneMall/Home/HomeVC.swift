@@ -15,7 +15,14 @@ final class HomeVC : UICollectionViewController {
         setupUI()
     }
     
-    let homeViewModel = HomeViewModel()
+    let homeViewModel : HomeViewModel
+
+
+    init(homeViewModel: HomeViewModel){
+        self.homeViewModel = homeViewModel
+        super.init(collectionViewLayout: .init())
+    }
+    
     
     let categoryViewModel = CategoryCellViewModel()
     
@@ -45,10 +52,10 @@ final class HomeVC : UICollectionViewController {
         }
         
     }
-    
-    init(){
-        super.init(collectionViewLayout: .init())
-    }
+//    
+//    init(){
+//        super.init(collectionViewLayout: .init())
+//    }
    
     
     required init?(coder: NSCoder) {
@@ -56,6 +63,7 @@ final class HomeVC : UICollectionViewController {
     }
     
     let tabView = UITabView()
+//    let tabView = UITabView()
 }
 
 
@@ -268,11 +276,11 @@ extension HomeVC {
     func  setupUI() {
         
         view.addSubview(tabView)
-        
+      
         tabView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         tabView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         tabView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        tabView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        tabView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
     }
 }
 

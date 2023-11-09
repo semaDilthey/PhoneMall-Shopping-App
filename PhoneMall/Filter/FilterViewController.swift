@@ -168,7 +168,7 @@ extension FilterViewController : UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let phones = filterData.phoneModels[row]
 //        let phones = viewModel.getModels()[row]
-        let options = filterData.optionsSortedByModelsId[0]
+        let options = filterData.optionsSortedByModelsId.last!
 //        let options = viewModel.getSortedModels()[0]
 
         switch pickerView {
@@ -201,7 +201,7 @@ extension FilterViewController : UIPickerViewDataSource {
         let phones = filterData.phoneModels[row]
 //        let phones = viewModel.getModels()[row]
 
-        let options = filterData.optionsSortedByModelsId[0]
+        let options = filterData.optionsSortedByModelsId.last!
 //        let options = viewModel.getSortedModels()[0]
 
         switch pickerView {

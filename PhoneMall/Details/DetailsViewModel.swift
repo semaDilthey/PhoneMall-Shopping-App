@@ -6,17 +6,20 @@
 //
 
 import Foundation
+import UIKit
 
 protocol DetailsViewModelProtocol {
     var reloadTableView: (() -> Void)? { get set }
     func getDetailsPhones()
     func getDetailsCellViewModel(at: IndexPath) -> DetailsCellModelProtocol?
+    func backButtonPressed(navController: UINavigationController)
 }
 
 
 class DetailsViewModel : DetailsViewModelProtocol {
-        
+    
     var data : ProductDetailsData?
+    
     var networking: NetworkManager? = NetworkManager()
     
     var detailsModel = [DetailsCellModelProtocol]() {
@@ -83,5 +86,10 @@ class DetailsViewModel : DetailsViewModelProtocol {
         return MyCartCellModel(title: title, picture: picture!, price: price)
     }
     
+    func backButtonPressed(navController: UINavigationController) {
+        navController.popViewController(animated: true)
+    }
+    
+
 }
 

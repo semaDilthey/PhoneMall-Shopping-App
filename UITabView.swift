@@ -9,12 +9,19 @@ import UIKit
 import SwiftUI
 
 class UITabView: UIView {
-
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupUI()
+        self.backgroundColor = .customDarkBlue
+        self.clipsToBounds = true
+        self.layer.cornerRadius = 20
     }
-   
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     let superView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -39,26 +46,17 @@ class UITabView: UIView {
         view.backgroundColor = .white
         return view
     }()
-    /*
-     // Only override draw() if you perform custom drawing.
-     // An empty implementation adversely affects performance during animation.
-     override func draw(_ rect: CGRect) {
-     // Drawing code
-     }
-     */
-    
-  
     
     
     private func setupUI() {
-        addSubview(superView)
+        self.addSubview(label)
         
-        superView.fillSuperview()
+//        superView.fillSuperview()
+//        
+//        superView.addSubview(label)
         
-        superView.addSubview(label)
-        
-        label.centerYAnchor.constraint(equalTo: superView.centerYAnchor).isActive = true
-        label.centerXAnchor.constraint(equalTo: superView.centerXAnchor).isActive = true
+        label.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         
     }
 }

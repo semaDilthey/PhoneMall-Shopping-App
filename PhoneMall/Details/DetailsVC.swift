@@ -3,6 +3,7 @@
 import Foundation
 import UIKit
 import SwiftUI
+import Cosmos
 
 
 
@@ -29,7 +30,6 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         setupNavigationBar()
         setupUI()
 
-        setupGestureRecognizer()
         initViewModel()
 
     }
@@ -49,9 +49,6 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     }
     
 
-    
-
-    
     //MARK: - creating NavBar
     // кастомная кнопка назад
     lazy var backButton : UIButton = {
@@ -69,7 +66,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     
     // метод для кнопки backButton
     @objc func backButtonPresentingVC() {
-        navigationController?.popToRootViewController(animated: true)
+        viewModel.backButtonPressed(navController: navigationController!)
     }
     
     lazy var shopCartButton : UIButton = {
@@ -150,6 +147,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         view.layer.borderColor = UIColor.snowyWhite?.cgColor
         view.layer.borderWidth = 0.5
         view.layer.shouldRasterize = false
+        view.dropShadow()
         return view
     }()
     
@@ -177,31 +175,28 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     }()
     
     //Cоздаем 5 картинок звезды
-    static func createStarImage () -> UIImageView {
-        let image = UIImageView()
-        image.translatesAutoresizingMaskIntoConstraints = false
-        image.image = UIImage(named: "star")
-        image.clipsToBounds = true
-        image.widthAnchor.constraint(equalToConstant:20).isActive = true
-        image.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        return image
-    }
+    lazy var cosmosView : CosmosView = {
+        var view = CosmosView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.text = "Rate phone"
+        view.rating = 0
+        view.settings.textColor = .customDarkBlue!
+        view.settings.fillMode = .half
+        view.settings.textFont = .markProFont(size: 14, weight: .medium)!
+        return view
+    }()
     
-    let star1ImageView = createStarImage()
-    let star2ImageView = createStarImage()
-    let star3ImageView = createStarImage()
-    let star4ImageView = createStarImage()
-    let star5ImageView = createStarImage()
-
     //кнопка избранное
     lazy var favButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "heartEmpty"), for: .normal)
+        let image = UIImage(named: "heartEmpty")?.imageWithColor(color: .white)
+        button.setImage(image, for: .normal)
+        button.imageView?.sizeToFit()
         button.layer.backgroundColor = UIColor.customDarkBlue?.cgColor
         button.layer.cornerRadius = 10
-        button.widthAnchor.constraint(equalToConstant: 37).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 37).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 30).isActive = true
         button.addTarget(self, action: #selector(didTappedFav), for: .touchUpInside)
         return button
     }()
@@ -211,7 +206,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         if favButton.isSelected {
             favButton.setImage(UIImage(named: "heartFilled"), for: .normal)
         } else {
-            favButton.setImage(UIImage(named: "heartEmpty"), for: .normal)
+            favButton.setImage(UIImage(named: "heartEmpty")?.imageWithColor(color: .white), for: .normal)
         }
         
     }
@@ -276,7 +271,6 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
             segmentedControl.setBackgroundImage(UIImage(), for: .normal, barMetrics: .default)
             segmentedControl.setDividerImage(UIImage(), forLeftSegmentState: .normal, rightSegmentState: .normal, barMetrics: .default)
             // меняем положение 0 и 2 сегмента в осях Х
-//            segmentedControl.setContentPositionAdjustment(UIOffset(horizontal: -12, vertical: 0), forSegmentType: .left, barMetrics: .default)
             segmentedControl.setContentPositionAdjustment(UIOffset(horizontal: 5, vertical: 0), forSegmentType: .right, barMetrics: .default)
             
             return segmentedControl
@@ -328,7 +322,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     }()
     
     // создаем лейблы 2х цветов
-    let circleLabelBrown: UILabel = {
+    lazy var circleLabelBrown: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.backgroundColor = .brown
@@ -336,10 +330,14 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         label.layer.cornerRadius = 20
         label.widthAnchor.constraint(equalToConstant: 39).isActive = true
         label.heightAnchor.constraint(equalToConstant: 39).isActive = true
+        label.isUserInteractionEnabled = true
+        let tapGesture12 = UITapGestureRecognizer(target: self, action: #selector(changedColor))
+        tapGesture12.delegate = self
+        label.addGestureRecognizer(tapGesture12)
         return label
     }()
     
-    let circleLabelBlack: UILabel = {
+    lazy var circleLabelBlack: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.backgroundColor = .black
@@ -347,15 +345,18 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         label.layer.cornerRadius = 20
         label.widthAnchor.constraint(equalToConstant: 39).isActive = true
         label.heightAnchor.constraint(equalToConstant: 39).isActive = true
+        label.isUserInteractionEnabled = true
+        let tapGesture12 = UITapGestureRecognizer(target: self, action: #selector(changedColor))
+        tapGesture12.delegate = self
+        label.addGestureRecognizer(tapGesture12)
         return label
     }()
     
     // создадим 2 по сути одинаковые кнопки, но одна будет нажата, а другая нет
-    
     lazy var gb128Label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.backgroundColor = .customOrange
+        label.layer.backgroundColor = UIColor.customOrange.cgColor
         label.clipsToBounds = true
         label.layer.cornerRadius = 10
         label.font = UIFont.markProFont(size: 12, weight: .medium)
@@ -366,62 +367,54 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         label.widthAnchor.constraint(equalToConstant: 71).isActive = true
         label.heightAnchor.constraint(equalToConstant: 30).isActive = true
         label.isUserInteractionEnabled = true
-
+        let tapGesture1 = UITapGestureRecognizer(target: self, action: #selector(changedCapacity))
+        tapGesture1.delegate = self
+        label.addGestureRecognizer(tapGesture1)
         return label
     }()
     
     lazy var gb256Label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.backgroundColor = .clear
         label.clipsToBounds = true
         label.layer.cornerRadius = 10
         label.font = UIFont.markProFont(size: 12, weight: .medium)
         label.textAlignment = .center
-        label.textColor = UIColor.gray
+        label.textColor = .gray
         label.text = "256 GB"
         label.widthAnchor.constraint(equalToConstant: 71).isActive = true
         label.heightAnchor.constraint(equalToConstant: 30).isActive = true
         label.isUserInteractionEnabled = true
-
+        let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(changedCapacity))
+        tapGesture2.delegate = self
+        label.addGestureRecognizer(tapGesture2)
         return label
     }()
     
     // это надо потом во вью модель
     @objc func changedCapacity(sender: UITapGestureRecognizer) {
-        UIView.animate(withDuration: 0.3, animations: { [weak self] in
-        if let label = sender.view as? UILabel {
-            if label == self?.gb128Label { // выбран первый лейбл (128гб)
-   
-                self?.gb128Label.backgroundColor = .customOrange
-                self?.gb256Label.backgroundColor = .clear
-                self?.gb128Label.textColor = .white
-                self?.gb256Label.textColor = .gray
-               
-            } else {
-          
-                    // выбран второй лейбл (256гб)
-                self?.gb256Label.backgroundColor = .customOrange
-                self?.gb128Label.backgroundColor = .clear
-                self?.gb256Label.textColor = .white
-                self?.gb128Label.textColor = .gray
-                
+        UIView.animate(withDuration: 0.5, animations: { [weak self] in
+            if let label = sender.view as? UILabel {
+                self?.gb128Label.layer.backgroundColor = (label == self?.gb128Label) ? UIColor.customOrange.cgColor : UIColor.clear.cgColor
+                self?.gb256Label.layer.backgroundColor = (label == self?.gb256Label) ? UIColor.customOrange.cgColor : UIColor.clear.cgColor
+                self?.gb128Label.textColor = (label == self?.gb128Label) ? .white : .gray
+                self?.gb256Label.textColor = (label == self?.gb256Label) ? .white : .gray
             }
+            
+        })
+    }
+    
+    
+    @objc func changedColor(sender: UITapGestureRecognizer) {
+        UIView.animate(withDuration: 0.5, animations: { [weak self] in
+            if let label = sender.view as? UILabel {
+                self?.circleLabelBrown.layer.borderColor = (label == self?.circleLabelBrown) ? UIColor.customOrange.cgColor : UIColor.clear.cgColor
+                self?.circleLabelBlack.layer.borderColor = (label == self?.circleLabelBlack) ? UIColor.customOrange.cgColor : UIColor.clear.cgColor
+                self?.circleLabelBrown.layer.borderWidth = (label == self?.circleLabelBrown) ? 3 : 0
+                self?.circleLabelBlack.layer.borderWidth = (label == self?.circleLabelBlack) ? 3 : 0
         }
     })
-    }
-    
-    // и это тож во вью модель
-    func setupGestureRecognizer() {
-        let tapGesture1 = UITapGestureRecognizer(target: self, action: #selector(changedCapacity))
-        let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(changedCapacity))
-        gb256Label.addGestureRecognizer(tapGesture2)
-        gb128Label.addGestureRecognizer(tapGesture1)
-
-        tapGesture1.delegate = self
-        tapGesture2.delegate = self
-    }
-    
+}
     
     
     
@@ -462,7 +455,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     // добавляет кнопку
     lazy var addToCartButton : UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = .orange
+        button.backgroundColor = .customOrange
         button.translatesAutoresizingMaskIntoConstraints = false
         button.clipsToBounds = true
         button.layer.cornerRadius = 10
@@ -508,6 +501,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         label.adjustsFontSizeToFitWidth = false
         label.font = UIFont.markProFont(size: 10, weight: .plain)
         label.textColor = UIColor(red: 0.717, green: 0.717, blue: 0.717, alpha: 1)
+        label.textAlignment = .justified
         return label
     }
     // объекты картинок
@@ -535,10 +529,10 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         return stack
     }
     // 4 стака для лейбла + картинка
-    static let memoryStack = makeVerticalStack(image: memoryCardImage, label: memoryCardLabel)
-    static let operativkaStack = makeVerticalStack(image: operativkaImage, label: operativkaLabel)
-    static let cameraStack = makeVerticalStack(image: cameraOptionsImage, label: cameraOptionsLabel)
     static let processorStack = makeVerticalStack(image: processorImage, label: processorLabel)
+    static let cameraStack = makeVerticalStack(image: cameraOptionsImage, label: cameraOptionsLabel)
+    static let operativkaStack = makeVerticalStack(image: operativkaImage, label: operativkaLabel)
+    static let memoryStack = makeVerticalStack(image: memoryCardImage, label: memoryCardLabel)
     
     // суем 4 стака в один большой стак
     
@@ -560,21 +554,10 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     }
     
     // ну а теперь можно и засунуть
-    let optionsStack = makeHorizontalStackOfStacks(stack1: memoryStack, stack2: operativkaStack, stack3: cameraStack, stack4: processorStack)
-    
-    // Делаем функцию, создающую стак для кнопки
-    private func makeButtonStackView() -> UIStackView {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        //.axis = .horizontal
-        //stackView.distribution = .equalSpacing
-        //stackView.alignment = .center
-        stackView.backgroundColor = .clear
-        return stackView
-    }
+    let optionsStack = makeHorizontalStackOfStacks(stack1: processorStack, stack2: cameraStack, stack3: operativkaStack, stack4: memoryStack)
     
     // делаем функцию для стака звезд
-    private func makeStartsStackView() -> UIStackView {
+    private func giggabytesStack() -> UIStackView {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
@@ -599,10 +582,11 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
        
 }
 
-// создаем Layout который будет туда сюда ходить
+// MARK: создаем Layout который будет туда сюда ходить
 private extension DetailsVC {
     
     func createScrollableLayout() -> UICollectionViewCompositionalLayout {
@@ -637,6 +621,7 @@ private extension DetailsVC {
         }()
         return compositionalLayout
     }
+    
 }
 
 //MARK: - CollectionView Delegate
@@ -647,9 +632,9 @@ extension DetailsVC {
         let cellVM = viewModel.getDetailsCellViewModel(at: indexPath)
         viewModel.selectedIndexPath = indexPath
         cell.viewModel = cellVM
-        cell.clipsToBounds = true
-        cell.layer.cornerRadius = 10
-        cell.addShadow()
+//        cell.clipsToBounds = true
+//        cell.layer.cornerRadius = 10
+//        cell.addShadow()
         if let viem = cellVM {
             detailsPhonesArray.append(viem as! DetailsCellModel)
         }
@@ -690,6 +675,7 @@ extension DetailsVC {
         setupSecondLevel()
         setupThirdLevel()
         setupFourthLevel()
+        
     }
     
     //MARK: setup NavigationBar
@@ -729,7 +715,6 @@ extension DetailsVC {
         cardView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         cardView.topAnchor.constraint(equalTo: view.topAnchor, constant: 400).isActive = true
         
-        
     }
     
     //MARK: setup 1st Level
@@ -749,16 +734,14 @@ extension DetailsVC {
         favButton.topAnchor.constraint(equalTo: firstLevelView.topAnchor, constant: 28).isActive = true
         favButton.trailingAnchor.constraint(equalTo: firstLevelView.trailingAnchor, constant: -40).isActive = true
         
-        let addStarsStuck = makeStartsStackView()
-        addStarsStuck.addArrangedSubview(star1ImageView)
-        addStarsStuck.addArrangedSubview(star2ImageView)
-        addStarsStuck.addArrangedSubview(star3ImageView)
-        addStarsStuck.addArrangedSubview(star4ImageView)
-        addStarsStuck.addArrangedSubview(star5ImageView)
+        firstLevelView.addSubview(cosmosView)
+        cosmosView.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 6).isActive = true
+        cosmosView.leadingAnchor.constraint(equalTo: firstLevelView.leadingAnchor, constant: 30).isActive = true
         
-        firstLevelView.addSubview(addStarsStuck)
-        addStarsStuck.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 6).isActive = true
-        addStarsStuck.leadingAnchor.constraint(equalTo: firstLevelView.leadingAnchor, constant: 30).isActive = true
+        cosmosView.didTouchCosmos = { rating in
+            print("rating \(rating)")
+            self.cosmosView.text = nil
+            }
     }
     
     //MARK: setup 2nd Level
@@ -820,21 +803,22 @@ extension DetailsVC {
         let circlesStack = circlesStack()
         circlesStack.addArrangedSubview(circleLabelBrown)
         circlesStack.addArrangedSubview(circleLabelBlack)
+        circlesStack.spacing = 15
         
         thirdLevelView.addSubview(circlesStack)
         circlesStack.leadingAnchor.constraint(equalTo: thirdLevelView.leadingAnchor, constant: 30).isActive = true
         circlesStack.bottomAnchor.constraint(equalTo: thirdLevelView.bottomAnchor, constant: -16).isActive = true
 
         //стак для гигов
-        let gbStack = makeStartsStackView()
+        let gbStack = giggabytesStack()
         gbStack.addArrangedSubview(gb128Label)
-        gbStack.spacing = 6
+        gbStack.spacing = 12
         gbStack.addArrangedSubview(gb256Label)
         
         thirdLevelView.addSubview(gbStack)
         gbStack.bottomAnchor.constraint(equalTo: thirdLevelView.bottomAnchor, constant: -16).isActive = true
-        gbStack.leadingAnchor.constraint(equalTo: circlesStack.trailingAnchor, constant: 55).isActive = true
-        gbStack.trailingAnchor.constraint(equalTo: thirdLevelView.trailingAnchor, constant: -63).isActive = true
+        gbStack.leadingAnchor.constraint(equalTo: circlesStack.trailingAnchor, constant: 65).isActive = true
+        gbStack.trailingAnchor.constraint(equalTo: thirdLevelView.trailingAnchor, constant: -53).isActive = true
         
     }
     
@@ -864,7 +848,7 @@ extension DetailsVC {
   
     
 }
-//
+
 //struct ViewControllerProvider : PreviewProvider {
 //    static var previews: some View {
 //        Group {

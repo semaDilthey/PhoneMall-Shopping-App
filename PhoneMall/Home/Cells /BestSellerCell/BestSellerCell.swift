@@ -14,14 +14,6 @@ class BestSellerCell: UICollectionViewCell {
         backgroundColor = .white
         
         setupButton()
-       // isFavoritesTapped = UserDefaults.standard.bool(forKey: "isFavoritesTapped")
-        
-//        isFavorites = UserDefaults.standard.bool(forKey: "isFavoritesTapped_\(self.tag)")
-//        if isFavorites {
-//                isFavoritesButton.setImage(UIImage(named: "heartFilled"), for: .normal)
-//            } else {
-//                isFavoritesButton.setImage(UIImage(named: "heartEmpty"), for: .normal)
-//            }
     }
     
     var cellViewModel : BestSellerCellViewModelProtocol? {
@@ -57,10 +49,16 @@ class BestSellerCell: UICollectionViewCell {
         butt.clipsToBounds = true
         butt.layer.cornerRadius = 12
         butt.translatesAutoresizingMaskIntoConstraints = false
-        butt.layer.shadowColor = UIColor.black.cgColor
-        butt.layer.shadowOpacity = 0.5
-        butt.layer.shadowOffset = CGSize.zero
-        butt.layer.shadowRadius = 12
+        butt
+        butt.layer.shadowOffset = CGSizeMake(5, 5)
+            // set the radius
+        butt.layer.shadowRadius = 5
+
+            // change the color of the shadow (has to be CGColor)
+        butt.layer.shadowColor = UIColor.gray.cgColor
+            
+            // display the shadow
+        butt.layer.shadowOpacity = 1.0
         var status : Bool = false
         return butt
     }()
