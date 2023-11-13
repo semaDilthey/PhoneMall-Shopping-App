@@ -4,34 +4,14 @@ import Foundation
 import UIKit
 import SwiftUI
 
-protocol MyCartCellDelegate: AnyObject {
-    func updateTotalSum(_ priceCell: Int)
-}
-
 
 final class MyCartVC : UIViewController, CartCellDelegate {
     
-    func didTapDeleteButton(cell: MyCartCell) {
-        if let indexPath = tableView.indexPath(for: cell) {
-            viewModel.cartPhonesModel.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        }
-    }
-    
-    
-    weak var delegate: MyCartCellDelegate?
-    
     let viewModel = MyCartViewModel()
-    
-    var checkingOut : Bool {
-        checkoutButton.isTouchInside ? true : false
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        tableView.register(MyCartCell.self, forCellReuseIdentifier: MyCartCell.identifire)
-        backButtonSetup()
         initViewModel()
     }
     
@@ -40,6 +20,17 @@ final class MyCartVC : UIViewController, CartCellDelegate {
         viewModel.reloadTableView = { [weak self] in
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
+            }
+        }
+    }
+    
+    // property observer, считает тотал
+    var totalPriceObserver : Double = 0.0 {
+        willSet {
+            if viewModel.cartPhonesModel.count > 0 {
+                totalPrice.text = "$" + " " + String(viewModel.tupleOfPrices.0 + viewModel.tupleOfPrices.1)
+            } else {
+                totalPrice.text = "$" + " " + "0"
             }
         }
     }
@@ -55,18 +46,17 @@ final class MyCartVC : UIViewController, CartCellDelegate {
         but.layer.cornerRadius = 11
         but.tintColor = .white
         but.clipsToBounds = true
+        but.addTarget(self, action: #selector(backToHomeVC), for: .touchUpInside)
+//        
+        let backBarButtonItems = UIBarButtonItem(customView: but)
+        navigationItem.leftBarButtonItem = backBarButtonItems
+        navigationItem.hidesBackButton = true
         return but
     }()
     
-    @objc func handlePresentingVC() {
-        navigationController?.popToRootViewController(animated: true)
-    }
     
-    private func backButtonSetup() {
-        backButton.addTarget(self, action: #selector(handlePresentingVC), for: .touchUpInside)
-        let backBarButtonItems = UIBarButtonItem(customView: backButton)
-        navigationItem.leftBarButtonItem = backBarButtonItems
-        navigationItem.hidesBackButton = true
+    @objc func backToHomeVC() {
+        viewModel.backButtonPressed(navController: navigationController!)
     }
     
     lazy var addressButton : UIButton = {
@@ -117,6 +107,7 @@ final class MyCartVC : UIViewController, CartCellDelegate {
         table.dataSource = self
         table.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner] // округляет только левый верхний и правый углы через cornerRadius
         table.clipsToBounds = true
+        table.register(MyCartCell.self, forCellReuseIdentifier: MyCartCell.identifire)
         return table
     }()
     
@@ -205,17 +196,13 @@ final class MyCartVC : UIViewController, CartCellDelegate {
         return button
     }()
     
+    var checkingOut : Bool {
+        checkoutButton.isTouchInside ? true : false
+    }
     
     
-    // property observer, считает тотал
-    var total : Double = 0.0 {
-        willSet {
-            if viewModel.cartPhonesModel.count > 0 {
-                totalPrice.text = "$" + " " + String(viewModel.tupleOfPrices.0 + viewModel.tupleOfPrices.1)
-            } else {
-                totalPrice.text = "$" + " " + "0"
-            }
-        }
+    func didTapDeleteButton(cell: MyCartCell) {
+        viewModel.deleteTapped(cell: cell, tableView: tableView)
     }
     
 }
@@ -234,6 +221,7 @@ extension MyCartVC : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MyCartCell.identifire, for: indexPath) as! MyCartCell
         cell.delegate = self
+        cell.tableView = tableView
         if let cellModel = viewModel.getMyCartCellViewModel(at: indexPath) {
             cell.viewModel = cellModel
             
@@ -247,10 +235,9 @@ extension MyCartVC : UITableViewDelegate, UITableViewDataSource {
                 // считаем тотал
                 if let phonesPrice = cell.phonePriceLabel.text {
                     self?.viewModel.countTotal(string: phonesPrice, at: indexPath)
-                    self?.total = 0.0
+                    self?.totalPriceObserver = 0.0
                 }
                 
-                self?.delegate?.updateTotalSum(value)
                
             }
         }

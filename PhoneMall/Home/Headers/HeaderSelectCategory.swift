@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 protocol ReusableViewDelegate: AnyObject { //send signal to HomeVC()
-    func didTapButton()
+    func didTapFilterButton()
 }
 
 class HeaderSelectCategory: UICollectionReusableView {
@@ -54,7 +54,7 @@ class HeaderSelectCategory: UICollectionReusableView {
     
     @objc func filtersButtonTapped() {
         print("aaa")
-        delegate?.didTapButton()
+        delegate?.didTapFilterButton()
      }
     
     lazy var filterButton : UIButton = {

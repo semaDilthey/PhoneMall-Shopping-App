@@ -18,6 +18,8 @@ protocol DetailsViewModelProtocol {
 
 class DetailsViewModel : DetailsViewModelProtocol {
     
+    let coordinator = Coordinator()
+    
     var data : ProductDetailsData?
     
     var networking: NetworkManager? = NetworkManager()
@@ -87,7 +89,7 @@ class DetailsViewModel : DetailsViewModelProtocol {
     }
     
     func backButtonPressed(navController: UINavigationController) {
-        navController.popViewController(animated: true)
+        coordinator.showHomeVC(controller: navController)
     }
     
 

@@ -6,7 +6,7 @@
 
 import Foundation
 
-protocol BestSellerCellViewModelProtocol {
+protocol BestSellerModelProtocol {
     var title: String? { get }
     var discountPrice : String? { get }
     var fullPrice : String? { get }
@@ -14,7 +14,7 @@ protocol BestSellerCellViewModelProtocol {
     var isFavorites: Bool? { get set }
 }
 
-class BestSellerCellViewModel: BestSellerCellViewModelProtocol {
+class BestSellerModel: BestSellerModelProtocol {
     
     private let isFavoritesKey = "isFavoritesKey"
     

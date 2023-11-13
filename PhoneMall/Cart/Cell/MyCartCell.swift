@@ -7,7 +7,12 @@ protocol CartCellDelegate: AnyObject {
 
 class MyCartCell: UITableViewCell {
     
+    var vc = MyCartVC()
+    
+    var cartViewModel = MyCartViewModel()
+    
     weak var delegate: CartCellDelegate?
+    weak var tableView : UITableView?
     
     static let identifire = "MyCartCell"
     
@@ -21,7 +26,6 @@ class MyCartCell: UITableViewCell {
         didSet {
             phoneNameLabel.text = viewModel?.title
             phonePicture.set(imageURL: viewModel?.picture)
-            
             if let price = viewModel?.price {
                         self.phonePriceLabel.text = ("$"+String(price)+".00")
 
@@ -33,19 +37,14 @@ class MyCartCell: UITableViewCell {
         
     func updatePrice(by value: Int) {
         if let price = viewModel?.price {
-//            phonePriceLabel.text = "$"+String(value * price)+".00"
+            phonePriceLabel.text = "$"+String(value * price)+".00"
                         phonePriceLabel.text = "$" + String(value * price) + ".00"
-             
         } else {
             phonePriceLabel.text = "No data"
 
         }
     }
     
-    
-    var vc = MyCartVC()
-    
-    var cartViewModel = MyCartViewModel()
     
     let phonePicture : WebImageView = {
         let image = WebImageView()

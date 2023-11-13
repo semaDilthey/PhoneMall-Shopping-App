@@ -16,7 +16,7 @@ class BestSellerCell: UICollectionViewCell {
         setupButton()
     }
     
-    var cellViewModel : BestSellerCellViewModelProtocol? {
+    var cellViewModel : BestSellerModelProtocol? {
         didSet {
             priceLabel.text = cellViewModel?.fullPrice
             discountPriceLabel.text = cellViewModel?.discountPrice

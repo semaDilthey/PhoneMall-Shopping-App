@@ -10,48 +10,65 @@ import UIKit
 
 protocol CoordinatorProtocol: AnyObject {
     func start(window: UIWindow)
-    func showDetailVC() -> UIViewController
-    func showCartVC() -> UIViewController
-    func showHomeVC() -> UIViewController
+    func showDetailVC(controller: UINavigationController)
+    func showCartVC(controller: UINavigationController)
+    func showHomeVC(controller: UINavigationController)
     
 }
 class Coordinator: CoordinatorProtocol {
     
-    var window : UIWindow?
-    
-    init(window: UIWindow?) {
-        self.window = window
-    }
-    
     func start(window: UIWindow)  {
         window.makeKeyAndVisible()
-        window.rootViewController = showHomeVC()
-        }
-
-    
-    func showDetailVC() -> UIViewController {
-        let vc = DetailsVC()
-        let navigationController = UINavigationController(rootViewController: vc)
-//        let detailsViewModel = DetailsViewModel()
-//        let detailsViewController = DetailsViewController(viewModel: detailsViewModel)
-
-        return navigationController
-    }
-    
-    func showCartVC() -> UIViewController {
-        let vc = MyCartVC()
-        let navigationController = UINavigationController(rootViewController: vc)
-        
-        return navigationController
-
-    }
-    
-    func showHomeVC() -> UIViewController {
         let homeViewModel = HomeViewModel()
         let vc = HomeVC(homeViewModel: homeViewModel)
         let navigationController = UINavigationController(rootViewController: vc)
+        window.rootViewController = navigationController
+
+        }
+
+    
+    func showDetailVC(controller: UINavigationController){
+
+        let vc = DetailsVC()
+        var vcArray = controller.viewControllers
+        print("Old : \(vcArray)")
+        vcArray.removeAll()
+        vcArray.append(vc)
+        print("New : \(vcArray)")
+
+        controller.setViewControllers(vcArray, animated: true)
+    }
+    
+    func showCartVC(controller: UINavigationController) {
         
-        return navigationController
+        let vc = MyCartVC()
+        var vcArray = controller.viewControllers
+        print("Old : \(vcArray)")
+        vcArray.removeAll()
+        vcArray.append(vc)
+        print("New : \(vcArray)")
+
+        controller.setViewControllers(vcArray, animated: true)
+
+    }
+    
+    
+    
+
+    
+    func showHomeVC(controller: UINavigationController) {
+        let homeViewModel = HomeViewModel()
+        let vc = HomeVC(homeViewModel: homeViewModel)
+        var vcArray = controller.viewControllers
+        print("Old : \(vcArray)")
+        vcArray.removeAll()
+        vcArray.append(vc)
+        print("New : \(vcArray)")
+
+        controller.setViewControllers(vcArray, animated: true)
+        
+        //controller.popViewController(animated: false)
+        //controller.pushViewController(vc, animated: true)
         
     }
     

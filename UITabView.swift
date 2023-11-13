@@ -14,27 +14,20 @@ class UITabView: UIView {
         super.init(frame: frame)
         setupUI()
         self.backgroundColor = .customDarkBlue
-        self.clipsToBounds = true
-        self.layer.cornerRadius = 20
     }
+    
+    let viewModel = HomeViewModel()
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let superView : UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .customDarkBlue
-        view.layer.cornerRadius = 15
-        return view
-    }()
     
-    private let label : UILabel = {
+    let label : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Explorer"
-        label.font = .markProFont(size: 15, weight: .medium)
+        label.font = .markProFont(size: 17, weight: .heavy)
         label.textColor = .white
         return label
     }()
@@ -42,22 +35,79 @@ class UITabView: UIView {
     
     private let circle : UIView = {
         let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.clipsToBounds = true
+        view.layer.cornerRadius = 5
+        view.widthAnchor.constraint(equalToConstant: 10).isActive = true
+        view.heightAnchor.constraint(equalToConstant: 10).isActive = true
         return view
     }()
     
+    lazy var bagButton : UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .clear
+        button.setImage(UIImage(named: "bagPic"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .white
+        button.widthAnchor.constraint(equalToConstant: 37).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 37).isActive = true
+        return button
+    }()
     
-    private func setupUI() {
-        self.addSubview(label)
-        
-//        superView.fillSuperview()
-//        
-//        superView.addSubview(label)
-        
-        label.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        
+    lazy var heartButton : UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .clear
+        button.setImage(UIImage(named: "heartPic"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .white
+        button.widthAnchor.constraint(equalToConstant: 37).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 37).isActive = true
+        return button
+    }()
+    
+    lazy var profileButton : UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .clear
+        button.setImage(UIImage(named: "profilePic"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .white
+        button.widthAnchor.constraint(equalToConstant: 37).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 37).isActive = true
+        return button
+    }()
+    
+    @objc func didTouchBagButton(navController: UINavigationController) {
+        viewModel.goToCartController(navController: navController)
     }
+    
+}
+    
+    
+private extension UITabView {
+        
+         func setupUI() {
+            
+            let labelsStack = UIStackView(arrangedSubviews: [circle, label])
+            labelsStack.spacing = 7
+            labelsStack.translatesAutoresizingMaskIntoConstraints = false
+            labelsStack.alignment = .center
+            labelsStack.distribution = .fillProportionally
+            
+            self.addSubview(labelsStack)
+            
+            labelsStack.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 45).isActive = true
+            labelsStack.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+            
+            let buttonStack = UIStackView(arrangedSubviews: [bagButton, heartButton, profileButton])
+            buttonStack.spacing = 28
+            buttonStack.translatesAutoresizingMaskIntoConstraints = false
+            
+            self.addSubview(buttonStack)
+            
+            buttonStack.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -45).isActive = true
+            buttonStack.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+    
+        }
 }
 

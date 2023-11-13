@@ -9,6 +9,8 @@ import Foundation
 import UIKit
 
 protocol CommonCellViewModel {
+    
+    func set(indexPath: IndexPath)
     func numberOfSections() -> Int
     func numberOfItemsInSection() -> Int
 }

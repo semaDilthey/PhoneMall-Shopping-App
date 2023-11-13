@@ -11,17 +11,40 @@ protocol HomeViewModelProtocol {
     func getBestSeller()
     func getHomeStore()
     func getCategories()
+    
+    var reloadTableView: (() -> Void)? { get set }
+    func numberOfSections() -> Int
+    
+    var homeStoreCellViewModels : [HomeStoreCellModelProtocol] { get set }
+    var bestSellerCellViewModels : [BestSellerModelProtocol] { get set }
+    
+    var categoryCellViewModel : CategoryCellViewModel { get set }
+    
+    func getBestCellViewModel(at indexPath: IndexPath) -> BestSellerModelProtocol
+    func getHomeCellViewModel(at indexPath: IndexPath) -> HomeStoreCellModelProtocol?
+    
+    func goToDetailsController(navController: UINavigationController)
+    func goToCartController(navController: UINavigationController)
 }
+
 
 class HomeViewModel : HomeViewModelProtocol {
     
+    let coordinator = Coordinator()
+    
     private var data : HomeData?
     private let networkManager : NetworkManager?
+    private var dataStorage : DataStorage?
     
     init(networkManager : NetworkManager = NetworkManager()) {
         self.networkManager = networkManager
     }
     
+    var countAddedProductInCart: String? {
+        let count = dataStorage?.getCountProducts()
+        return count != 0  ? String(count ?? 0) : nil
+    }
+
     var reloadTableView: (() -> Void)?
     
     var categoryCellViewModel = CategoryCellViewModel() {
@@ -36,7 +59,7 @@ class HomeViewModel : HomeViewModelProtocol {
         }
     }
     
-    var bestSellerCellViewModels = [BestSellerCellViewModelProtocol]() {
+    var bestSellerCellViewModels = [BestSellerModelProtocol]() {
         didSet {
             reloadTableView?()
         }
@@ -68,7 +91,7 @@ class HomeViewModel : HomeViewModelProtocol {
             switch data {
             case .success(let data) :
                 self?.data = data
-                var arr = [BestSellerCellViewModelProtocol]()
+                var arr = [BestSellerModelProtocol]()
                 for item in data.bestSeller {
                     arr.append((self?.createBestSellerCellModel(data: item))!)
                 }
@@ -79,17 +102,16 @@ class HomeViewModel : HomeViewModelProtocol {
         })
     }
     
-    private func createBestSellerCellModel(data: BestSellerItem) -> BestSellerCellViewModelProtocol {
+    private func createBestSellerCellModel(data: BestSellerItem) -> BestSellerModelProtocol {
         let title = data.title
         let picture = data.picture
         let discountPrice = String(data.discountPrice) + "$"
         let fullPrice = String(data.priceWithoutDiscount) + "$"
         let isFavorites = data.isFavorites
-        
-        return BestSellerCellViewModel(title: title, discountPrice: discountPrice, fullPrice: fullPrice, pictureUrlString: picture, isFavorites: isFavorites)
+        return BestSellerModel(title: title, discountPrice: discountPrice, fullPrice: fullPrice, pictureUrlString: picture, isFavorites: isFavorites)
     }
     
-    func createHomeStoreCellModel(data: HomeStoreItem) -> HomeStoreCellModelProtocol {
+    private func createHomeStoreCellModel(data: HomeStoreItem) -> HomeStoreCellModelProtocol {
         let title = data.title
         let subtitle = data.subtitle
         let picture = data.picture
@@ -97,7 +119,7 @@ class HomeViewModel : HomeViewModelProtocol {
         return HomeStoreCellModel(title: title, subtitle: subtitle, picture: picture)
     }
     
-    func getBestCellViewModel(at indexPath: IndexPath) -> BestSellerCellViewModelProtocol {
+    func getBestCellViewModel(at indexPath: IndexPath) -> BestSellerModelProtocol {
         return bestSellerCellViewModels[indexPath.row]
     }
     
@@ -119,9 +141,12 @@ class HomeViewModel : HomeViewModelProtocol {
         return 3
     }
     
-//    func cellViewModel(forIndexPath IndexPath: IndexPath) -> CollectionViewCellModelProtocol? {
-//        return nil
-//    }
+    func goToDetailsController(navController: UINavigationController) {
+        coordinator.showDetailVC(controller: navController)
+    }
     
+    func goToCartController(navController: UINavigationController) {
+        coordinator.showCartVC(controller: navController)
+    }
     
 }

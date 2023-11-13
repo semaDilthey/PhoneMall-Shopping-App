@@ -13,24 +13,40 @@ final class HomeVC : UICollectionViewController {
         setupNavigationController()
         initViewModel()
         setupUI()
+        
     }
     
-    let homeViewModel : HomeViewModel
+//    override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        
+//        tabView.layer.cornerRadius = tabView.frame.height / 2
+//        tabView.clipsToBounds = true
+//        
+//        countProductCartLabel.layer.cornerRadius = countProductCartLabel.frame.height / 2
+//        countProductCartLabel.clipsToBounds = true
+//    }
 
+
+    
+    var homeViewModel : HomeViewModel
 
     init(homeViewModel: HomeViewModel){
         self.homeViewModel = homeViewModel
         super.init(collectionViewLayout: .init())
     }
-    
-    
-    let categoryViewModel = CategoryCellViewModel()
-    
+        
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
         // Скрытие navigationBar только на этом экране
         navigationController?.setNavigationBarHidden(true, animated: false)
+        
+//        if let count = homeViewModel.countAddedProductInCart {
+//            countProductCartLabel.text = count
+//            countProductCartLabel.isHidden = false
+//        } else {
+//            countProductCartLabel.text = nil
+//            countProductCartLabel.isHidden = true
+//        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -40,7 +56,7 @@ final class HomeVC : UICollectionViewController {
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
-    func initViewModel() {
+    private func initViewModel() {
         homeViewModel.getBestSeller()
         
         homeViewModel.getHomeStore()
@@ -50,20 +66,35 @@ final class HomeVC : UICollectionViewController {
                 self?.collectionView.reloadData()
             }
         }
-        
     }
-//    
-//    init(){
-//        super.init(collectionViewLayout: .init())
-//    }
-   
+
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let tabView = UITabView()
-//    let tabView = UITabView()
+    private let tabView : UITabView = {
+        let view = UITabView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 30
+        view.clipsToBounds = true
+        view.bagButton.addTarget(self, action: #selector(openCart), for: .touchUpInside)
+        return view
+    }()
+    
+    private let countProductCartLabel: UILabel = {
+          let label = UILabel()
+          label.adjustsFontSizeToFitWidth = true
+          label.backgroundColor = .red
+          label.textAlignment = .center
+          label.translatesAutoresizingMaskIntoConstraints = false
+          return label
+      }()
+    
+    @objc func openCart() {
+        homeViewModel.goToCartController(navController: navigationController!)
+    }
+   
 }
 
 
@@ -88,9 +119,9 @@ extension HomeVC {
         switch indexPath.section {
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifire, for: indexPath) as! CategoryCell
-            let cellViewModel = categoryViewModel
+            let cellViewModel = CategoryCellViewModel()
             cellViewModel.set(indexPath: indexPath)
-            cell.set(viewModel: categoryViewModel, indexPath: indexPath)
+            cell.set(viewModel: cellViewModel, indexPath: indexPath)
             if indexPath.row == 0 {
                 cell.view.backgroundColor = .customOrange
                 cell.label.textColor = .customOrange
@@ -127,8 +158,7 @@ extension HomeVC {
                 cell.changeCellColor(isSelected: true, cell: cell)
             }
         default :
-            let vc = DetailsVC()
-            navigationController?.pushViewController(vc, animated: true)
+            homeViewModel.goToDetailsController(navController: navigationController!)
         }
     }
        
@@ -168,7 +198,7 @@ extension HomeVC {
 //MARK: - ReusableViewDelegate
 
 extension HomeVC : ReusableViewDelegate {
-    func didTapButton() {
+    func didTapFilterButton() {
         let sheetViewController = FilterViewController()
         if let sheet = sheetViewController.sheetPresentationController {
             sheet.detents = [.medium()]
@@ -184,7 +214,7 @@ private extension HomeVC {
       func setupCollectionView() {
           
           collectionView.collectionViewLayout = createLayout()
-          collectionView.backgroundColor = UIColor(named: "snowyWhite")
+          collectionView.backgroundColor = .snowyWhite
           
           collectionView.register(CategoryCell.self, forCellWithReuseIdentifier: CategoryCell.identifire)
           collectionView.register(HomeStoreCell.self, forCellWithReuseIdentifier: HomeStoreCell.identifire)
@@ -271,16 +301,16 @@ private extension HomeVC {
 }
 
 
-extension HomeVC {
+private extension HomeVC {
     
     func  setupUI() {
         
         view.addSubview(tabView)
       
-        tabView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        tabView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        tabView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        tabView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        tabView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 3).isActive = true
+        tabView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -3).isActive = true
+        tabView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -5).isActive = true
+        tabView.heightAnchor.constraint(equalToConstant: 72).isActive = true
     }
 }
 
@@ -289,3 +319,4 @@ extension HomeVC {
 //        HomeVC().showPreview()
 //    }
 //}
+// 

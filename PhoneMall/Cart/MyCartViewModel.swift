@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 protocol MyCartViewModelProtocol {
     func getCartPhones()
@@ -18,6 +19,8 @@ class MyCartViewModel {
     
     var data : CartData?
     var networking = NetworkManager()
+    
+    var coordinator = Coordinator()
     
     var reloadTableView: (() -> Void)?
 
@@ -54,6 +57,16 @@ class MyCartViewModel {
         }
     }
     
+    func backButtonPressed(navController: UINavigationController) {
+        coordinator.showHomeVC(controller: navController)
+    }
+    
+    func deleteTapped(cell: MyCartCell, tableView: UITableView) {
+        if let indexPath = tableView.indexPath(for: cell) {
+            self.cartPhonesModel.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+    }
     
 }
     
