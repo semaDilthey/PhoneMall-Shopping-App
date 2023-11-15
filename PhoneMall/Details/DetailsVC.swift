@@ -9,6 +9,8 @@ import Cosmos
 
 final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     
+    var data = DataStorage()
+    
     var cartViewModel = MyCartViewModel()
     
     var viewModel = {
@@ -17,8 +19,10 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     
     var detailsPhonesArray : [DetailsCellModel] = []
     
-    
     var cartCounter : Int = 0 {
+        didSet{
+            setupItemsInCart()
+        }
         willSet {
             itemsCounterLabel.text = String(newValue)
         }
@@ -31,8 +35,8 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         setupUI()
 
         initViewModel()
-
     }
+    
     
     private func initViewModel() {
         viewModel.getDetailsPhones()
@@ -47,6 +51,8 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     init(){
         super.init(collectionViewLayout: .init())
     }
+    
+ 
     
 
     //MARK: - creating NavBar
@@ -63,11 +69,6 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         but.heightAnchor.constraint(equalToConstant: 37).isActive = true
         return but
     }()
-    
-    // метод для кнопки backButton
-    @objc func backButtonPresentingVC() {
-        viewModel.backButtonPressed(navController: navigationController!)
-    }
     
     lazy var shopCartButton : UIButton = {
         let but = UIButton(type: .custom)
@@ -118,10 +119,6 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
             itemsCounterLabel.centerYAnchor.constraint(equalTo: itemsInCartView.centerYAnchor, constant: -1).isActive = true
         }
        
-    }
-    
-    @objc func shopCartButtonPresentingVC() {
-        navigationController?.pushViewController(MyCartVC(), animated: true)
     }
     
     // Product details label that in the top center
@@ -201,15 +198,6 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         return button
     }()
     
-    @objc func didTappedFav() {
-        favButton.isSelected = !favButton.isSelected
-        if favButton.isSelected {
-            favButton.setImage(UIImage(named: "heartFilled"), for: .normal)
-        } else {
-            favButton.setImage(UIImage(named: "heartEmpty")?.imageWithColor(color: .white), for: .normal)
-        }
-        
-    }
     
     //MARK: - Second Level
     // Простой контейнер для удобства заполнения
@@ -391,32 +379,6 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         return label
     }()
     
-    // это надо потом во вью модель
-    @objc func changedCapacity(sender: UITapGestureRecognizer) {
-        UIView.animate(withDuration: 0.5, animations: { [weak self] in
-            if let label = sender.view as? UILabel {
-                self?.gb128Label.layer.backgroundColor = (label == self?.gb128Label) ? UIColor.customOrange.cgColor : UIColor.clear.cgColor
-                self?.gb256Label.layer.backgroundColor = (label == self?.gb256Label) ? UIColor.customOrange.cgColor : UIColor.clear.cgColor
-                self?.gb128Label.textColor = (label == self?.gb128Label) ? .white : .gray
-                self?.gb256Label.textColor = (label == self?.gb256Label) ? .white : .gray
-            }
-            
-        })
-    }
-    
-    
-    @objc func changedColor(sender: UITapGestureRecognizer) {
-        UIView.animate(withDuration: 0.5, animations: { [weak self] in
-            if let label = sender.view as? UILabel {
-                self?.circleLabelBrown.layer.borderColor = (label == self?.circleLabelBrown) ? UIColor.customOrange.cgColor : UIColor.clear.cgColor
-                self?.circleLabelBlack.layer.borderColor = (label == self?.circleLabelBlack) ? UIColor.customOrange.cgColor : UIColor.clear.cgColor
-                self?.circleLabelBrown.layer.borderWidth = (label == self?.circleLabelBrown) ? 3 : 0
-                self?.circleLabelBlack.layer.borderWidth = (label == self?.circleLabelBlack) ? 3 : 0
-        }
-    })
-}
-    
-    
     
     //MARK: - Fourth Level
     
@@ -464,17 +426,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         button.addTarget(self, action: #selector(addToCartButtonTapped), for: .touchUpInside)
         return button
     }()
-    
-    @objc func addToCartButtonTapped() {
-        cartCounter += 1
-        setupItemsInCart()
-        addToCartButton.startAnimatingPressActions()
 
-        // Закидываем телефоны в массив phonesInCart в файле MyCartViewMode.
-        cartViewModel.cartPhonesModel.append(viewModel.createModelForCart(model: detailsPhonesArray.first!))
-       
-        
-    }
 
     // Чтобы не  писать кучу строк кода, попробую написать функцию 1)создающую имейджВьюхи и 2)текстовые лейблы
     
@@ -583,6 +535,55 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         fatalError("init(coder:) has not been implemented")
     }
     
+    // метод для кнопки backButton
+    @objc func backButtonPresentingVC() {
+        viewModel.backButtonPressed(navController: navigationController!, data: data)
+    }
+    
+    @objc func shopCartButtonPresentingVC() {
+        navigationController?.pushViewController(MyCartVC(), animated: true)
+    }
+    
+    
+    @objc func didTappedFav() {
+        favButton.isSelected.toggle()
+        favButton.isSelected ? favButton.setImage(UIImage(named: "heartFilled"), for: .normal) : favButton.setImage(UIImage(named: "heartEmpty")?.imageWithColor(color: .white), for: .normal)
+    }
+    
+    // это надо потом во вью модель
+    @objc func changedCapacity(sender: UITapGestureRecognizer) {
+        UIView.animate(withDuration: 0.5, animations: { [weak self] in
+            if let label = sender.view as? UILabel {
+                self?.gb128Label.layer.backgroundColor = (label == self?.gb128Label) ? UIColor.customOrange.cgColor : UIColor.clear.cgColor
+                self?.gb256Label.layer.backgroundColor = (label == self?.gb256Label) ? UIColor.customOrange.cgColor : UIColor.clear.cgColor
+                self?.gb128Label.textColor = (label == self?.gb128Label) ? .white : .gray
+                self?.gb256Label.textColor = (label == self?.gb256Label) ? .white : .gray
+            }
+            
+        })
+    }
+    
+    
+    @objc func changedColor(sender: UITapGestureRecognizer) {
+        UIView.animate(withDuration: 0.5, animations: { [weak self] in
+            if let label = sender.view as? UILabel {
+                self?.circleLabelBrown.layer.borderColor = (label == self?.circleLabelBrown) ? UIColor.customOrange.cgColor : UIColor.clear.cgColor
+                self?.circleLabelBlack.layer.borderColor = (label == self?.circleLabelBlack) ? UIColor.customOrange.cgColor : UIColor.clear.cgColor
+                self?.circleLabelBrown.layer.borderWidth = (label == self?.circleLabelBrown) ? 3 : 0
+                self?.circleLabelBlack.layer.borderWidth = (label == self?.circleLabelBlack) ? 3 : 0
+            }
+        })
+    }
+    
+    @objc func addToCartButtonTapped() {
+        cartCounter += 1
+        addToCartButton.startAnimatingPressActions()
+
+        // Закидываем телефоны в массив phonesInCart в файле MyCartViewMode.
+        cartViewModel.cartPhonesModel.append(viewModel.createModelForCart(model: detailsPhonesArray.first!))
+        
+        data.inCart = true
+    }
        
 }
 

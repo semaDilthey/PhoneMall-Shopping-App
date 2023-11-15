@@ -24,6 +24,9 @@ protocol DataStorageProtocol {
 }
 
 struct DataStorage: DataStorageProtocol {
+    
+    var inCart : Bool?
+    
     func getCategory() -> [CategoryProduct] {
         CategoryProduct.allCases
     }

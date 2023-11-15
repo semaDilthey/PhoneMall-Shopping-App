@@ -39,11 +39,6 @@ class HomeViewModel : HomeViewModelProtocol {
     init(networkManager : NetworkManager = NetworkManager()) {
         self.networkManager = networkManager
     }
-    
-    var countAddedProductInCart: String? {
-        let count = dataStorage?.getCountProducts()
-        return count != 0  ? String(count ?? 0) : nil
-    }
 
     var reloadTableView: (() -> Void)?
     

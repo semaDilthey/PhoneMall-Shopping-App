@@ -17,6 +17,9 @@ protocol DetailsViewModelProtocol {
 
 
 class DetailsViewModel : DetailsViewModelProtocol {
+    func backButtonPressed(navController: UINavigationController) {
+    }
+    
     
     let coordinator = Coordinator()
     
@@ -88,8 +91,8 @@ class DetailsViewModel : DetailsViewModelProtocol {
         return MyCartCellModel(title: title, picture: picture!, price: price)
     }
     
-    func backButtonPressed(navController: UINavigationController) {
-        coordinator.showHomeVC(controller: navController)
+    func backButtonPressed(navController: UINavigationController, data: DataStorage) {
+        coordinator.showHomeVC(controller: navController, data: data)
     }
     
 

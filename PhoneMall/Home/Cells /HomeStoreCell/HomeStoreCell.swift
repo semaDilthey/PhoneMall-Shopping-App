@@ -14,11 +14,11 @@ class HomeStoreCell: UICollectionViewCell {
         backgroundColor = .brown
     }
     
-    var cellViewModel : HomeStoreCellModelProtocol? {
+    var viewModel : HomeStoreCellModelProtocol? {
         didSet {
-            mainImage.set(imageURL: cellViewModel?.pictureUrlString)
-            phoneTitleLabel.text = cellViewModel?.title
-            subtitleLabel.text = cellViewModel?.subtitle
+            mainImage.set(imageURL: viewModel?.pictureUrlString)
+            phoneTitleLabel.text = viewModel?.title
+            subtitleLabel.text = viewModel?.subtitle
         }
     }
     

@@ -7,74 +7,53 @@ import SwiftUI
 
 final class HomeVC : UICollectionViewController {
     
+    // MARK: - Properties
+    
+    private var dataStorage: DataStorage?
+    private var viewModel : HomeViewModel
+
+    // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupCollectionView()
-        setupNavigationController()
         initViewModel()
         setupUI()
-        
     }
     
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//        
-//        tabView.layer.cornerRadius = tabView.frame.height / 2
-//        tabView.clipsToBounds = true
-//        
-//        countProductCartLabel.layer.cornerRadius = countProductCartLabel.frame.height / 2
-//        countProductCartLabel.clipsToBounds = true
-//    }
-
-
-    
-    var homeViewModel : HomeViewModel
-
-    init(homeViewModel: HomeViewModel){
-        self.homeViewModel = homeViewModel
-        super.init(collectionViewLayout: .init())
-    }
-        
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Скрытие navigationBar только на этом экране
-        navigationController?.setNavigationBarHidden(true, animated: false)
-        
-//        if let count = homeViewModel.countAddedProductInCart {
-//            countProductCartLabel.text = count
-//            countProductCartLabel.isHidden = false
-//        } else {
-//            countProductCartLabel.text = nil
-//            countProductCartLabel.isHidden = true
-//        }
+        setupNavigationBar()
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
         // Восстановление отображения navigationBar при переходе с этого экрана
-        navigationController?.setNavigationBarHidden(false, animated: false)
+        restoreNavigationBar()
     }
     
-    private func initViewModel() {
-        homeViewModel.getBestSeller()
-        
-        homeViewModel.getHomeStore()
-        
-        homeViewModel.reloadTableView = { [weak self] in
-            DispatchQueue.main.async {
-                self?.collectionView.reloadData()
-            }
-        }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        setupRoundedFrames()
     }
 
+    // MARK: - Initialization
     
+    init(homeViewModel: HomeViewModel, data: DataStorage?){
+        self.viewModel = homeViewModel
+        self.dataStorage = data ?? DataStorage()
+        super.init(collectionViewLayout: .init())
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let tabView : UITabView = {
-        let view = UITabView()
+    
+    // MARK: - UI Elements
+    
+    lazy var tabView : TabBarView = {
+        let view = TabBarView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 30
         view.clipsToBounds = true
@@ -83,91 +62,295 @@ final class HomeVC : UICollectionViewController {
     }()
     
     private let countProductCartLabel: UILabel = {
-          let label = UILabel()
-          label.adjustsFontSizeToFitWidth = true
-          label.backgroundColor = .red
-          label.textAlignment = .center
-          label.translatesAutoresizingMaskIntoConstraints = false
-          return label
+        let label = UILabel()
+        label.adjustsFontSizeToFitWidth = true
+        label.backgroundColor = .red
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.layer.cornerRadius = label.frame.height / 2
+        label.clipsToBounds = true
+        return label
       }()
     
     @objc func openCart() {
-        homeViewModel.goToCartController(navController: navigationController!)
+        guard let navigationController = navigationController else { return }
+        viewModel.goToCartController(navController: navigationController)
     }
    
 }
 
+// MARK: - Private Methods
 
+private extension HomeVC {
+    // to viewDidLoad
+    func setupUI() {
+            setupCollectionView()
+            setupNavigationController()
+            setupViews()
+    }
+    
+    func setupCollectionView() {
+          collectionView.collectionViewLayout = createCompositionalLayout()
+          collectionView.backgroundColor = .snowyWhite
+          
+          collectionView.register(CategoryCell.self, 
+                                  forCellWithReuseIdentifier: CategoryCell.identifire)
+          collectionView.register(HomeStoreCell.self, 
+                                  forCellWithReuseIdentifier: HomeStoreCell.identifire)
+          collectionView.register(BestSellerCell.self, 
+                                  forCellWithReuseIdentifier: BestSellerCell.identifire)
+        
+          // рег заголовок
+          collectionView.register(HeaderBestSeller.self, 
+                                  forSupplementaryViewOfKind: HeaderBestSeller.headerID, 
+                                  withReuseIdentifier: HeaderBestSeller.headerID)
+          collectionView.register(HeaderHotSales.self,
+                                  forSupplementaryViewOfKind: HeaderHotSales.headerID, 
+                                  withReuseIdentifier: HeaderHotSales.headerID)
+          collectionView.register(HeaderSelectCategory.self,
+                                  forSupplementaryViewOfKind: HeaderSelectCategory.headerID, 
+                                  withReuseIdentifier: HeaderSelectCategory.headerID)
+      }
+    
+    
+    func setupNavigationController() {
+        navigationItem.hidesSearchBarWhenScrolling = true
+        navigationController?.navigationBar.prefersLargeTitles = false
+    }
+    
+    func  setupViews() {
+        view.addSubview(tabView)
+        tabView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 3).isActive = true
+        tabView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -3).isActive = true
+        tabView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -5).isActive = true
+        tabView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        tabView.addSubview(countProductCartLabel)
+        countProductCartLabel.centerXAnchor.constraint(equalTo: tabView.bagButton.centerXAnchor, constant: 8).isActive = true
+        countProductCartLabel.centerYAnchor.constraint(equalTo: tabView.bagButton.centerYAnchor, constant: -8).isActive = true
+        countProductCartLabel.heightAnchor.constraint(equalToConstant: 15).isActive = true
+        countProductCartLabel.widthAnchor.constraint(equalTo: countProductCartLabel.heightAnchor).isActive = true
+    }
+    
+    // to viewDidLoad
+    func initViewModel() {
+        viewModel.getBestSeller()
+        viewModel.getHomeStore()
+        setupViewModelCallbacks()
+    }
+    
+    func setupNavigationBar() {
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        updateCartCountVisibility()
+    }
+
+    func restoreNavigationBar() {
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+    
+    func setupRoundedFrames() {
+        tabView.layer.cornerRadius = tabView.frame.height / 2
+        tabView.clipsToBounds = true
+        countProductCartLabel.layer.cornerRadius = countProductCartLabel.frame.height / 2
+        countProductCartLabel.clipsToBounds = true
+    }
+    
+    func setupViewModelCallbacks() {
+        viewModel.reloadTableView = { [weak self] in
+            DispatchQueue.main.async {
+                self?.collectionView.reloadData()
+            }
+        }
+    }
+        
+    func updateCartCountVisibility() {
+        countProductCartLabel.isHidden = dataStorage?.inCart == nil
+    }
+}
+
+
+//MARK: - Creating layout
+private extension HomeVC {
+    
+    // MARK:  Constants
+    
+    enum SectionInsets {
+        case first, second, third
+        
+        var value : NSDirectionalEdgeInsets {
+            switch self {
+            case .first : return NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12)
+            case .second : return NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 4, trailing: 12)
+            case .third : return NSDirectionalEdgeInsets(top: 10, leading: 12, bottom: 10, trailing: 12)
+            }
+        }
+    }
+    
+    private var horizontalSpacing: CGFloat {
+        12
+    }
+    private var verticalSpacing: CGFloat {
+        5
+    }
+    
+    // MARK:  Layout Creation
+
+     func createCompositionalLayout() -> UICollectionViewCompositionalLayout {
+        return UICollectionViewCompositionalLayout { sectionNumber, evf ->
+            NSCollectionLayoutSection? in
+            switch sectionNumber {
+            case 0: return self.createFirstSection()
+            case 1: return self.createSecondSection()
+            case 2: return self.createThirdSection()
+            default: return self.createFirstSection()
+            }
+         }
+     }
+    
+    //MARK:  LayoutItem&Group Creation
+    // Функция создания layout item с передачей отступов
+    func createLayoutItem(widthFraction: CGFloat, heightFraction: CGFloat, contentInsets: NSDirectionalEdgeInsets) -> NSCollectionLayoutItem {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(widthFraction), heightDimension: .fractionalHeight(heightFraction))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = contentInsets
+        return item
+    }
+    // Функция создания layout group
+    func createGroup(layoutSize: NSCollectionLayoutSize, subitems: [NSCollectionLayoutItem]) -> NSCollectionLayoutGroup {
+        return NSCollectionLayoutGroup.horizontal(layoutSize: layoutSize, subitems: subitems)
+        }
+  
+    //MARK: Section Creation
+    
+     func createFirstSection() -> NSCollectionLayoutSection {
+         
+         let item = createLayoutItem(widthFraction: 0.25, heightFraction: 1, contentInsets: SectionInsets.first.value)
+         let group = createGroup(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(120)), subitems: [item])
+         let section = NSCollectionLayoutSection(group: group)
+         section.orthogonalScrollingBehavior = .continuous
+         section.boundarySupplementaryItems = [createHeaderItem(height: 80, kind: HeaderSelectCategory.headerID)]
+         return section
+    }
+    
+     func createSecondSection() -> NSCollectionLayoutSection {
+         
+         let item = createLayoutItem(widthFraction: 1, heightFraction: 1, contentInsets: SectionInsets.second.value)
+         let group = createGroup(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(200)), subitems: [item])
+         let section = NSCollectionLayoutSection(group: group)
+         section.orthogonalScrollingBehavior = .paging
+         section.boundarySupplementaryItems = [createHeaderItem(height: 120, kind: HeaderHotSales.headerID)]
+         return section
+    }
+    
+     func createThirdSection() -> NSCollectionLayoutSection {
+      
+        let item = createLayoutItem(widthFraction: 0.5, heightFraction: 38/100, contentInsets: SectionInsets.third.value)
+        let group = createGroup(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(600)), subitems: [item])
+        let section = NSCollectionLayoutSection(group: group)
+        section.boundarySupplementaryItems = [createHeaderItem(height: 50, kind: HeaderBestSeller.headerID)]
+        return section
+    }
+    
+    // MARK:  Helper Methods
+
+    func createHeaderItem(height: CGFloat, kind: String) -> NSCollectionLayoutBoundarySupplementaryItem {
+        return .init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(height)), elementKind: kind, alignment: .top)
+    }
+}
+
+
+    
 
 //MARK: - Delegate, DataSource
+
 extension HomeVC {
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return homeViewModel.numberOfSections()
+        return viewModel.numberOfSections()
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 
         switch section {
-        case 0 : return homeViewModel.categoryCellViewModel.numberOfItemsInSection()
-        case 1 : return homeViewModel.homeStoreCellViewModels.count
-        default : return homeViewModel.bestSellerCellViewModels.count
+            
+        case 0 :
+            return viewModel.categoryCellViewModel.numberOfItemsInSection()
+            
+        case 1 :
+            return viewModel.homeStoreCellViewModels.count
+            
+        default :
+            return viewModel.bestSellerCellViewModels.count
+            
         }
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
+            
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifire, for: indexPath) as! CategoryCell
-            let cellViewModel = CategoryCellViewModel()
-            cellViewModel.set(indexPath: indexPath)
-            cell.set(viewModel: cellViewModel, indexPath: indexPath)
-            if indexPath.row == 0 {
-                cell.view.backgroundColor = .customOrange
-                cell.label.textColor = .customOrange
-                cell.label.font = UIFont.markProFont(size: 12, weight: .heavy)
-            } else {
-                cell.view.backgroundColor = .white
-                cell.label.textColor = .black
-                cell.label.font = UIFont.markProFont(size: 12, weight: .plain)
-            }
+            let categoryCellViewModel = CategoryCellViewModel()
+            categoryCellViewModel.set(indexPath: indexPath)
+            cell.set(viewModel: categoryCellViewModel, indexPath: indexPath)
             return cell
+            
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeStoreCell.identifire, for: indexPath) as! HomeStoreCell
-            let cellVM = homeViewModel.getHomeCellViewModel(at: indexPath)
-            cell.cellViewModel = cellVM
+            let homeStoreCellViewModel = viewModel.getHomeCellViewModel(at: indexPath)
+            cell.viewModel = homeStoreCellViewModel
             return cell
+            
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BestSellerCell.identifire, for: indexPath) as! BestSellerCell
-            let cellVM = homeViewModel.getBestCellViewModel(at: indexPath)
-            cell.cellViewModel = cellVM
-            cell.updateFavoritesUI()
-        
+            let bestSellerCellViewModel = viewModel.getBestCellViewModel(at: indexPath)
+            cell.viewModel = bestSellerCellViewModel
             return cell
+            
         default:
             return CategoryCell()
         }
     }
     
-    // What will happen on click didSelectItemAt
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         switch indexPath.section {
+            
         case 0:
-            if let cell = collectionView.cellForItem(at: indexPath) as? CategoryCell {
-                cell.changeCellColor(isSelected: true, cell: cell)
+            if let categoryCell = cell as? CategoryCell {
+                if indexPath.row == 0 {
+                    categoryCell.view.backgroundColor = .customOrange
+                    categoryCell.label.textColor = .customOrange
+                    categoryCell.label.font = UIFont.markProFont(size: 12, weight: .heavy)
+                } else {
+                    categoryCell.view.backgroundColor = .white
+                    categoryCell.label.textColor = .black
+                    categoryCell.label.font = UIFont.markProFont(size: 12, weight: .plain)
+                }
             }
-        default :
-            homeViewModel.goToDetailsController(navController: navigationController!)
+            
+        default:
+            break
         }
     }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.section == 0 {
+            
+            if let cell = collectionView.cellForItem(at: indexPath) as? CategoryCell {
+                cell.isSelected = true
+            }
+        } else {
+            viewModel.goToDetailsController(navController: navigationController!)
+        }
+
+        
+    }
        
-    // didDeselectItemAt
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         if indexPath.section == 0 {
+            
             if let cell = collectionView.cellForItem(at: indexPath) as? CategoryCell {
-                cell.changeCellColor(isSelected: false, cell: cell)
-
+                cell.isSelected = false
             }
         }
     }
@@ -176,21 +359,32 @@ extension HomeVC {
     //reusable view
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
+            
         case HeaderBestSeller.headerID:
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderBestSeller.headerID, for: indexPath)
-        header.backgroundColor = .clear
-        return header
-        case HeaderHotSales.headerID:
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderHotSales.headerID, for: indexPath)
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, 
+                                                                         withReuseIdentifier: HeaderBestSeller.headerID,
+                                                                         for: indexPath)
             header.backgroundColor = .clear
             return header
+            
+        case HeaderHotSales.headerID:
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, 
+                                                                         withReuseIdentifier: HeaderHotSales.headerID,
+                                                                         for: indexPath)
+            header.backgroundColor = .clear
+            return header
+            
         case HeaderSelectCategory.headerID:
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderSelectCategory.headerID, for: indexPath) as! HeaderSelectCategory
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, 
+                                                                         withReuseIdentifier: HeaderSelectCategory.headerID,
+                                                                         for: indexPath) as! HeaderSelectCategory
             header.backgroundColor = .clear
             header.delegate = self
             return header
+            
         default:
-            fatalError("Unexpected element kind: \(kind)")
+            assertionFailure("Unexpected element kind: \(kind)")
+            return UICollectionReusableView()
     }
     
     }
@@ -208,115 +402,13 @@ extension HomeVC : ReusableViewDelegate {
 }
 
 
-//MARK: - SetupUI, Constraits, Nav View
-private extension HomeVC {
-    
-      func setupCollectionView() {
-          
-          collectionView.collectionViewLayout = createLayout()
-          collectionView.backgroundColor = .snowyWhite
-          
-          collectionView.register(CategoryCell.self, forCellWithReuseIdentifier: CategoryCell.identifire)
-          collectionView.register(HomeStoreCell.self, forCellWithReuseIdentifier: HomeStoreCell.identifire)
-          collectionView.register(BestSellerCell.self, forCellWithReuseIdentifier: BestSellerCell.identifire)
-          // рег заголовок
-          collectionView.register(HeaderBestSeller.self, forSupplementaryViewOfKind: HeaderBestSeller.headerID, withReuseIdentifier: HeaderBestSeller.headerID)
-          collectionView.register(HeaderHotSales.self, forSupplementaryViewOfKind: HeaderHotSales.headerID, withReuseIdentifier: HeaderHotSales.headerID)
-          collectionView.register(HeaderSelectCategory.self, forSupplementaryViewOfKind: HeaderSelectCategory.headerID, withReuseIdentifier: HeaderSelectCategory.headerID)
-      }
-    
-    
-    func setupNavigationController() {
-        navigationItem.hidesSearchBarWhenScrolling = true
-        navigationController?.navigationBar.prefersLargeTitles = false
-    }
-    
-}
 
 
-//MARK: - Creating layout
-private extension HomeVC {
-     func createLayout() -> UICollectionViewCompositionalLayout {
-        return UICollectionViewCompositionalLayout { sectionNumber, evf ->
-            NSCollectionLayoutSection? in
-            switch sectionNumber {
-            case 0: return self.createFirstSection()
-            case 1: return self.createSecondSection()
-            case 2: return self.createThirdSection()
-            default: return self.createFirstSection()
-            }
-         }
-     }
-  
-    //MARK: 1stSection
-     func createFirstSection() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.25), heightDimension: .absolute(120))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize) //item берет размеры от group. A group уже от view
-        
-         let horizontalSpacing : CGFloat = 12
-         let verticalSpacing : CGFloat = 5
-         
-        item.contentInsets = NSDirectionalEdgeInsets(top: 0,
-                                                     leading: horizontalSpacing,
-                                                     bottom: verticalSpacing,
-                                                     trailing: horizontalSpacing)
-         
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(120)), subitems: [item])
-        let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .continuous
-        section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(80)), elementKind: HeaderSelectCategory.headerID, alignment: .top)]
-        return section
-    }
-    
-    //MARK: 2ndSection
-     func createSecondSection() -> NSCollectionLayoutSection {
-        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))) //item берет размеры от group. A group уже от view
-        item.contentInsets = NSDirectionalEdgeInsets(top: 0,
-                                                         leading: 12,
-                                                         bottom: 4,
-                                                         trailing: 12)
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(200)), subitems: [item])
-        let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .paging
-            
-        section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(120)), elementKind: HeaderHotSales.headerID, alignment: .top)]
-        return section
-    }
-    
-    //MARK: 3rdSection
-     func createThirdSection() -> NSCollectionLayoutSection {
-        let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(4/9))) //item берет размеры от group. A group уже от view
-        item.contentInsets = NSDirectionalEdgeInsets(top: 10,
-                                                     leading: 12,
-                                                     bottom: 10,
-                                                     trailing: 12)
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(500)), subitems: [item])
-        let section = NSCollectionLayoutSection(group: group)
-       
-        // втыкаем заголовок для второго ряда
-        section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50)), elementKind: HeaderBestSeller.headerID, alignment: .top)]
-            return section
-    }
-    
-}
 
-
-private extension HomeVC {
-    
-    func  setupUI() {
-        
-        view.addSubview(tabView)
-      
-        tabView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 3).isActive = true
-        tabView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -3).isActive = true
-        tabView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -5).isActive = true
-        tabView.heightAnchor.constraint(equalToConstant: 72).isActive = true
-    }
-}
 
 //struct ViewControllerProvider : PreviewProvider {
 //    static var previews: some View {
 //        HomeVC().showPreview()
 //    }
 //}
-// 
+ 

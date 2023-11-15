@@ -16,7 +16,7 @@ protocol MyCartViewModelProtocol {
 
 
 class MyCartViewModel {
-    
+    var dataStorage : DataStorage?
     var data : CartData?
     var networking = NetworkManager()
     
@@ -58,7 +58,7 @@ class MyCartViewModel {
     }
     
     func backButtonPressed(navController: UINavigationController) {
-        coordinator.showHomeVC(controller: navController)
+        coordinator.showHomeVC(controller: navController, data: dataStorage ?? DataStorage())
     }
     
     func deleteTapped(cell: MyCartCell, tableView: UITableView) {

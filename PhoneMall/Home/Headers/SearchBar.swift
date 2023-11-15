@@ -1,47 +1,55 @@
-//
-//  SearchBar.swift
-//  PhoneMall
-//
-//  Created by Семен Гайдамакин on 24.06.2023.
-//
+
 import Foundation
 import UIKit
 
 class SearchBar: UITextField {
     
+    // MARK: - Initialization
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupSearchBar()
-        setupImageInSearchBar()
+        configureSearchBar()
+        configureImageInSearchBar()
     }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+        
+    // MARK: - Left View Customization
     
     override func leftViewRect(forBounds bounds: CGRect) -> CGRect {
         var rect = super.leftViewRect(forBounds: bounds)
-        rect.origin.x += 12
+        rect.origin.x += 15 // Увеличение отступа слева
         return rect
     }
+        
+    // MARK: - Text Field Rect Overrides
     
     override func textRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.insetBy(dx: 36, dy: 0)
     }
     
     override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.insetBy(dx: 36, dy: 0)
+            return bounds.insetBy(dx: 36, dy: 0)
+        }
     }
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+
+    // MARK: - UITextFieldDelegate
+
+    extension SearchBar: UITextFieldDelegate {
+        // Можно добавить нужные методы делегата, если требуется
+        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+                textField.resignFirstResponder() // Закрываем клавиатуру при нажатии на Return
+                return true
+            }
     }
-}
 
+    // MARK: - Setup Methods
 
-extension SearchBar: UITextFieldDelegate {
-    
-}
-
-//MARK: - Setuping Search Bar and so on
 extension SearchBar {
     
-    func setupSearchBar() {
+    func configureSearchBar() {
         delegate = self
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .white
@@ -54,10 +62,10 @@ extension SearchBar {
         textColor = .black
     }
     
-    func setupImageInSearchBar() {
+    func configureImageInSearchBar() {
         let image = UIImage(named: "search")
         leftView = UIImageView(image: image)
-        leftView?.frame = CGRect(x: 0, y: 0, width: 14, height: 14)
+        leftView?.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
         leftViewMode = .always
     }
     

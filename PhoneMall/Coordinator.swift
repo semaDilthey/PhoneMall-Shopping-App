@@ -12,15 +12,16 @@ protocol CoordinatorProtocol: AnyObject {
     func start(window: UIWindow)
     func showDetailVC(controller: UINavigationController)
     func showCartVC(controller: UINavigationController)
-    func showHomeVC(controller: UINavigationController)
+    func showHomeVC(controller: UINavigationController, data: DataStorage)
     
 }
 class Coordinator: CoordinatorProtocol {
     
     func start(window: UIWindow)  {
         window.makeKeyAndVisible()
+        let data = DataStorage()
         let homeViewModel = HomeViewModel()
-        let vc = HomeVC(homeViewModel: homeViewModel)
+        let vc = HomeVC(homeViewModel: homeViewModel, data: data)
         let navigationController = UINavigationController(rootViewController: vc)
         window.rootViewController = navigationController
 
@@ -53,12 +54,9 @@ class Coordinator: CoordinatorProtocol {
     }
     
     
-    
-
-    
-    func showHomeVC(controller: UINavigationController) {
+    func showHomeVC(controller: UINavigationController, data: DataStorage) {
         let homeViewModel = HomeViewModel()
-        let vc = HomeVC(homeViewModel: homeViewModel)
+        let vc = HomeVC(homeViewModel: homeViewModel, data: data)
         var vcArray = controller.viewControllers
         print("Old : \(vcArray)")
         vcArray.removeAll()
@@ -66,11 +64,6 @@ class Coordinator: CoordinatorProtocol {
         print("New : \(vcArray)")
 
         controller.setViewControllers(vcArray, animated: true)
-        
-        //controller.popViewController(animated: false)
-        //controller.pushViewController(vc, animated: true)
-        
     }
-    
     
 }

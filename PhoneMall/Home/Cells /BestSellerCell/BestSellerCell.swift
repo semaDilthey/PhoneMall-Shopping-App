@@ -16,19 +16,19 @@ class BestSellerCell: UICollectionViewCell {
         setupButton()
     }
     
-    var cellViewModel : BestSellerModelProtocol? {
+    var viewModel : BestSellerModelProtocol? {
         didSet {
-            priceLabel.text = cellViewModel?.fullPrice
-            discountPriceLabel.text = cellViewModel?.discountPrice
-            nameLabel.text = cellViewModel?.title
-            image.set(imageURL: cellViewModel?.pictureUrlString)
+            priceLabel.text = viewModel?.fullPrice
+            discountPriceLabel.text = viewModel?.discountPrice
+            nameLabel.text = viewModel?.title
+            image.set(imageURL: viewModel?.pictureUrlString)
             
             updateFavoritesUI()
         }
     }
     
     func updateFavoritesUI() {
-        if let cellViewModel = cellViewModel {
+        if let cellViewModel = viewModel {
             isFavoritesButton.isSelected = cellViewModel.isFavorites ?? false
         }
     }
@@ -68,8 +68,8 @@ class BestSellerCell: UICollectionViewCell {
     }
     
     @objc func didTappedFavorites() {
-        cellViewModel?.isFavorites = !isFavoritesButton.isSelected
-        isFavoritesButton.isSelected = cellViewModel?.isFavorites ?? false
+        viewModel?.isFavorites = !isFavoritesButton.isSelected
+        isFavoritesButton.isSelected = viewModel?.isFavorites ?? false
         
         if isFavoritesButton.isSelected {
             isFavoritesButton.setImage(UIImage(named: "heartFilled"), for: .normal)

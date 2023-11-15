@@ -6,20 +6,36 @@ class CategoryCell: UICollectionViewCell {
     
     static let identifire = "CustomCellSection1"
     
+    // MARK: - Initialization
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         layoutSubviews()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Cell Lifecycle
+    
+    override func prepareForReuse() {
+        configureSelection()
         view.backgroundColor = .white
     }
     
-    override func prepareForReuse() {
-       view.backgroundColor = .white
-        
+    override var isSelected: Bool {
+        didSet {
+           configureSelection()
+        }
     }
-         
+    
+    // MARK: - UI Elements
+    
     lazy var view : UIImageView = {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
         view.clipsToBounds = true
         view.layer.cornerRadius = contentView.frame.width/2
         return view
@@ -41,48 +57,44 @@ class CategoryCell: UICollectionViewCell {
         return image
     }()
     
+    // MARK: - Configuration
+    
+    func configureSelection() {
+        if isSelected {
+            view.backgroundColor = .customOrange
+            label.textColor = .customOrange
+            label.font = UIFont.markProFont(size: 12, weight: .heavy)
+        } else {
+            view.backgroundColor = .white
+            label.textColor = .black
+            label.font = UIFont.markProFont(size: 12, weight: .plain)
+        }
+    }
+         
+    // MARK: - Public Methods
     func set(viewModel: CategoryCellViewModel, indexPath: IndexPath) {
         self.label.text = viewModel.title
         self.image.image = viewModel.picture
     }
     
     
-    // Change cell color in HomeVC extensions
-    func changeCellColor(isSelected:Bool, cell: CategoryCell) {
-        if isSelected == true {
-            cell.view.backgroundColor = .customOrange
-            cell.label.textColor = .customOrange
-            cell.label.font = UIFont.markProFont(size: 12, weight: .heavy)
-        } else if isSelected == false {
-            cell.view.backgroundColor = .white
-            cell.label.textColor = .black
-            cell.label.font = UIFont.markProFont(size: 12, weight: .plain)
-            }
-        }
     
-    
-    //MARK: - Расстановка лэйаута для наших сабВьюх
+    //MARK: - Private Methods
     override func layoutSubviews() {
         super.layoutSubviews()
-
+       
         contentView.addSubview(view)
-        contentView.addSubview(label)
-        contentView.addSubview(image)
-        
         view.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
         view.widthAnchor.constraint(equalTo: contentView.widthAnchor).isActive = true
         view.heightAnchor.constraint(equalTo: contentView.widthAnchor).isActive = true
         
+        contentView.addSubview(image)
         image.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         image.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
+        contentView.addSubview(label)
         label.topAnchor.constraint(equalTo: view.bottomAnchor, constant: 3).isActive = true
         label.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
         
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-  
 }
