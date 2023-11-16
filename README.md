@@ -50,3 +50,10 @@ Retrieving information from the API and passing it to collection view cells. Uti
 * ## Presentation of MainScreen
 
 ![MainScreen](https://github.com/semaDilthey/PhoneMall-Shopping-App/assets/128741166/e8a633a5-39d2-4573-863a-5d27fdcf7e39)
+
+### Filter options
+
+* picker list of brands, prices and sizes
+
+![FilterVC](https://github.com/semaDilthey/PhoneMall-Shopping-App/assets/128741166/46b2cfb7-670e-4046-ba7b-e829ff6e3bf1)
+
