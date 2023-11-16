@@ -16,12 +16,22 @@ protocol MyCartViewModelProtocol {
 
 
 class MyCartViewModel {
+    
+    // MARK: - Properties
     var dataStorage : DataStorage?
-    var data : CartData?
-    var networking = NetworkManager()
+    var networkManager : NetworkManager?
     
     var coordinator = Coordinator()
+
+    var cartData : CartData?
+
+    // MARK: - Initialization
+    init(networkManager: NetworkManager?, dataStorage: DataStorage? ) {
+        self.dataStorage = dataStorage
+        self.networkManager = networkManager
+    }
     
+    // MARK: - Public Properties
     var reloadTableView: (() -> Void)?
 
     var cartPhonesModel = [MyCartCellModelProtocol]() {
@@ -30,25 +40,19 @@ class MyCartViewModel {
         }
     }
     
-    // Получаем телефоны из Details сюда по нажатию на AddToCart
-    var phonesInCart : [MyCartCellModelProtocol] = []
+    var cartPhonePricesTuple : (Double, Double) = (firstPrice : 0, secondPrice : 0)
     
-    @objc func deleteRow(at indexPath: IndexPath) {
-        cartPhonesModel.remove(at: indexPath.row)
-    }
-        
-    
-    var tupleOfPrices : (Double, Double) = (firstPrice : 0, secondPrice : 0)
-    
+    // MARK: - Public Methods
+
     func countTotal(string: String, at indexPath: IndexPath) {
         let stringWithoutDollarSign = string.replacingOccurrences(of: "$", with: "")
         
         if let intValue = Double(stringWithoutDollarSign) {
             if indexPath.row == 0 {
-                self.tupleOfPrices.0 = intValue
+                self.cartPhonePricesTuple.0 = intValue
             }
             if indexPath.row == 1 {
-                self.tupleOfPrices.1 = intValue
+                self.cartPhonePricesTuple.1 = intValue
             }
            
             
@@ -57,8 +61,10 @@ class MyCartViewModel {
         }
     }
     
-    func backButtonPressed(navController: UINavigationController) {
-        coordinator.showHomeVC(controller: navController, data: dataStorage ?? DataStorage())
+    // MARK: - Buttons Methods
+
+    func backButtonPressed(navController: UINavigationController, dataStorage: DataStorage) {
+        coordinator.showHomeVC(controller: navController, dataStorage: dataStorage)
     }
     
     func deleteTapped(cell: MyCartCell, tableView: UITableView) {
@@ -70,8 +76,6 @@ class MyCartViewModel {
     
 }
     
-    
-
 
 //MARK: - MyCartViewModelProtocol
     extension MyCartViewModel : MyCartViewModelProtocol {
@@ -81,24 +85,19 @@ class MyCartViewModel {
             let picture = data.images
             let title = data.title
             let price = data.price
-            
             return MyCartCellModel(title: title, picture: picture, price: price)
         }
         
             // 2 Получаем телефончики из интернета и запихиваем их в модельку
         func getCartPhones() {
-            networking.getCartScreenData { [weak self] data in
+            networkManager?.getCartScreenData { [weak self] data in
                 switch data {
                 case .success(let data):
-                    //guard let basket = data.basket else { return }
-                    self?.data = data
-                    var arr = [MyCartCellModelProtocol]()
-                    for basketItem in data.basket {
-                        if let cellModel = self?.createCellModel(data: basketItem) {
-                            arr.append(cellModel)
-                        }
+                    self?.cartData = data
+                    self?.cartPhonesModel = data.basket.compactMap { basketData in
+                        return self?.createCellModel(data: basketData)
                     }
-                    self?.cartPhonesModel = arr
+//                    self?.cartPhonesModel = data.basket.map { self?.createCellModel(data: $0)}
                 case .failure(let error):
                     print(error)
                 }

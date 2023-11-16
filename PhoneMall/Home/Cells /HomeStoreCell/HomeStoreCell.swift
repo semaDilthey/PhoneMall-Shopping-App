@@ -7,6 +7,7 @@ class HomeStoreCell: UICollectionViewCell {
     
     static let identifire = "CustomCellSection2"
     
+    // MARK: - Initialization
     override init(frame: CGRect) {
         super.init(frame: frame)
         clipsToBounds = true
@@ -14,21 +15,31 @@ class HomeStoreCell: UICollectionViewCell {
         backgroundColor = .brown
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Lifecycle
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        setupUI()
+    }
+    
     var viewModel : HomeStoreCellModelProtocol? {
         didSet {
-            mainImage.set(imageURL: viewModel?.pictureUrlString)
-            phoneTitleLabel.text = viewModel?.title
-            subtitleLabel.text = viewModel?.subtitle
+            configureCell()
         }
     }
     
-    var mainImage : WebImageView = {
+    // Изображение товара, подгружается с интернета
+    private let mainImage: WebImageView = {
         let image = WebImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
     
-    let isNewLabel : UILabel = {
+    // Метка для нового товара
+    private let newLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.backgroundColor = .customOrange
@@ -36,65 +47,62 @@ class HomeStoreCell: UICollectionViewCell {
         label.heightAnchor.constraint(equalToConstant: 36).isActive = true
         label.clipsToBounds = true
         label.layer.cornerRadius = 18
-        label.text = "New"
         label.textColor = .white
+        label.text = "New"
         label.font = UIFont.markProFont(size: 10, weight: .heavy)
         label.textAlignment = .center
         return label
     }()
     
-    let phoneTitleLabel : UILabel = {
+    // Название товара
+    private let phoneTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "IPHONE"
         label.textColor = .white
         label.font = UIFont.markProFont(size: 25, weight: .heavy)
         return label
     }()
     
-    let subtitleLabel : UILabel = {
+    // Подзаголовок товара
+    private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "some words bout phone"
         label.textColor = .white
         label.font = UIFont.markProFont(size: 11, weight: .plain)
         return label
     }()
-        
-    private let buyNowLabel : UILabel = {
-        let butt = UILabel()
-        butt.text = "Buy now!"
-        butt.textColor = .black
-        butt.font = UIFont.markProFont(size: 13, weight: .heavy)
-        butt.backgroundColor = .white
-        butt.translatesAutoresizingMaskIntoConstraints = false
-        butt.clipsToBounds = true
-        butt.layer.cornerRadius = 4
-        butt.textAlignment = .center
-        return butt
+    
+    // Метка для кнопки "Купить"
+    private let buyNowLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Buy now!"
+        label.textColor = .black
+        label.font = UIFont.markProFont(size: 13, weight: .heavy)
+        label.backgroundColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.clipsToBounds = true
+        label.layer.cornerRadius = 4
+        label.textAlignment = .center
+        return label
     }()
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        setupUI()
-    }
-    
-    
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    // MARK: - UI Configuration
+    private func configureCell() {
+        mainImage.set(imageURL: viewModel?.pictureUrlString)
+        phoneTitleLabel.text = viewModel?.title
+        subtitleLabel.text = viewModel?.subtitle
     }
     
 }
 
 
 //MARK: - SetupUI
-extension HomeStoreCell {
+private extension HomeStoreCell {
     
     func setupUI() {
         
         contentView.addSubview(mainImage)
-        contentView.addSubview(isNewLabel)
+        contentView.addSubview(newLabel)
         contentView.addSubview(phoneTitleLabel)
         contentView.addSubview(subtitleLabel)
         contentView.addSubview(buyNowLabel)
@@ -107,10 +115,10 @@ extension HomeStoreCell {
             mainImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
             
-            isNewLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 23),
-            isNewLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            newLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 23),
+            newLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
             
-            phoneTitleLabel.topAnchor.constraint(equalTo: isNewLabel.bottomAnchor, constant: 18),
+            phoneTitleLabel.topAnchor.constraint(equalTo: newLabel.bottomAnchor, constant: 18),
             phoneTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
             
             subtitleLabel.bottomAnchor.constraint(equalTo: buyNowLabel.topAnchor, constant: -20),

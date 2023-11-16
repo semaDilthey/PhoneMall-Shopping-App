@@ -13,14 +13,6 @@ protocol DetailsCellModelProtocol {
     var title : String? { get }
 }
 
-
-protocol ModelForCartProtocol {
-    var price: String? { get }
-    var title: String? { get }
-    var picture: String? { get }
-}
-
-
 class DetailsCellModel : DetailsCellModelProtocol {
     var price: Int?
     
@@ -41,12 +33,3 @@ class DetailsCellModel : DetailsCellModelProtocol {
 }
 
 
-struct ModelForCart: ModelForCartProtocol {
-    
-    var price: String?
-    
-    var title: String?
-    
-    var picture: String?
-    
-}

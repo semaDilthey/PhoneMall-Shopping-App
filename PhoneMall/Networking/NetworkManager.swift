@@ -22,112 +22,58 @@ class NetworkManager: GetData {
     
     var homePhones : [HomeData] = []
     
+    
     func getHomeScreenData(completion: @escaping (Result<HomeData, Error>) -> Void) {
-        guard let url = URL(string: API.home) else {
-            completion(.failure(NetworkError.invalidURL))
-            return
-        }
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                completion(.failure(error))
-            }
-
-            guard let httpsResponse = response as? HTTPURLResponse, httpsResponse.statusCode == 200 else {
-                completion(.failure(NetworkError.invalidResponse))
-                return
-            }
-
-            guard let data = data else {
-                completion(.failure(NetworkError.noData))
-                return
-            }
-
-            do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                if let parsedData = try? decoder.decode(HomeData.self, from: data) {
-                //if let parsedData = try self.decodeJSON(type: HomeData.self, from: data) {
-                    completion(.success(parsedData))
-                } else {
-                    completion(.failure(NetworkError.jsonParsingFailed))
-                }
-            } catch {
-                completion(.failure(NetworkError.jsonParsingFailed))
-            }
-        }.resume()
-    }
-    
-
-    
+          getData(from: API.home, completion: completion)
+      }
+      
     func getDetailsScreenData(completion: @escaping (Result<ProductDetailsData, Error>) -> Void) {
-        guard let url = URL(string: API.details) else {
-            completion(.failure(NetworkError.invalidURL))
-            return
-        }
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                completion(.failure(error))
-            }
-            
-            guard let httpsResponse = response as? HTTPURLResponse, httpsResponse.statusCode == 200 else {
-                completion(.failure(NetworkError.invalidResponse))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(NetworkError.noData))
-                return
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                if let parsedData = try? decoder.decode(ProductDetailsData.self, from: data) {
-                    completion(.success(parsedData))
-                } else {
-                    completion(.failure(NetworkError.jsonParsingFailed))
-                }
-            } catch {
-                completion(.failure(NetworkError.jsonParsingFailed))
-            }
-        }.resume()
-    }
-    
-    
+          getData(from: API.details, completion: completion)
+      }
+      
     func getCartScreenData(completion: @escaping (Result<CartData, Error>) -> Void) {
-        guard let url = URL(string: API.cart) else {
-            completion(.failure(NetworkError.invalidURL))
-            return
-        }
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                completion(.failure(error))
-            }
+          getData(from: API.cart, completion: completion)
+      }
 
-            guard let httpsResponse = response as? HTTPURLResponse, httpsResponse.statusCode == 200 else {
-                completion(.failure(NetworkError.invalidResponse))
-                return
-            }
+      // MARK: - Private Method
+      
+    private func getData<T: Decodable>(from urlString: String, completion: @escaping (Result<T, Error>) -> Void) {
+          guard let url = URL(string: urlString) else {
+              completion(.failure(NetworkError.invalidURL))
+              return
+          }
 
-            guard let data = data else {
-                completion(.failure(NetworkError.noData))
-                return
-            }
+          let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+              if let error = error {
+                  completion(.failure(error))
+                  return
+              }
 
-            do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                if let parsedData = try? decoder.decode(CartData.self, from: data) {
-                    completion(.success(parsedData))
-                } else {
-                    completion(.failure(NetworkError.jsonParsingFailed))
-                }
-            } catch {
-                completion(.failure(NetworkError.jsonParsingFailed))
-            }
-        }.resume()
-    }
-    
+              guard let httpsResponse = response as? HTTPURLResponse, httpsResponse.statusCode == 200 else {
+                  completion(.failure(NetworkError.invalidResponse))
+                  return
+              }
+
+              guard let data = data else {
+                  completion(.failure(NetworkError.noData))
+                  return
+              }
+
+              do {
+                  let decoder = JSONDecoder()
+                  decoder.keyDecodingStrategy = .convertFromSnakeCase
+                  if let parsedData = try? decoder.decode(T.self, from: data) {
+                      completion(.success(parsedData))
+                  } else {
+                      completion(.failure(NetworkError.jsonParsingFailed))
+                  }
+              } catch {
+                  completion(.failure(NetworkError.jsonParsingFailed))
+              }
+          }
+
+          task.resume()
+      }
     
 
     private func decodeJSON <T: Decodable>(type: T.Type, from data: Data?) -> T? {

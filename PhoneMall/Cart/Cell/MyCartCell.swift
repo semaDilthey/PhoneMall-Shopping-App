@@ -7,45 +7,28 @@ protocol CartCellDelegate: AnyObject {
 
 class MyCartCell: UITableViewCell {
     
-    var vc = MyCartVC()
-    
-    var cartViewModel = MyCartViewModel()
-    
+    static let identifire = "MyCartCell"
+    // MARK: - Properties
     weak var delegate: CartCellDelegate?
     weak var tableView : UITableView?
     
-    static let identifire = "MyCartCell"
-    
+    var viewModel : MyCartCellModelProtocol? {
+        didSet {
+            configureCell()
+        }
+    }
+    // MARK: - Initialization
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
         stepper.counter = "1"
     }
 
-    var viewModel : MyCartCellModelProtocol? {
-        didSet {
-            phoneNameLabel.text = viewModel?.title
-            phonePicture.set(imageURL: viewModel?.picture)
-            if let price = viewModel?.price {
-                        self.phonePriceLabel.text = ("$"+String(price)+".00")
-
-            } else {
-                phonePriceLabel.text = "No data"
-            }
-        }
-    }
-        
-    func updatePrice(by value: Int) {
-        if let price = viewModel?.price {
-            phonePriceLabel.text = "$"+String(value * price)+".00"
-                        phonePriceLabel.text = "$" + String(value * price) + ".00"
-        } else {
-            phonePriceLabel.text = "No data"
-
-        }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
-    
+    // MARK: - UI Elements
     let phonePicture : WebImageView = {
         let image = WebImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
@@ -83,11 +66,6 @@ class MyCartCell: UITableViewCell {
         return butt
     }()
     
-    @objc func trashTapped() {
-        print("Trash tapped")
-        delegate?.didTapDeleteButton(cell: self)
-    }
-
     lazy var stepper : CustomStepper = {
         let stepper = CustomStepper()
         stepper.translatesAutoresizingMaskIntoConstraints = false
@@ -95,23 +73,35 @@ class MyCartCell: UITableViewCell {
         return stepper
     }()
     
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    //MARK: - Buttons Methods
+    @objc func trashTapped() {
+        print("Trash tapped")
+        delegate?.didTapDeleteButton(cell: self)
     }
 
+    //MARK: - Public Methods
+    func updatePrice(by value: Int) {
+        if let price = viewModel?.price {
+            phonePriceLabel.text = "$"+String(value * price)+".00"
+                        phonePriceLabel.text = "$" + String(value * price) + ".00"
+        } else {
+            phonePriceLabel.text = "No data"
+        }
+    }
+    
+    //MARK: - Private Methods
+    private func configureCell() {
+        phoneNameLabel.text = viewModel?.title
+        phonePicture.set(imageURL: viewModel?.picture)
+        
+        if let price = viewModel?.price {
+                    self.phonePriceLabel.text = ("$"+String(price)+".00")
+
+        } else {
+            phonePriceLabel.text = "No data"
+        }
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -6,35 +6,51 @@ import SwiftUI
 
 
 final class MyCartVC : UIViewController, CartCellDelegate {
+  
+    // MARK: - Properties
+    let viewModel : MyCartViewModel?
+    var localData : DataStorage?
     
-    let viewModel = MyCartViewModel()
+    // property observer, считает тотал
+    var totalPriceObserver : Double = 0.0 {
+        willSet {
+            getTotalPrice()
+        }
+    }
     
+    var checkingOut : Bool {
+        checkoutButton.isTouchInside ? true : false
+    }
+    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         initViewModel()
     }
     
+    // MARK: - Initialization
+    init(viewModel: MyCartViewModel?) {
+        self.viewModel = viewModel
+        self.localData = viewModel?.dataStorage
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - ViewModel Initialization
     func initViewModel() {
-        viewModel.getCartPhones()
-        viewModel.reloadTableView = { [weak self] in
+        viewModel?.getCartPhones()
+        viewModel?.reloadTableView = { [weak self] in
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
             }
         }
     }
     
-    // property observer, считает тотал
-    var totalPriceObserver : Double = 0.0 {
-        willSet {
-            if viewModel.cartPhonesModel.count > 0 {
-                totalPrice.text = "$" + " " + String(viewModel.tupleOfPrices.0 + viewModel.tupleOfPrices.1)
-            } else {
-                totalPrice.text = "$" + " " + "0"
-            }
-        }
-    }
-    
+    // MARK: - UI Elements
     // NavBar
     lazy var backButton : UIButton = {
         let but = UIButton(type: .custom)
@@ -53,11 +69,6 @@ final class MyCartVC : UIViewController, CartCellDelegate {
         navigationItem.hidesBackButton = true
         return but
     }()
-    
-    
-    @objc func backToHomeVC() {
-        viewModel.backButtonPressed(navController: navigationController!)
-    }
     
     lazy var addressButton : UIButton = {
         let but = UIButton()
@@ -190,23 +201,39 @@ final class MyCartVC : UIViewController, CartCellDelegate {
         button.clipsToBounds = true
         button.layer.cornerRadius = 15
         button.setTitle("Checkout", for: .normal)
-        
+        button.startAnimatingPressActions()
         // giving a config to style our button
         configureButton(button: button)
         return button
     }()
     
-    var checkingOut : Bool {
-        checkoutButton.isTouchInside ? true : false
+    
+    //MARK: - Button Methods
+    
+    @objc func backToHomeVC() {
+        guard let localData = localData else { return }
+        viewModel?.backButtonPressed(navController: navigationController!, dataStorage: localData)
+    }
+    
+    func didTapDeleteButton(cell: MyCartCell) {
+        viewModel?.deleteTapped(cell: cell, tableView: tableView)
     }
     
     
-    func didTapDeleteButton(cell: MyCartCell) {
-        viewModel.deleteTapped(cell: cell, tableView: tableView)
+    //MARK: - Private Methods
+    
+    private func getTotalPrice() {
+        guard let viewModel = viewModel else { return }
+        if viewModel.cartPhonesModel.count > 0 {
+            totalPrice.text = "$" + " " + String(viewModel.cartPhonePricesTuple.0 + viewModel.cartPhonePricesTuple.1)
+            localData?.inCart = true
+        } else if viewModel.cartPhonesModel.count == 0 {
+            totalPrice.text = "$" + " " + "0"
+            localData?.inCart = false
+        }
     }
     
 }
-
 
 
 
@@ -214,7 +241,7 @@ final class MyCartVC : UIViewController, CartCellDelegate {
 extension MyCartVC : UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.cartPhonesModel.count
+            return viewModel?.cartPhonesModel.count ?? 0
     }
     
     
@@ -222,19 +249,19 @@ extension MyCartVC : UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: MyCartCell.identifire, for: indexPath) as! MyCartCell
         cell.delegate = self
         cell.tableView = tableView
-        if let cellModel = viewModel.getMyCartCellViewModel(at: indexPath) {
+        if let cellModel = viewModel?.getMyCartCellViewModel(at: indexPath) {
             cell.viewModel = cellModel
             
             cell.stepper.updatePriceClosure = { [weak self] value in
                 cell.updatePrice(by: value)
                 // если число вещей 0, то они удаляются из таблицы
                 if value == 0 {
-                    self?.viewModel.cartPhonesModel.remove(at: indexPath.row)
+                    self?.viewModel?.cartPhonesModel.remove(at: indexPath.row)
                     tableView.deleteRows(at: [indexPath], with: .fade)
                 }
                 // считаем тотал
                 if let phonesPrice = cell.phonePriceLabel.text {
-                    self?.viewModel.countTotal(string: phonesPrice, at: indexPath)
+                    self?.viewModel?.countTotal(string: phonesPrice, at: indexPath)
                     self?.totalPriceObserver = 0.0
                 }
                 

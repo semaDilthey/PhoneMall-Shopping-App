@@ -1,9 +1,4 @@
-//
-//  CategoryCellViewModel.swift
-//  PhoneMall
-//
-//  Created by Семен Гайдамакин on 05.07.2023.
-//
+
 
 import Foundation
 import UIKit
@@ -16,9 +11,10 @@ protocol CommonCellViewModel {
 }
 
 
-class CategoryCellViewModel : CommonCellViewModel {
-        
-    let categories : [CategoryCellModel] = [
+class CategoryCellViewModel: CommonCellViewModel {
+    
+    // Массив категорий
+    private let categories: [CategoryCellModel] = [
         CategoryCellModel(title: "Phones", image: UIImage(named: "phonesCircle") ?? UIImage()),
         CategoryCellModel(title: "Computer", image: UIImage(named: "computerCircle") ?? UIImage()),
         CategoryCellModel(title: "Health", image: UIImage(named: "healthCircle") ?? UIImage()),
@@ -26,32 +22,39 @@ class CategoryCellViewModel : CommonCellViewModel {
         CategoryCellModel(title: "Others", image: UIImage(named: "othersCircle") ?? UIImage())
     ]
     
-    var index = 0
+    // Текущий индекс выбранной категории
+    private var selectedIndex = 0
     
+    // Заголовок текущей выбранной категории
     var title: String {
-        categories[index].title
+        categories[selectedIndex].title
     }
     
+    // Изображение текущей выбранной категории с серым цветом
     var picture: UIImage {
-        categories[index].image.imageWithColor(color: .gray)
+        categories[selectedIndex].image.imageWithColor(color: .gray)
     }
     
+    // Установка текущего индекса на основе IndexPath
     func set(indexPath: IndexPath) {
-        index = indexPath.row
+        guard indexPath.row < categories.count else {
+            return
+        }
+        selectedIndex = indexPath.row
     }
-
+    
+    // Количество секций (в данном случае всегда 1)
     func numberOfSections() -> Int {
         1
     }
-
+    
+    // Количество элементов в секции (количество категорий)
     func numberOfItemsInSection() -> Int {
         categories.count
     }
-
+    
+    
 }
-
-
-
     
     
 

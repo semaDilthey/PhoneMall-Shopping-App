@@ -7,7 +7,7 @@ class DetailsCell: UICollectionViewCell {
     
     var viewModel : DetailsCellModelProtocol? {
         didSet {
-            imageView.set(imageURL: viewModel?.images?[0])
+            configureCell()
         }
     }
     
@@ -16,6 +16,10 @@ class DetailsCell: UICollectionViewCell {
         setupUI()
         self.backgroundColor = .clear
         self.addShadow()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     lazy var imageView : WebImageView = {
@@ -28,10 +32,13 @@ class DetailsCell: UICollectionViewCell {
         return image
     }()
     
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    private func configureCell() {
+        imageView.set(imageURL: viewModel?.images?[0])
     }
+}
+
+
+private extension DetailsCell {
     
     func setupUI() {
         contentView.addSubview(imageView)
@@ -40,7 +47,5 @@ class DetailsCell: UICollectionViewCell {
         imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         imageView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
-
-
     }
 }

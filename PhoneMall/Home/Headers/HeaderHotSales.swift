@@ -9,15 +9,28 @@ import Foundation
 import UIKit
 
 class HeaderHotSales: UICollectionReusableView, UISearchBarDelegate {
-    
+  
+    // MARK: - Constants
+
     static let headerID = "HeaderHotSales"
-    
+    private let searchBar = SearchBar()
+   
+    // MARK: - Initialization
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: .zero, y: .zero, width: frame.width, height: 100))
     }
     
-    private let searchBar = SearchBar()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
+    // MARK: - Lifecycle
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        setupUI()
+    }
+    
+    // MARK: - UI Elements
     lazy var qrButton : UIButton = {
         let button = UIButton()
         button.backgroundColor = .customOrange
@@ -51,15 +64,6 @@ class HeaderHotSales: UICollectionReusableView, UISearchBarDelegate {
         return button
     }()
     
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        setupUI()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }
 
 

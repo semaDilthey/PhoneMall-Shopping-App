@@ -1,12 +1,8 @@
-//
-//  HomeStoreCellViewModel.swift
-//  PhoneMall
-//
-//  Created by Семен Гайдамакин on 29.06.2023.
-//
+
 
 import Foundation
 
+// Протокол, представляющий модель представления хоум ячейки
 protocol HomeStoreCellModelProtocol {
     var title: String? { get }
     var subtitle : String? { get }

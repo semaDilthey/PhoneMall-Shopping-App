@@ -9,8 +9,8 @@ final class HomeVC : UICollectionViewController {
     
     // MARK: - Properties
     
-    private var dataStorage: DataStorage?
     private var viewModel : HomeViewModel
+    var localData: DataStorage?
 
     // MARK: - Lifecycle
     
@@ -39,9 +39,9 @@ final class HomeVC : UICollectionViewController {
 
     // MARK: - Initialization
     
-    init(homeViewModel: HomeViewModel, data: DataStorage?){
+    init(homeViewModel: HomeViewModel){
         self.viewModel = homeViewModel
-        self.dataStorage = data ?? DataStorage()
+        self.localData = homeViewModel.dataStorage
         super.init(collectionViewLayout: .init())
     }
 
@@ -74,7 +74,8 @@ final class HomeVC : UICollectionViewController {
     
     @objc func openCart() {
         guard let navigationController = navigationController else { return }
-        viewModel.goToCartController(navController: navigationController)
+        guard let data = localData else { return }
+        viewModel.goToCartController(navController: navigationController, dataStorage: data)
     }
    
 }
@@ -164,7 +165,8 @@ private extension HomeVC {
     }
         
     func updateCartCountVisibility() {
-        countProductCartLabel.isHidden = dataStorage?.inCart == nil
+        countProductCartLabel.isHidden = viewModel.dataStorage?.inCart == nil
+
     }
 }
 
@@ -340,7 +342,7 @@ extension HomeVC {
                 cell.isSelected = true
             }
         } else {
-            viewModel.goToDetailsController(navController: navigationController!)
+            viewModel.goToDetailsController(navController: navigationController!, dataStorage: viewModel.dataStorage ?? DataStorage())
         }
 
         

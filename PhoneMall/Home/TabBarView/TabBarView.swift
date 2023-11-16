@@ -10,18 +10,17 @@ import SwiftUI
 
 class TabBarView: UIView {
     
+    let viewModel = HomeViewModel(networkManager: NetworkManager(), dataStorage: DataStorage())
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
         self.backgroundColor = .customDarkBlue
     }
     
-    let viewModel = HomeViewModel()
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     
     let label : UILabel = {
         let label = UILabel()
@@ -31,7 +30,6 @@ class TabBarView: UIView {
         label.textColor = .white
         return label
     }()
-    
     
     private let circle : UIView = {
         let view = UIView()
@@ -78,7 +76,7 @@ class TabBarView: UIView {
     }()
     
     @objc func didTouchBagButton(navController: UINavigationController) {
-        viewModel.goToCartController(navController: navController)
+        viewModel.goToCartController(navController: navController, dataStorage: DataStorage(inCart: true))
     }
     
 }

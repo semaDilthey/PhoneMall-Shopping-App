@@ -8,11 +8,30 @@
 import Foundation
 import UIKit
 
-class HeaderBestSeller : UICollectionReusableView {
+class HeaderBestSeller: UICollectionReusableView {
+    
+    // MARK: - Constants
     
     static let headerID = "HeaderBestSeller"
     
-    private let labelBestSeller : UILabel = {
+    // MARK: - Initialization
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Lifecycle
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        setupUI()
+    }
+    
+    // MARK: - UI Elements
+    private let labelBestSeller: UILabel = {
         let label = UILabel()
         label.text = "Best seller"
         label.textColor = .black
@@ -21,7 +40,7 @@ class HeaderBestSeller : UICollectionReusableView {
         return label
     }()
     
-    lazy var seeMoreButton : UIButton = {
+    lazy var seeMoreButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -29,40 +48,26 @@ class HeaderBestSeller : UICollectionReusableView {
         button.setTitleColor(UIColor.customOrange, for: .normal)
         button.contentHorizontalAlignment = .left
         button.contentVerticalAlignment = .center
-        button.setTitle("see more", for: .normal)
+        button.setTitle("see more", for: .normal) 
         button.isUserInteractionEnabled = true
         return button
     }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        setupUI()
-        
-    }
-    
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }
 
-
-//MARK: - SetupUI
-extension HeaderBestSeller {
+// MARK: - SetupUI
+private extension HeaderBestSeller {
     
     func setupUI() {
         addSubview(labelBestSeller)
-        labelBestSeller.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12).isActive = true
-        labelBestSeller.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
+        NSLayoutConstraint.activate([
+            labelBestSeller.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            labelBestSeller.topAnchor.constraint(equalTo: topAnchor, constant: 10)
+        ])
         
         addSubview(seeMoreButton)
-        seeMoreButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
-        seeMoreButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        NSLayoutConstraint.activate([
+            seeMoreButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+            seeMoreButton.centerYAnchor.constraint(equalTo: centerYAnchor)
+        ])
     }
-    
 }

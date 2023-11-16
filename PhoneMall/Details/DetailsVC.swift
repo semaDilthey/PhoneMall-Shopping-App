@@ -9,13 +9,9 @@ import Cosmos
 
 final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     
-    var data = DataStorage()
-    
-    var cartViewModel = MyCartViewModel()
-    
-    var viewModel = {
-        DetailsViewModel()
-    }()
+    // MARK: - Properties
+    var localData : DataStorage?
+    var viewModel : DetailsViewModel?
     
     var detailsPhonesArray : [DetailsCellModel] = []
     
@@ -27,35 +23,45 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
             itemsCounterLabel.text = String(newValue)
         }
     }
-
+    
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupCollectionView()
-        setupNavigationBar()
         setupUI()
-
         initViewModel()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationBar()
+        setupCollectionView()
+    }
     
+    // MARK: - Initialization
+    init(viewModel: DetailsViewModel) {
+        self.viewModel = viewModel
+        self.localData = viewModel.dataStorage
+        super.init(collectionViewLayout: .init())
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    // MARK: - ViewModel Initialization
     private func initViewModel() {
-        viewModel.getDetailsPhones()
-        viewModel.reloadTableView = { [weak self] in
+        viewModel?.getDetailsPhones()
+        viewModel?.reloadTableView = { [weak self] in
             DispatchQueue.main.async {
                 self?.collectionView.reloadData()
             }
         }
     }
     
-    // layout inizialization
-    init(){
-        super.init(collectionViewLayout: .init())
-    }
-    
  
-    
-
-    //MARK: - creating NavBar
+    // MARK: - UI Elements
+    //MARK:  creating NavBar
     // кастомная кнопка назад
     lazy var backButton : UIButton = {
         let but = UIButton(type: .custom)
@@ -106,21 +112,6 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         return label
     }()
     
-    func setupItemsInCart() {
-        
-        if cartCounter != 0 {
-            shopCartButton.addSubview(itemsInCartView)
-            itemsInCartView.addSubview(itemsCounterLabel)
-            
-            itemsInCartView.topAnchor.constraint(equalTo: shopCartButton.topAnchor, constant: 2).isActive = true
-            itemsInCartView.trailingAnchor.constraint(equalTo: shopCartButton.trailingAnchor, constant: -2).isActive = true
-            
-            itemsCounterLabel.centerXAnchor.constraint(equalTo: itemsInCartView.centerXAnchor).isActive = true
-            itemsCounterLabel.centerYAnchor.constraint(equalTo: itemsInCartView.centerYAnchor, constant: -1).isActive = true
-        }
-       
-    }
-    
     // Product details label that in the top center
     let detailsNavBarLabel : UILabel = {
         let label = UILabel()
@@ -132,9 +123,8 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         return label
     }()
     
-    
-    //MARK: - CardView
-    
+
+    //MARK:  CardView
     private let cardView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -148,7 +138,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         return view
     }()
     
-    //MARK: - First Level
+    //MARK:  First Level
     // Простой контейнер для удобства заполнения
     private let firstLevelView: UIView = {
         let view = UIView()
@@ -171,7 +161,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         return label
     }()
     
-    //Cоздаем 5 картинок звезды
+    // Cоздаем 5 картинок звезды
     lazy var cosmosView : CosmosView = {
         var view = CosmosView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -199,7 +189,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     }()
     
     
-    //MARK: - Second Level
+    //MARK:  Second Level
     // Простой контейнер для удобства заполнения
     private let secondLevelView: UIView = {
         let view = UIView()
@@ -207,8 +197,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         return view
     }()
     
-    //кнопки Shop, Details, Features
-    
+    //кнопки Shop, Details, Features в SegmentedControl
     private enum Constants {
             static let segmentedControlHeight: CGFloat = 40
             static let underlineViewColor: UIColor = .customOrange
@@ -388,7 +377,6 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         return view
     }()
     
-    
     //добавляет Label Add to Cart в кнопке
     var addToCartLabel: UILabel = {
         let label = UILabel()
@@ -416,19 +404,16 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     }()
     // добавляет кнопку
     lazy var addToCartButton : UIButton = {
-        let button = UIButton(type: .system)
+        let button = UIButton(type: .custom)
         button.backgroundColor = .customOrange
         button.translatesAutoresizingMaskIntoConstraints = false
         button.clipsToBounds = true
         button.layer.cornerRadius = 10
         button.layer.shouldRasterize = false
-        button.isUserInteractionEnabled = true
         button.addTarget(self, action: #selector(addToCartButtonTapped), for: .touchUpInside)
+        button.startAnimatingPressActions()
         return button
     }()
-
-
-    // Чтобы не  писать кучу строк кода, попробую написать функцию 1)создающую имейджВьюхи и 2)текстовые лейблы
     
     static func createImagePhoneOptions (name: String, width: Int, height: Int) -> UIImageView { // создает картинку
         let image = UIImageView()
@@ -456,6 +441,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         label.textAlignment = .justified
         return label
     }
+
     // объекты картинок
     static let processorImage = createImagePhoneOptions(name: "processor", width: 28, height: 28)
     static let operativkaImage = createImagePhoneOptions(name: "operativka", width: 21, height: 28)
@@ -531,17 +517,19 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         return stack
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+ 
+    //MARK: - Button Methods
     
     // метод для кнопки backButton
     @objc func backButtonPresentingVC() {
-        viewModel.backButtonPressed(navController: navigationController!, data: data)
+        guard let data = localData else { return }
+        viewModel?.backButtonPressed(navController: navigationController!, data: data)
+
     }
     
     @objc func shopCartButtonPresentingVC() {
-        navigationController?.pushViewController(MyCartVC(), animated: true)
+        guard let data = viewModel?.dataStorage else { return }
+        viewModel?.cartButtonPressed(navController: navigationController!, data: data)
     }
     
     
@@ -563,7 +551,6 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         })
     }
     
-    
     @objc func changedColor(sender: UITapGestureRecognizer) {
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             if let label = sender.view as? UILabel {
@@ -577,14 +564,24 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     
     @objc func addToCartButtonTapped() {
         cartCounter += 1
-        addToCartButton.startAnimatingPressActions()
-
         // Закидываем телефоны в массив phonesInCart в файле MyCartViewMode.
-        cartViewModel.cartPhonesModel.append(viewModel.createModelForCart(model: detailsPhonesArray.first!))
-        
-        data.inCart = true
+        localData?.inCart = true
     }
        
+    //MARK: - Private Metho
+    // Cart Item Counter Setup
+    private func setupItemsInCart() {
+        if cartCounter != 0 {
+            shopCartButton.addSubview(itemsInCartView)
+            itemsInCartView.addSubview(itemsCounterLabel)
+            
+            itemsInCartView.topAnchor.constraint(equalTo: shopCartButton.topAnchor, constant: 2).isActive = true
+            itemsInCartView.trailingAnchor.constraint(equalTo: shopCartButton.trailingAnchor, constant: -2).isActive = true
+            
+            itemsCounterLabel.centerXAnchor.constraint(equalTo: itemsInCartView.centerXAnchor).isActive = true
+            itemsCounterLabel.centerYAnchor.constraint(equalTo: itemsInCartView.centerYAnchor, constant: -1).isActive = true
+        }
+    }
 }
 
 // MARK: создаем Layout который будет туда сюда ходить
@@ -630,15 +627,9 @@ extension DetailsVC {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DetailsCell.identife, for: indexPath) as? DetailsCell else { fatalError("Failed to get expected kind of reusable cell from the tableView. Expected type `ProductDetailsCustomCell`")}
-        let cellVM = viewModel.getDetailsCellViewModel(at: indexPath)
-        viewModel.selectedIndexPath = indexPath
+        let cellVM = viewModel?.getDetailsCellViewModel(at: indexPath)
+        viewModel?.selectedIndexPath = indexPath
         cell.viewModel = cellVM
-//        cell.clipsToBounds = true
-//        cell.layer.cornerRadius = 10
-//        cell.addShadow()
-        if let viem = cellVM {
-            detailsPhonesArray.append(viem as! DetailsCellModel)
-        }
         return cell
     }
     
@@ -651,8 +642,8 @@ extension DetailsVC {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vc = MyCartVC()
-        navigationController?.pushViewController(vc, animated: true)
+        guard let data = localData else { return }
+        viewModel?.cartButtonPressed(navController: navigationController!, data: data)
 
     }
 }
@@ -739,10 +730,10 @@ extension DetailsVC {
         cosmosView.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 6).isActive = true
         cosmosView.leadingAnchor.constraint(equalTo: firstLevelView.leadingAnchor, constant: 30).isActive = true
         
-        cosmosView.didTouchCosmos = { rating in
-            print("rating \(rating)")
-            self.cosmosView.text = nil
-            }
+        cosmosView.didTouchCosmos = { _ in
+            self.cosmosView.text = ""
+            
+        }
     }
     
     //MARK: setup 2nd Level

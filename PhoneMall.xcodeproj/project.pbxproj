@@ -287,7 +287,7 @@
 		3F4A8EDB28AFC01E00B5E646 /* PhoneMall */ = {
 			isa = PBXGroup;
 			children = (
-				3F4296BC2AFD239500ADB64A /* Coordinator.swift */,
+				3FF041072B068CD000AAA6C1 /* Coordinator */,
 				3F231D562A4CBE170073A844 /* Home */,
 				3F231D4C2A4C63370073A844 /* Filter */,
 				3F02EB4029E01B6C00EAA3E0 /* Details */,
@@ -360,6 +360,14 @@
 				3F77111D2AF548C600A2EBDF /* TabBarView.swift */,
 			);
 			path = TabBarView;
+			sourceTree = "<group>";
+		};
+		3FF041072B068CD000AAA6C1 /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				3F4296BC2AFD239500ADB64A /* Coordinator.swift */,
+			);
+			path = Coordinator;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -1,81 +1,64 @@
-//
-//  DetailsViewModel.swift
-//  PhoneMall
-//
-//  Created by Семен Гайдамакин on 13.07.2023.
-//
+
 
 import Foundation
 import UIKit
 
+// MARK: - DetailsViewModelProtocol
 protocol DetailsViewModelProtocol {
     var reloadTableView: (() -> Void)? { get set }
     func getDetailsPhones()
     func getDetailsCellViewModel(at: IndexPath) -> DetailsCellModelProtocol?
-    func backButtonPressed(navController: UINavigationController)
+    func backButtonPressed(navController: UINavigationController, data: DataStorage)
+    func cartButtonPressed(navController: UINavigationController, data: DataStorage)
 }
 
+// MARK: - DetailsViewModel
 
 class DetailsViewModel : DetailsViewModelProtocol {
-    func backButtonPressed(navController: UINavigationController) {
-    }
     
+    // MARK: - Properties
     
+    // Менеджер сети и хранилище данных
+    let networkManager: NetworkManager?
+    var dataStorage: DataStorage?
+    
+    // Координатор для навигации
     let coordinator = Coordinator()
     
-    var data : ProductDetailsData?
+    // Данные для отображения на экране
+    var productData : ProductDetailsData?
+
+    // MARK: - Initialization
+    init(networkManager: NetworkManager?, dataStorage: DataStorage?) {
+        self.networkManager = networkManager
+        self.dataStorage = dataStorage
+    }
     
-    var networking: NetworkManager? = NetworkManager()
-    
+    // MARK: - Public Properties
     var detailsModel = [DetailsCellModelProtocol]() {
         didSet {
             reloadTableView?()
         }
     }
     
-    var modelForCart = [ModelForCartProtocol]() {
-        didSet {
-            reloadTableView?()
-        }
-    }
-    
+    var reloadTableView: (() -> Void)?
+
     var selectedIndexPath: IndexPath?
 
-    var reloadTableView: (() -> Void)?
-    
+    // MARK: - Public Methods
     func getDetailsPhones() {
-        networking?.getDetailsScreenData(completion: { [weak self] data in
+        networkManager?.getDetailsScreenData(completion: { [weak self] data in
             switch data {
             case .success(let data):
-                self?.data = data
-                var modelDetails = [DetailsCellModelProtocol]()
-                //var modelForCart = [ModelForCartProtocol]()
-                
-                    modelDetails.append(self?.createCellModel(data: data) as! DetailsCellModelProtocol)
-                    self?.detailsModel = modelDetails
-
-                   // modelForCart.append(self?.createModelForCart(data: data) as! ModelForCartProtocol)
-                   // self?.modelForCart = modelForCart
+                self?.productData = data
+                self?.detailsModel = [self?.createCellModel(data: data)].compactMap { $0 }
             case .failure(let error):
                 print("Error is: \(error)")
             }
         })
     }
-    
-    
-    func getModelForCart(at indexPath: IndexPath) -> ModelForCartProtocol? {
-        guard let selectedIndexPathRow = selectedIndexPath?.row else { return nil }
-        if selectedIndexPathRow < modelForCart.count {
-            return modelForCart[selectedIndexPathRow]
-        } else {
-            return nil
-        }
-    }
-    
-    func createCellModel(data: ProductDetailsData) -> DetailsCellModelProtocol? {
-//        for image in data.images {
-//            return DetailsCellModel(images: image)
-//        }
+
+    private func createCellModel(data: ProductDetailsData) -> DetailsCellModelProtocol? {
         return DetailsCellModel(images: data.images, price: data.price, title: data.title)
     }
     
@@ -84,17 +67,13 @@ class DetailsViewModel : DetailsViewModelProtocol {
         return detailsModel[indexPath.row]
     }
     
-    func createModelForCart(model: DetailsCellModel) -> MyCartCellModel {
-        let title = model.title!
-        let picture = model.images?.first
-        let price = model.price!
-        return MyCartCellModel(title: title, picture: picture!, price: price)
-    }
-    
     func backButtonPressed(navController: UINavigationController, data: DataStorage) {
-        coordinator.showHomeVC(controller: navController, data: data)
+        coordinator.showHomeVC(controller: navController, dataStorage: data)
     }
     
+    func cartButtonPressed(navController: UINavigationController, data: DataStorage) {
+        coordinator.showCartVC(controller: navController, dataStorage: data)
+    }
 
 }
 

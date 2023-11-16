@@ -14,16 +14,30 @@ protocol ReusableViewDelegate: AnyObject { //send signal to HomeVC()
 
 class HeaderSelectCategory: UICollectionReusableView {
     
+    // MARK: - Constants
     static let headerID = "HeaderSelectCategory"
     
+    // MARK: - Properties
     weak var delegate : ReusableViewDelegate?
     
+    // MARK: - Initialization
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.bringSubviewToFront(filterButton)
     }
     
-    let locationLabel : UILabel = {
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Lifecycle
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        setupUI()
+    }
+    
+    // MARK: - UI Elements
+    private let locationLabel : UILabel = {
         let label = UILabel()
         label.text = "Zihuatanejo" + "," + " " + "Gro"
         label.textColor = .black
@@ -52,11 +66,6 @@ class HeaderSelectCategory: UICollectionReusableView {
         return button
     }()
     
-    @objc func filtersButtonTapped() {
-        print("aaa")
-        delegate?.didTapFilterButton()
-     }
-    
     lazy var filterButton : UIButton = {
         let button = UIButton()
         button.backgroundColor = .clear
@@ -70,7 +79,6 @@ class HeaderSelectCategory: UICollectionReusableView {
         return button
     }()
 
-    
     private let labelBestSeller : UILabel = {
         let label = UILabel()
         label.text = "Select category"
@@ -93,16 +101,12 @@ class HeaderSelectCategory: UICollectionReusableView {
         return button
     }()
     
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        setupUI()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+    // MARK: - Methods
+
+    @objc func filtersButtonTapped() {
+        print("aaa")
+        delegate?.didTapFilterButton()
+     }
 }
 
 //MARK: - SetupUI
