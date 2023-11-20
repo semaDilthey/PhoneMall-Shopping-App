@@ -1,10 +1,4 @@
-//
-//  extension + UICollectionViewCell.swift
-//  Добавляет тень для ячейки в Коллекции
-//  Использовать как cell.addShadow()
-//
-//  Created by Семен Гайдамакин on 02.04.2023.
-//
+
 
 import Foundation
 import UIKit

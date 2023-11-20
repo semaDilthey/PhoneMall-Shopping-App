@@ -1,7 +1,4 @@
-//
-//  CartCellViewModel.swift
-//  PhoneMall
-//
+
 
 import Foundation
 
@@ -21,9 +18,7 @@ class MyCartCellModel: MyCartCellModelProtocol {
     var price : Int?
     
     var picture : String?
-    
-    //var counter : String? = ""
-    
+        
     init(title: String, picture: String, price: Int) {
         self.title = title
         self.picture = picture

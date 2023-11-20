@@ -1,9 +1,4 @@
-//
-//  CartData.swift
-//  PhoneMall
-//
-//  Created by Семен Гайдамакин on 03.04.2023.
-//
+
 
 import Foundation
 

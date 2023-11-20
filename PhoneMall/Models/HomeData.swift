@@ -1,9 +1,3 @@
-//
-//  DataManager.swift
-//  PhoneMall
-//
-//  Created by Семен Гайдамакин on 21.08.2022.
-//
 
 import Foundation
 import UIKit

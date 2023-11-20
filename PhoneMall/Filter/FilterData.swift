@@ -1,9 +1,4 @@
-//
-//  FilterData.swift
-//  PhoneMall
-//
-//  Created by Семен Гайдамакин on 28.08.2023.
-//
+
 
 import Foundation
 
@@ -37,26 +32,6 @@ class FilterData{
                                                PhoneOptions(phone_id: 3, size: 5.9, price: 700),
                                                PhoneOptions(phone_id: 4, size: 6.7, price: 530),
                                                PhoneOptions(phone_id: 4, size: 6.8, price: 800)]
-    
-    var optionsSortedByModelsId = [PhoneOptions]()
-    
-    init() {
-        setupData()
-    }
-    
-    
-    func setupData() {
-            
-        self.optionsSortedByModelsId = getOptions(phone_id: phoneModels.first!.id)
-        
-    }
-    
-    func getOptions(phone_id: Int) -> [PhoneOptions] {
-        let optionPhones = self.phoneModelsOptions.filter { (options) in
-            options.phone_id == phone_id
-        }
-        return optionPhones
-    }
-    
+
     
 }

@@ -1,14 +1,6 @@
-////
-////  PhoneManager.swift
-////  PhoneMall
-////
-////  Created by Семен Гайдамакин on 22.08.2022.
-////
-//
+
 import Foundation
 import UIKit
-
-
 
 protocol GetData {
     func getHomeScreenData(completion: @escaping (Result<HomeData, Error>) -> Void)
@@ -17,12 +9,8 @@ protocol GetData {
 }
 
 
-
 class NetworkManager: GetData {
-    
-    var homePhones : [HomeData] = []
-    
-    
+        
     func getHomeScreenData(completion: @escaping (Result<HomeData, Error>) -> Void) {
           getData(from: API.home, completion: completion)
       }

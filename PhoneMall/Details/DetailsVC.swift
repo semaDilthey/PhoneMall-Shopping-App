@@ -5,16 +5,12 @@ import UIKit
 import SwiftUI
 import Cosmos
 
-
-
 final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
     
     // MARK: - Properties
     var localData : DataStorage?
     var viewModel : DetailsViewModel?
-    
-    var detailsPhonesArray : [DetailsCellModel] = []
-    
+        
     var cartCounter : Int = 0 {
         didSet{
             setupItemsInCart()

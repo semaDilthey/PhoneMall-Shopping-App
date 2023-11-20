@@ -1,9 +1,4 @@
-//
-//  FilterViewModel.swift
-//  PhoneMall
-//
-//  Created by Семен Гайдамакин on 28.07.2023.
-//
+
 
 import Foundation
 import UIKit
@@ -15,86 +10,67 @@ enum FilterOptions {
 }
 
 protocol FilterViewModelProtocol {
-    var title: String { get }
-//    
-//    func numberOfRows(_ filter: FilterOptions) -> Int
-//    func getRowValue(at index: Int, for filter: FilterOptions) -> String
-//    //func getViewModel(for filter: FilterOptions) -> FilterViewModelProtocol
-//    
-//    init(brands: [String], prices: [String], sizes: [String])
+    func getPhoneModels() -> [PhoneName]
+    func getOptionsSortedByModelsId() -> [PhoneOptions]
+    //func getOptions(forPhoneId phoneId: Int) -> [PhoneOptions]
 }
 
 class FilterViewModel : FilterViewModelProtocol {
     
-    let data = FilterData()
-        
-    init() {
+    let filterData : FilterData
+    
+    init(filterData: FilterData) {
+        self.filterData = filterData
         sortModels()
     }
     
-    func getModels() -> [PhoneName] {
-        return data.phoneModels
+    func getPhoneModels() -> [PhoneName] {
+        return filterData.phoneModels
     }
     
-    func getSortedModels() -> [PhoneOptions] {
-        return data.optionsSortedByModelsId
+    func getOptionsSortedByModelsId() -> [PhoneOptions] {
+        return filterData.phoneModelsOptions
     }
+    
+    func getOptionsById(forPhoneId phoneId: Int) -> [PhoneOptions] {
+        return filterData.phoneModelsOptions.filter { $0.phone_id == phoneId }
+    }
+    
+    
     var title: String {
         "Filter Options"
     }
     
-    
-    func getOptions(phone_id: Int) -> [PhoneOptions] {
-        let optionPhones = data.phoneModelsOptions.filter { (options) in
-            options.phone_id == phone_id
+    func fetchOptions(phoneName : PhoneName, phoneOptions: [PhoneOptions]) -> PhoneOptions {
+        var newOptions : PhoneOptions? = nil
+        for options in phoneOptions {
+            if phoneName.id == options.phone_id {
+                newOptions = options
+            }
         }
-        return optionPhones
+        return newOptions ?? PhoneOptions(phone_id: 1, size: 1, price: 1)
     }
     
     var optionsSortedByModelsId = [PhoneOptions]()
     
+    
     private func sortModels() {
-        self.optionsSortedByModelsId = getOptions(phone_id: data.phoneModels.first!.id)
+        self.getOptions(forPhoneName: filterData.phoneModels, phoneOptions: filterData.phoneModelsOptions)
     }
     
-//    func numberOfRows(_ filter: FilterOptions) -> Int {
-//        switch filter {
-//        case .brand:
-//           return brands.count
-//        case .price:
-//            return prices.count
-//        case .size:
-//            return  sizes.count
-//        }
-//    }
-//    
-//    func getRowValue(at index: Int, for filter: FilterOptions) -> String {
-//        switch filter {
-//        case .brand:
-//            return  brands[index]
-//        case .price:
-//            return  prices[index]
-//        case .size:
-//            return  sizes[index]
-//        }
-//    }
-//
-//    func getViewModel(for filter: FilterOptions) -> FilterViewModelProtocol {
-//        switch filter {
-//        case .brand:
-//            return FilterViewModel(brands: <#T##[String]#>, prices: <#T##[String]#>, sizes: <#T##[String]#>)
-//        case .price:
-//            <#code#>
-//        case .size:
-//            <#code#>
-//        }
-//    }
-    
-//    required init(brands: [String], prices: [String], sizes: [String]) {
-//        self.brands = brands
-//        self.prices = prices
-//        self.sizes = sizes
-//    }
-    
-    
+    func getOptions(forPhoneName phoneName: [PhoneName], phoneOptions: [PhoneOptions]) -> [PhoneOptions] {
+        var ourArray : [PhoneOptions] = []
+        for phoneId in phoneName {
+            for phoneOptionsId in phoneOptions {
+                if phoneId.id == phoneOptionsId.phone_id {
+                    ourArray.append(phoneOptionsId)
+                }
+            }
+        }
+        print(ourArray)
+        return ourArray
+    }
 }
+    
+    
+

@@ -1,9 +1,3 @@
-//
-//  FilterViewController.swift
-//  PhoneMall
-//
-//  Created by Семен Гайдамакин on 28.06.2023.
-//
 
 import Foundation
 import UIKit
@@ -11,9 +5,8 @@ import SwiftUI
 
 class FilterViewController : UIViewController {
     
-    var viewModel = FilterViewModel()
-    
-    var filterData = FilterData()
+    //MARK: - Properties
+    var viewModel = FilterViewModel(filterData: FilterData())
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,10 +29,6 @@ class FilterViewController : UIViewController {
         return button
     }()
     
-    @objc func didTappedClose() {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
     private lazy var doneButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -51,10 +40,6 @@ class FilterViewController : UIViewController {
         button.addTarget(self, action: #selector(didTappedDone), for: .touchUpInside)
         return button
     }()
-    
-    @objc func didTappedDone() {
-        self.dismiss(animated: true, completion: nil)
-    }
     
     let priceLabel : UILabel = {
         let label = UILabel()
@@ -162,19 +147,26 @@ class FilterViewController : UIViewController {
         return label
     }()
     
+    @objc func didTappedClose() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    
+    @objc func didTappedDone() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
 }
 
 extension FilterViewController : UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let phones = filterData.phoneModels[row]
-//        let phones = viewModel.getModels()[row]
-        let options = filterData.optionsSortedByModelsId.last!
-//        let options = viewModel.getSortedModels()[0]
-
+        let phones = viewModel.getPhoneModels()[row]
+        var options = viewModel.fetchOptions(phoneName: phones, phoneOptions: viewModel.filterData.phoneModelsOptions)
         switch pickerView {
         case namePicker:
-            filterData.optionsSortedByModelsId = viewModel.getOptions(phone_id: phones.id)
+            viewModel.optionsSortedByModelsId = viewModel.getOptionsById(forPhoneId: phones.id)
             nameTextField.text = phones.name
+            print("OPTIONS \(options.price)")
             nameTextField.resignFirstResponder()
             nameTextField.textColor = .customDarkBlue
             sizePicker.reloadAllComponents()
@@ -182,6 +174,8 @@ extension FilterViewController : UIPickerViewDelegate {
             sizeTextField.text = "Select size"
             priceTextField.text = "Select price"
         case sizePicker:
+            print(options)
+            print(phones)
             sizeTextField.text = String(options.size) + " inches"
             sizeTextField.resignFirstResponder()
             sizeTextField.textColor = .customDarkBlue
@@ -198,11 +192,9 @@ extension FilterViewController : UIPickerViewDelegate {
 extension FilterViewController : UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        let phones = filterData.phoneModels[row]
-//        let phones = viewModel.getModels()[row]
+        let phones = viewModel.getPhoneModels()[row]
 
-        let options = filterData.optionsSortedByModelsId.last!
-//        let options = viewModel.getSortedModels()[0]
+        var options = viewModel.fetchOptions(phoneName: phones, phoneOptions: viewModel.filterData.phoneModelsOptions)
 
         switch pickerView {
         case namePicker : return phones.name
@@ -218,9 +210,9 @@ extension FilterViewController : UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch pickerView {
-        case namePicker : return filterData.phoneModels.count
-        case sizePicker : return filterData.optionsSortedByModelsId.count
-        case pricePicker : return filterData.optionsSortedByModelsId.count
+        case namePicker : return viewModel.filterData.phoneModels.count
+        case sizePicker : return  viewModel.optionsSortedByModelsId.count
+        case pricePicker : return  viewModel.optionsSortedByModelsId.count
         default: return 1
         }
     }

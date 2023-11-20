@@ -1,9 +1,4 @@
-//
-//  API.swift
-//  PhoneMall
-//
-//  Created by Семен Гайдамакин on 23.06.2023.
-//
+
 
 import Foundation
 import UIKit

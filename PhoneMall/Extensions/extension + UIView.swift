@@ -1,9 +1,4 @@
-//
-//  extension + UIView.swift
-//  PhoneMall
-//
-//  Created by Семен Гайдамакин on 05.11.2023.
-//
+
 
 import Foundation
 import UIKit

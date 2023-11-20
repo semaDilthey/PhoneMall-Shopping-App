@@ -35,15 +35,6 @@ class SearchBar: UITextField {
         }
     }
 
-    // MARK: - UITextFieldDelegate
-
-    extension SearchBar: UITextFieldDelegate {
-        // Можно добавить нужные методы делегата, если требуется
-        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-                textField.resignFirstResponder() // Закрываем клавиатуру при нажатии на Return
-                return true
-            }
-    }
 
     // MARK: - Setup Methods
 
@@ -69,4 +60,14 @@ extension SearchBar {
         leftViewMode = .always
     }
     
+}
+
+// MARK: - UITextFieldDelegate
+
+extension SearchBar: UITextFieldDelegate {
+// Можно добавить нужные методы делегата, если требуется
+func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder() // Закрываем клавиатуру при нажатии на Return
+        return true
+    }
 }

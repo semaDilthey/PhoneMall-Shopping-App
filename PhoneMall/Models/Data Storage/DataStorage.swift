@@ -1,21 +1,7 @@
-//
-//  DataStorage.swift
-//  PhoneMall
-//
-//  Created by Семен Гайдамакин on 13.11.2023.
-//
-
-import Foundation
-
 
 import Foundation
 
 protocol DataStorageProtocol {
-    func getCategory() -> [CategoryProduct]
-    func getBrandsForFilter() -> [String]
-    func getPricesForFilter() -> [String]
-    func getSizesForFilter() -> [String]
-    
     func getProductsCart() -> [ProductCart]
     func setProductsCart(_ array: [ProductCart])
    // func setProductCart(product: ProductCart)
@@ -26,23 +12,6 @@ protocol DataStorageProtocol {
 struct DataStorage: DataStorageProtocol {
     
     var inCart : Bool?
-    
-    func getCategory() -> [CategoryProduct] {
-        CategoryProduct.allCases
-    }
-    
-    func getBrandsForFilter() -> [String] {
-        ["Samsung", "Xiaomi"]
-    }
-    
-    func getPricesForFilter() -> [String] {
-        ["100-300", "300-500", "500-1000",
-         "1000-5000", "5000-10000"]
-    }
-    
-    func getSizesForFilter() -> [String] {
-        ["4.5 to 5.5 inches"]
-    }
     
     func getProductsCart() -> [ProductCart] {
         guard let data = UserDefaults.standard.object(forKey: NameKeyUserDefaults.devices.rawValue) as? Data,

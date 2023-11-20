@@ -1,9 +1,3 @@
-//
-//  UITabView.swift
-//  PhoneMall
-//
-//  Created by Семен Гайдамакин on 03.11.2023.
-//
 
 import UIKit
 import SwiftUI

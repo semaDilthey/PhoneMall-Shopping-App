@@ -73,8 +73,8 @@ final class HomeVC : UICollectionViewController {
       }()
     
     @objc func openCart() {
-        guard let navigationController = navigationController else { return }
-        guard let data = localData else { return }
+        guard let navigationController = navigationController, let data = localData else { return }
+        //guard let data = localData else { return }
         viewModel.goToCartController(navController: navigationController, dataStorage: data)
     }
    
