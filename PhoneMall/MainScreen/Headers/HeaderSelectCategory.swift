@@ -3,7 +3,7 @@
 import Foundation
 import UIKit
 
-protocol ReusableViewDelegate: AnyObject { //send signal to HomeVC()
+protocol ReusableViewDelegate: AnyObject { //send signal to MainViewController()
     func didTapFilterButton()
 }
 

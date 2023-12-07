@@ -4,7 +4,7 @@ import SwiftUI
 
 class TabBarView: UIView {
     
-    let viewModel = HomeViewModel(networkManager: NetworkManager(), dataStorage: DataStorage())
+    let viewModel = MainViewModel(networkManager: NetworkManager(), dataStorage: DataStorage())
     
     override init(frame: CGRect) {
         super.init(frame: frame)

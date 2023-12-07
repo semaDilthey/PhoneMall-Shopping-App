@@ -137,6 +137,6 @@ private extension HomeStoreCell {
 
 //struct ViewControllerProvider : PreviewProvider {
 //    static var previews: some View {
-//        HomeVC().showPreview()
+//        MainViewController().showPreview()
 //    }
 //}

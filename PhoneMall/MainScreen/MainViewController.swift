@@ -5,12 +5,11 @@ import UIKit
 import SwiftUI
 
 
-final class HomeVC : UICollectionViewController {
+final class MainViewController : UICollectionViewController {
     
     // MARK: - Properties
     
-    private var viewModel : HomeViewModel
-    var localData: DataStorage?
+    private var viewModel : MainViewModelProtocol
 
     // MARK: - Lifecycle
     
@@ -39,9 +38,8 @@ final class HomeVC : UICollectionViewController {
 
     // MARK: - Initialization
     
-    init(homeViewModel: HomeViewModel){
-        self.viewModel = homeViewModel
-        self.localData = homeViewModel.dataStorage
+    init(viewModel: MainViewModelProtocol){
+        self.viewModel = viewModel
         super.init(collectionViewLayout: .init())
     }
 
@@ -73,8 +71,7 @@ final class HomeVC : UICollectionViewController {
       }()
     
     @objc func openCart() {
-        guard let navigationController = navigationController, let data = localData else { return }
-        //guard let data = localData else { return }
+        guard let navigationController = navigationController, let data = viewModel.dataStorage else { return }
         viewModel.goToCartController(navController: navigationController, dataStorage: data)
     }
    
@@ -82,35 +79,27 @@ final class HomeVC : UICollectionViewController {
 
 // MARK: - Private Methods
 
-private extension HomeVC {
+private extension MainViewController {
     // to viewDidLoad
     func setupUI() {
-            setupCollectionView()
-            setupNavigationController()
-            setupViews()
+         setupCollectionView()
+         setupNavigationController()
+         setupViews()
     }
     
     func setupCollectionView() {
-          collectionView.collectionViewLayout = createCompositionalLayout()
-          collectionView.backgroundColor = .snowyWhite
-          
-          collectionView.register(CategoryCell.self, 
-                                  forCellWithReuseIdentifier: CategoryCell.identifire)
-          collectionView.register(HomeStoreCell.self, 
-                                  forCellWithReuseIdentifier: HomeStoreCell.identifire)
-          collectionView.register(BestSellerCell.self, 
-                                  forCellWithReuseIdentifier: BestSellerCell.identifire)
-        
-          // рег заголовок
-          collectionView.register(HeaderBestSeller.self, 
-                                  forSupplementaryViewOfKind: HeaderBestSeller.headerID, 
-                                  withReuseIdentifier: HeaderBestSeller.headerID)
-          collectionView.register(HeaderHotSales.self,
-                                  forSupplementaryViewOfKind: HeaderHotSales.headerID, 
-                                  withReuseIdentifier: HeaderHotSales.headerID)
-          collectionView.register(HeaderSelectCategory.self,
-                                  forSupplementaryViewOfKind: HeaderSelectCategory.headerID, 
-                                  withReuseIdentifier: HeaderSelectCategory.headerID)
+       collectionView.collectionViewLayout = createCompositionalLayout()
+       collectionView.backgroundColor = .snowyWhite
+
+      
+       collectionView.register(CategoryCell.self, forCellWithReuseIdentifier: CategoryCell.identifire)
+       collectionView.register(HomeStoreCell.self,  forCellWithReuseIdentifier: HomeStoreCell.identifire)
+       collectionView.register(BestSellerCell.self, forCellWithReuseIdentifier: BestSellerCell.identifire)
+    
+      // рег заголовок
+       collectionView.register(HeaderBestSeller.self, forSupplementaryViewOfKind: HeaderBestSeller.headerID,  withReuseIdentifier: HeaderBestSeller.headerID)
+       collectionView.register(HeaderHotSales.self, forSupplementaryViewOfKind: HeaderHotSales.headerID, withReuseIdentifier: HeaderHotSales.headerID)
+       collectionView.register(HeaderSelectCategory.self, forSupplementaryViewOfKind: HeaderSelectCategory.headerID, withReuseIdentifier: HeaderSelectCategory.headerID)
       }
     
     
@@ -160,19 +149,109 @@ private extension HomeVC {
         viewModel.reloadTableView = { [weak self] in
             DispatchQueue.main.async {
                 self?.collectionView.reloadData()
+                let section = IndexPath(row: 0, section: 0)
+                self?.collectionView.selectItem(at: section, animated: true, scrollPosition: [])
             }
         }
     }
         
     func updateCartCountVisibility() {
-        countProductCartLabel.isHidden = viewModel.dataStorage?.inCart == nil
+        guard let dataStorage = viewModel.dataStorage else { return }
+        countProductCartLabel.isHidden = dataStorage.inCart == nil
+    }
+}
+    
 
+//MARK: - Delegate, DataSource
+
+extension MainViewController {
+    
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return viewModel.numberOfSections()
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        viewModel.getNumberOfItemsInSection(in: section)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        switch indexPath.section {
+            
+        case 0:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifire, for: indexPath) as! CategoryCell
+            let categoryCellViewModel = CategoryCellViewModel()
+            categoryCellViewModel.set(indexPath: indexPath)
+            cell.set(viewModel: categoryCellViewModel, indexPath: indexPath)
+            return cell
+            
+        case 1:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeStoreCell.identifire, for: indexPath) as! HomeStoreCell
+            let homeStoreCellViewModel = viewModel.getHomeCellViewModel(at: indexPath)
+            cell.viewModel = homeStoreCellViewModel
+            return cell
+            
+        case 2:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BestSellerCell.identifire, for: indexPath) as! BestSellerCell
+            let bestSellerCellViewModel = viewModel.getBestCellViewModel(at: indexPath)
+            cell.viewModel = bestSellerCellViewModel
+            return cell
+            
+        default:
+            return UICollectionViewCell()
+        }
+    }
+
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.section == 0 {
+            return
+        } else {
+            guard let navigationController = navigationController, let dataStorage = viewModel.dataStorage else { return }
+            viewModel.goToDetailsController(navController: navigationController, dataStorage: dataStorage)
+        }
+    }
+
+    
+ 
+    //reusable view
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        switch kind {
+        case HeaderBestSeller.headerID:
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderBestSeller.headerID, for: indexPath)
+            header.backgroundColor = .clear
+            return header
+        case HeaderHotSales.headerID:
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderHotSales.headerID, for: indexPath)
+            header.backgroundColor = .clear
+            return header
+        case HeaderSelectCategory.headerID:
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind,  withReuseIdentifier: HeaderSelectCategory.headerID, for: indexPath) as! HeaderSelectCategory
+            header.backgroundColor = .clear
+            header.delegate = self
+            return header
+        default:
+            assertionFailure("Unexpected element kind: \(kind)")
+            return UICollectionReusableView()
+    }
+    
+    }
+}
+//MARK: - ReusableViewDelegate
+
+extension MainViewController : ReusableViewDelegate {
+    
+    func didTapFilterButton() {
+        let sheetViewController = FilterViewController()
+        if let sheet = sheetViewController.sheetPresentationController {
+            sheet.detents = [.medium()]
+        }
+        present(sheetViewController, animated: true)
     }
 }
 
-
 //MARK: - Creating layout
-private extension HomeVC {
+private extension MainViewController {
     
     // MARK:  Constants
     
@@ -180,7 +259,7 @@ private extension HomeVC {
         case first, second, third
         
         var value : NSDirectionalEdgeInsets {
-            switch self {
+          switch self {
             case .first : return NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12)
             case .second : return NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 4, trailing: 12)
             case .third : return NSDirectionalEdgeInsets(top: 10, leading: 12, bottom: 10, trailing: 12)
@@ -261,148 +340,6 @@ private extension HomeVC {
 }
 
 
-    
-
-//MARK: - Delegate, DataSource
-
-extension HomeVC {
-    
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return viewModel.numberOfSections()
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-
-        switch section {
-            
-        case 0 :
-            return viewModel.categoryCellViewModel.numberOfItemsInSection()
-            
-        case 1 :
-            return viewModel.homeStoreCellViewModels.count
-            
-        default :
-            return viewModel.bestSellerCellViewModels.count
-            
-        }
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.section {
-            
-        case 0:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifire, for: indexPath) as! CategoryCell
-            let categoryCellViewModel = CategoryCellViewModel()
-            categoryCellViewModel.set(indexPath: indexPath)
-            cell.set(viewModel: categoryCellViewModel, indexPath: indexPath)
-            return cell
-            
-        case 1:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeStoreCell.identifire, for: indexPath) as! HomeStoreCell
-            let homeStoreCellViewModel = viewModel.getHomeCellViewModel(at: indexPath)
-            cell.viewModel = homeStoreCellViewModel
-            return cell
-            
-        case 2:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BestSellerCell.identifire, for: indexPath) as! BestSellerCell
-            let bestSellerCellViewModel = viewModel.getBestCellViewModel(at: indexPath)
-            cell.viewModel = bestSellerCellViewModel
-            return cell
-            
-        default:
-            return CategoryCell()
-        }
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        switch indexPath.section {
-            
-        case 0:
-            if let categoryCell = cell as? CategoryCell {
-                if indexPath.row == 0 {
-                    categoryCell.view.backgroundColor = .customOrange
-                    categoryCell.label.textColor = .customOrange
-                    categoryCell.label.font = UIFont.markProFont(size: 12, weight: .heavy)
-                } else {
-                    categoryCell.view.backgroundColor = .white
-                    categoryCell.label.textColor = .black
-                    categoryCell.label.font = UIFont.markProFont(size: 12, weight: .plain)
-                }
-            }
-            
-        default:
-            break
-        }
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            
-            if let cell = collectionView.cellForItem(at: indexPath) as? CategoryCell {
-                cell.isSelected = true
-            }
-        } else {
-            viewModel.goToDetailsController(navController: navigationController!, dataStorage: viewModel.dataStorage ?? DataStorage())
-        }
-
-        
-    }
-       
-    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
-            
-            if let cell = collectionView.cellForItem(at: indexPath) as? CategoryCell {
-                cell.isSelected = false
-            }
-        }
-    }
-    
- 
-    //reusable view
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        switch kind {
-            
-        case HeaderBestSeller.headerID:
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, 
-                                                                         withReuseIdentifier: HeaderBestSeller.headerID,
-                                                                         for: indexPath)
-            header.backgroundColor = .clear
-            return header
-            
-        case HeaderHotSales.headerID:
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, 
-                                                                         withReuseIdentifier: HeaderHotSales.headerID,
-                                                                         for: indexPath)
-            header.backgroundColor = .clear
-            return header
-            
-        case HeaderSelectCategory.headerID:
-            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, 
-                                                                         withReuseIdentifier: HeaderSelectCategory.headerID,
-                                                                         for: indexPath) as! HeaderSelectCategory
-            header.backgroundColor = .clear
-            header.delegate = self
-            return header
-            
-        default:
-            assertionFailure("Unexpected element kind: \(kind)")
-            return UICollectionReusableView()
-    }
-    
-    }
-}
-//MARK: - ReusableViewDelegate
-
-extension HomeVC : ReusableViewDelegate {
-    func didTapFilterButton() {
-        let sheetViewController = FilterViewController()
-        if let sheet = sheetViewController.sheetPresentationController {
-            sheet.detents = [.medium()]
-        }
-        present(sheetViewController, animated: true)
-    }
-}
-
 
 
 
@@ -410,7 +347,7 @@ extension HomeVC : ReusableViewDelegate {
 
 //struct ViewControllerProvider : PreviewProvider {
 //    static var previews: some View {
-//        HomeVC().showPreview()
+//        MainViewController().showPreview()
 //    }
 //}
  

@@ -3,12 +3,11 @@
 import Foundation
 import UIKit
 
-enum HomeSection {
-    case homeStore
-    case bestSeller
-}
-
-protocol HomeViewModelProtocol {
+protocol MainViewModelProtocol {
+    var dataStorage: DataStorage? { get set }
+    var categoryCellViewModel : CategoryCellViewModel { get set }
+    var homeStoreCellViewModels : [HomeStoreCellModelProtocol] { get set }
+    var bestSellerCellViewModels : [BestSellerModelProtocol] { get set }
     // Методы для получения данных
     func getBestSeller()
     func getHomeStore()
@@ -19,16 +18,20 @@ protocol HomeViewModelProtocol {
     
     // Методы для работы с таблицей
     func numberOfSections() -> Int
-    func numberOfItemsInSection() -> Int
+    func getNumberOfItemsInSection(in section: Int) -> Int
+
+    func getBestCellViewModel(at indexPath: IndexPath) -> BestSellerModelProtocol
+    func getHomeCellViewModel(at indexPath: IndexPath) -> HomeStoreCellModelProtocol?
     
     // Навигация
     func goToDetailsController(navController: UINavigationController, dataStorage: DataStorage)
     func goToCartController(navController: UINavigationController, dataStorage: DataStorage)
+    
 }
 
-// MARK: - HomeViewModel
+// MARK: - MainViewModel
 
-class HomeViewModel: HomeViewModelProtocol {
+class MainViewModel: MainViewModelProtocol {
     
     // MARK: - Properties
     
@@ -147,8 +150,18 @@ class HomeViewModel: HomeViewModelProtocol {
     }
     
     // Количество элементов в одной секции (пока временная реализация)
-    func numberOfItemsInSection() -> Int {
-        return 3
+    func getNumberOfItemsInSection(in section: Int) -> Int {
+        switch section {
+            
+        case 0 :
+            return categoryCellViewModel.numberOfItemsInSection()
+        case 1 :
+            return homeStoreCellViewModels.count
+        case 2 :
+            return bestSellerCellViewModels.count
+        default :
+            return 0
+        }
     }
     
     // Навигация к экрану с деталями
@@ -160,4 +173,9 @@ class HomeViewModel: HomeViewModelProtocol {
     func goToCartController(navController: UINavigationController, dataStorage: DataStorage) {
         coordinator.showCartVC(controller: navController, dataStorage: dataStorage)
     }
+}
+
+enum HomeSection {
+    case homeStore
+    case bestSeller
 }

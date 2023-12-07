@@ -5,7 +5,7 @@
 // Этот код, потом в главном VC вот такое в конце вставляем
 //struct ViewControllerProvider : PreviewProvider {
 //    static var previews: some View {
-//        HomeVC().showPreview()
+//        MainViewController().showPreview()
 //        MyCartVC().showPreview()
 //        TabBarViewController().showPreview()
 //        ProductDetailsVC().showPreview()

@@ -13,8 +13,8 @@ protocol CoordinatorProtocol: AnyObject {
 class Coordinator: CoordinatorProtocol {
     
     func start(window: UIWindow)  {
-        let homeViewModel = HomeViewModel(networkManager: NetworkManager(), dataStorage: DataStorage())
-        let vc = HomeVC(homeViewModel: homeViewModel)
+        let homeViewModel = MainViewModel(networkManager: NetworkManager(), dataStorage: DataStorage())
+        let vc = MainViewController(viewModel: homeViewModel)
         let navigationController = UINavigationController(rootViewController: vc)
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
@@ -23,7 +23,7 @@ class Coordinator: CoordinatorProtocol {
     
     func showDetailVC(controller: UINavigationController, dataStorage: DataStorage){
         let viewModel = DetailsViewModel(networkManager: NetworkManager(), dataStorage: dataStorage)
-        let vc = DetailsVC(viewModel: viewModel)
+        let vc = DetailsViewController(viewModel: viewModel)
         setViewController(controller: controller, with: [vc])
     }
     
@@ -35,8 +35,8 @@ class Coordinator: CoordinatorProtocol {
     
     
     func showHomeVC(controller: UINavigationController, dataStorage: DataStorage) {
-        let homeViewModel = HomeViewModel(networkManager: NetworkManager(), dataStorage: dataStorage)
-        let vc = HomeVC(homeViewModel: homeViewModel)
+        let homeViewModel = MainViewModel(networkManager: NetworkManager(), dataStorage: dataStorage)
+        let vc = MainViewController(viewModel: homeViewModel)
         setViewController(controller: controller, with: [vc], animated: true)
     }
     

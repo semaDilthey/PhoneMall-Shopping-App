@@ -5,20 +5,10 @@ import UIKit
 import SwiftUI
 import Cosmos
 
-final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate {
+final class DetailsViewController : UICollectionViewController, UIGestureRecognizerDelegate {
     
     // MARK: - Properties
-    var localData : DataStorage?
     var viewModel : DetailsViewModel?
-        
-    var cartCounter : Int = 0 {
-        didSet{
-            setupItemsInCart()
-        }
-        willSet {
-            itemsCounterLabel.text = String(newValue)
-        }
-    }
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -36,7 +26,6 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     // MARK: - Initialization
     init(viewModel: DetailsViewModel) {
         self.viewModel = viewModel
-        self.localData = viewModel.dataStorage
         super.init(collectionViewLayout: .init())
     }
     
@@ -86,7 +75,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     }()
     
     // view под каунтер корзины
-    var itemsInCartView : UIView = {
+    private let itemsInCartView : UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.widthAnchor.constraint(equalToConstant: 16).isActive = true
@@ -100,7 +89,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     }()
     
     // сам каунтер в корзине
-    var itemsCounterLabel : UILabel = {
+    private let itemsCounterLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .white
@@ -109,7 +98,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     }()
     
     // Product details label that in the top center
-    let detailsNavBarLabel : UILabel = {
+    private let detailsNavBarLabel : UILabel = {
         let label = UILabel()
         label.backgroundColor = .clear
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -513,25 +502,39 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
         return stack
     }
     
+    var cartCounter : Int = 0 {
+        didSet{
+            setupItemsInCart()
+        }
+        willSet {
+            itemsCounterLabel.text = String(newValue)
+        }
+    }
+    
  
     //MARK: - Button Methods
     
     // метод для кнопки backButton
     @objc func backButtonPresentingVC() {
-        guard let data = localData else { return }
-        viewModel?.backButtonPressed(navController: navigationController!, data: data)
+        guard let viewModel = viewModel, let data = viewModel.dataStorage, let navigationController = navigationController else { return }
+        print("InCart?:: \(data.inCart)")
+        viewModel.backButtonPressed(navController: navigationController, data: data)
 
     }
     
     @objc func shopCartButtonPresentingVC() {
-        guard let data = viewModel?.dataStorage else { return }
-        viewModel?.cartButtonPressed(navController: navigationController!, data: data)
+        guard let viewModel = viewModel, let data = viewModel.dataStorage, let navigationController = navigationController else { return }
+        viewModel.cartButtonPressed(navController: navigationController, data: data)
     }
     
     
     @objc func didTappedFav() {
         favButton.isSelected.toggle()
-        favButton.isSelected ? favButton.setImage(UIImage(named: "heartFilled"), for: .normal) : favButton.setImage(UIImage(named: "heartEmpty")?.imageWithColor(color: .white), for: .normal)
+        if favButton.isSelected {
+            favButton.setImage(UIImage(named: "heartFilled"), for: .normal)
+        } else {
+            favButton.setImage(UIImage(named: "heartEmpty")?.imageWithColor(color: .white), for: .normal)
+        }
     }
     
     // это надо потом во вью модель
@@ -560,8 +563,8 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
     
     @objc func addToCartButtonTapped() {
         cartCounter += 1
-        // Закидываем телефоны в массив phonesInCart в файле MyCartViewMode.
-        localData?.inCart = true
+        guard let viewModel = viewModel else { return }
+        viewModel.dataStorage?.inCart = true
     }
        
     //MARK: - Private Metho
@@ -581,7 +584,7 @@ final class DetailsVC : UICollectionViewController, UIGestureRecognizerDelegate 
 }
 
 // MARK: создаем Layout который будет туда сюда ходить
-private extension DetailsVC {
+private extension DetailsViewController {
     
     func createScrollableLayout() -> UICollectionViewCompositionalLayout {
             let compositionalLayout: UICollectionViewCompositionalLayout = {
@@ -619,7 +622,7 @@ private extension DetailsVC {
 }
 
 //MARK: - CollectionView Delegate
-extension DetailsVC {
+extension DetailsViewController {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DetailsCell.identife, for: indexPath) as? DetailsCell else { fatalError("Failed to get expected kind of reusable cell from the tableView. Expected type `ProductDetailsCustomCell`")}
@@ -638,14 +641,14 @@ extension DetailsVC {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let data = localData else { return }
-        viewModel?.cartButtonPressed(navController: navigationController!, data: data)
+        guard let viewModel = viewModel, let data = viewModel.dataStorage, let navigationController = navigationController else { return }
+        viewModel.cartButtonPressed(navController: navigationController, data: data)
 
     }
 }
 
 //MARK: - Setup Views
-extension DetailsVC {
+extension DetailsViewController {
     //MARK:  Setup Collection View
     func setupCollectionView () {
         collectionView.collectionViewLayout = createScrollableLayout()
@@ -836,16 +839,16 @@ extension DetailsVC {
   
     
 }
-
+//
 //struct ViewControllerProvider : PreviewProvider {
 //    static var previews: some View {
 //        Group {
-//            DetailsVC().showPreview()
+//            DetailsViewController().showPreview()
 //        }
 //    }
 //}
-
-
+//
+//
 
 
 

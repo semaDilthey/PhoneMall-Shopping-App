@@ -20,13 +20,12 @@ class CategoryCell: UICollectionViewCell {
     // MARK: - Cell Lifecycle
     
     override func prepareForReuse() {
-        configureSelection()
         view.backgroundColor = .white
     }
     
     override var isSelected: Bool {
         didSet {
-           configureSelection()
+            isSelected ? configureSelectedState() : configureUnselectedState()
         }
     }
     
@@ -69,6 +68,18 @@ class CategoryCell: UICollectionViewCell {
             label.textColor = .black
             label.font = UIFont.markProFont(size: 12, weight: .plain)
         }
+    }
+    
+    func configureSelectedState() {
+        view.backgroundColor = .customOrange
+        label.textColor = .customOrange
+        label.font = UIFont.markProFont(size: 12, weight: .heavy)
+    }
+    
+    func configureUnselectedState() {
+        view.backgroundColor = .white
+        label.textColor = .black
+        label.font = UIFont.markProFont(size: 12, weight: .plain)
     }
          
     // MARK: - Public Methods
