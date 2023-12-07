@@ -11,17 +11,20 @@ protocol StepperDelegate {
 
 class CustomStepper : UIView {
     
+    var viewModel: MyCartCellModelProtocol?
+
     init() {
         super.init(frame: .zero)   // тут же ставим его без рамок
-        setup()
-        counterInProgress()
+        setupUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     var updatePriceClosure: ((Int) -> Void)?
     
     var delegate : StepperDelegate? // делегируем
-    
-    var viewModel: MyCartCellModelProtocol?
     
     var counter: String = "1" {
            didSet {
@@ -34,6 +37,7 @@ class CustomStepper : UIView {
        button.setTitle("+", for: .normal)
        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
        button.translatesAutoresizingMaskIntoConstraints = false
+       button.addTarget(self, action: #selector(increaseFunc), for: .touchUpInside)
        return button
    }()
    
@@ -42,6 +46,7 @@ class CustomStepper : UIView {
        button.setTitle("−", for: .normal)
        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
        button.translatesAutoresizingMaskIntoConstraints = false
+       button.addTarget(self, action: #selector(decreaseFunc), for: .touchUpInside)
        return button
    }()
   
@@ -69,27 +74,15 @@ class CustomStepper : UIView {
          var quantity = Int(counter)!
          quantity += amount
          let minValue = 0
-     if quantity < minValue {
-     quantity = 0
-         counter = "0"
-     } else {
-         counter = "\(quantity)"
-         updatePriceClosure?(quantity)
+         if quantity < minValue {
+             quantity = 0
+             counter = "\(quantity)"
+         } else {
+             counter = "\(quantity)"
+             updatePriceClosure?(quantity)
+         }
+         delegate?.decreaseNumber(cell: self, by: quantity)
      }
-     delegate?.decreaseNumber(cell: self, by: quantity)
-     }
-    //
-    // ну и сама функция, которая дает нашим кнопкам действия
-    func counterInProgress() {
-    plusButton.addTarget(self, action: #selector(increaseFunc), for: .touchUpInside)
-    minusButton.addTarget(self, action: #selector(decreaseFunc), for: .touchUpInside)
-    }
-     
-    
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
        
 }
 
@@ -97,7 +90,7 @@ class CustomStepper : UIView {
 
 extension CustomStepper {
     
-    private func setup() {
+    private func setupUI() {
            backgroundColor = UIColor(red: 40/255, green: 40/255, blue: 67/255, alpha: 1)
            
            addSubview(minusButton)

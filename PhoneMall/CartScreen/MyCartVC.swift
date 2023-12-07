@@ -9,7 +9,6 @@ final class MyCartVC : UIViewController, CartCellDelegate {
   
     // MARK: - Properties
     let viewModel : MyCartViewModel?
-    var localData : DataStorage?
     
     // property observer, считает тотал
     var totalPriceObserver : Double = 0.0 {
@@ -32,7 +31,6 @@ final class MyCartVC : UIViewController, CartCellDelegate {
     // MARK: - Initialization
     init(viewModel: MyCartViewModel?) {
         self.viewModel = viewModel
-        self.localData = viewModel?.dataStorage
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -211,8 +209,8 @@ final class MyCartVC : UIViewController, CartCellDelegate {
     //MARK: - Button Methods
     
     @objc func backToHomeVC() {
-        guard let localData = localData else { return }
-        viewModel?.backButtonPressed(navController: navigationController!, dataStorage: localData)
+        guard let viewModel = viewModel, let dataStorage = viewModel.dataStorage else { return }
+        viewModel.backButtonPressed(navController: navigationController!, dataStorage: dataStorage)
     }
     
     func didTapDeleteButton(cell: MyCartCell) {
@@ -226,10 +224,10 @@ final class MyCartVC : UIViewController, CartCellDelegate {
         guard let viewModel = viewModel else { return }
         if viewModel.cartPhonesModel.count > 0 {
             totalPrice.text = "$" + " " + String(viewModel.cartPhonePricesTuple.0 + viewModel.cartPhonePricesTuple.1)
-            localData?.inCart = true
+            viewModel.dataStorage?.inCart = true
         } else if viewModel.cartPhonesModel.count == 0 {
             totalPrice.text = "$" + " " + "0"
-            localData?.inCart = false
+            viewModel.dataStorage?.inCart = false
         }
     }
     
