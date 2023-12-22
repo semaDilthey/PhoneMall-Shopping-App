@@ -36,11 +36,13 @@ final class DetailsViewController :UIViewController, UIGestureRecognizerDelegate
     
     // MARK: - ViewModel Initialization
     private func initViewModel() {
-        viewModel?.getDetailsPhones()
+        guard let viewModel = viewModel else { return }
+        viewModel.getDetailsPhones()
         
-        viewModel?.reloadTableView = { [weak self] in
+        viewModel.reloadTableView = { [weak self] in
             DispatchQueue.main.async {
                 self?.collectionView.reloadData()
+                self?.cardView.phoneLabel.text = self?.viewModel?.detailsModel.first?.title
             }
         }
     }
@@ -80,6 +82,7 @@ final class DetailsViewController :UIViewController, UIGestureRecognizerDelegate
         but.layer.shouldRasterize = false
         but.widthAnchor.constraint(equalToConstant: 37).isActive = true
         but.heightAnchor.constraint(equalToConstant: 37).isActive = true
+        but.addTarget(self, action: #selector(shopCartButtonPresentingVC), for: .touchUpInside)
         return but
     }()
     
@@ -134,15 +137,14 @@ final class DetailsViewController :UIViewController, UIGestureRecognizerDelegate
     
     // метод для кнопки backButton
     @objc func backButtonPresentingVC() {
-        guard let viewModel = viewModel, let data = viewModel.dataStorage, let navigationController = navigationController else { return }
-        print("InCart?:: \(data.inCart)")
-        viewModel.backButtonPressed(navController: navigationController, data: data)
+        guard let viewModel = viewModel, let data = viewModel.dataStorage else { return }
+        viewModel.coordinator.showHomeVC(navController: navigationController, dataStorage: data)
 
     }
     
     @objc func shopCartButtonPresentingVC() {
-        guard let viewModel = viewModel, let data = viewModel.dataStorage, let navigationController = navigationController else { return }
-        viewModel.cartButtonPressed(navController: navigationController, data: data)
+        guard let viewModel = viewModel, let data = viewModel.dataStorage else { return }
+        viewModel.coordinator.showCartVC(navController: navigationController, dataStorage: data)
     }
     
     var cartCounter : Int = 0 {
@@ -236,8 +238,8 @@ extension DetailsViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let viewModel = viewModel, let data = viewModel.dataStorage, let navigationController = navigationController else { return }
-        viewModel.cartButtonPressed(navController: navigationController, data: data)
+        guard let viewModel = viewModel, let data = viewModel.dataStorage else { return }
+        viewModel.coordinator.showCartVC(navController: navigationController, dataStorage: data)
 
     }
 }
@@ -265,8 +267,6 @@ extension DetailsViewController {
     //MARK: setup UI
     func setupUI () {
         setupCardView()
-    
-        
     }
     
     //MARK: setup NavigationBar
@@ -290,9 +290,6 @@ extension DetailsViewController {
         // что происходит по клику на корзину
         let rightBarButton = UIBarButtonItem(customView: shopCartButton)
         navigationItem.setRightBarButton(rightBarButton, animated: true)
-        shopCartButton.addTarget(self, action: #selector(shopCartButtonPresentingVC), for: .touchUpInside)
-        
-       
     }
     
     //MARK: setup CardView
@@ -302,7 +299,7 @@ extension DetailsViewController {
         cardView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         cardView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         cardView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        cardView.topAnchor.constraint(equalTo: view.topAnchor, constant: 400).isActive = true
+        cardView.topAnchor.constraint(equalTo: view.topAnchor, constant: 420).isActive = true
         
     }
 }

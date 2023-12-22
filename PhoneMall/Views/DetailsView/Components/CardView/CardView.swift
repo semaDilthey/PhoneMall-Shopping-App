@@ -34,7 +34,7 @@ class CardView : UIView, UIGestureRecognizerDelegate {
         label.textColor = .customDarkBlue
         label.font = UIFont.markProFont(size: 22, weight: .medium)
         label.textAlignment = .center
-        label.text = "Galaxy Note 20 Ultra"
+        label.text = "Galaxy Note 20 Ultraaa"
         label.layer.shouldRasterize = false
         return label
     }()
@@ -246,7 +246,7 @@ class CardView : UIView, UIGestureRecognizerDelegate {
         return label
     }()
     // добавляет цену в кнопке
-    var priceLabel: UILabel = {
+    let priceLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = .clear
         label.translatesAutoresizingMaskIntoConstraints = false

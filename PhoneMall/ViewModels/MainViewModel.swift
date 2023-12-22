@@ -4,7 +4,10 @@ import Foundation
 import UIKit
 
 protocol MainViewModelProtocol {
-    var dataStorage: DataStorage? { get set }
+    var dataStorage: DataStorageProtocol? { get set }
+    // Навигация
+    var coordinator : Coordinator { get }
+    
     var categoryCellViewModel : CategoryCellViewModel { get set }
     var homeStoreCellViewModels : [HomeStoreCellModelProtocol] { get set }
     var bestSellerCellViewModels : [BestSellerModelProtocol] { get set }
@@ -23,10 +26,6 @@ protocol MainViewModelProtocol {
     func getBestCellViewModel(at indexPath: IndexPath) -> BestSellerModelProtocol
     func getHomeCellViewModel(at indexPath: IndexPath) -> HomeStoreCellModelProtocol?
     
-    // Навигация
-    func goToDetailsController(navController: UINavigationController, dataStorage: DataStorage)
-    func goToCartController(navController: UINavigationController, dataStorage: DataStorage)
-    
 }
 
 // MARK: - MainViewModel
@@ -36,18 +35,18 @@ class MainViewModel: MainViewModelProtocol {
     // MARK: - Properties
     
     // Менеджер сети и хранилище данных
-    let networkManager: NetworkManager?
-    var dataStorage: DataStorage?
+    let networkManager: Networking?
+    var dataStorage: DataStorageProtocol?
     
     // Координатор для навигации
-    let coordinator = Coordinator()
+    var coordinator = Coordinator()
     
     // Данные для отображения на экране
     private var homeData: HomeData?
   
     // MARK: - Initialization
     
-    init(networkManager: NetworkManager?, dataStorage: DataStorage?) {
+    init(networkManager: Networking?, dataStorage: DataStorageProtocol?) {
         self.networkManager = networkManager
         self.dataStorage = dataStorage
     }
@@ -85,14 +84,14 @@ class MainViewModel: MainViewModelProtocol {
     
     // Получение данных для раздела "Домашний магазин"
     func getHomeStore() {
-        networkManager?.getHomeScreenData(completion: { [weak self] result in
+        networkManager?.getHomeData(completion: { [weak self] result in
             self?.handleDataResult(result, for: .homeStore)
         })
     }
     
     // Получение данных для раздела "Лучшие продажи"
     func getBestSeller() {
-        networkManager?.getHomeScreenData(completion: { [weak self] result in
+        networkManager?.getHomeData(completion: { [weak self] result in
             self?.handleDataResult(result, for: .bestSeller)
         })
     }
@@ -152,7 +151,6 @@ class MainViewModel: MainViewModelProtocol {
     // Количество элементов в одной секции (пока временная реализация)
     func getNumberOfItemsInSection(in section: Int) -> Int {
         switch section {
-            
         case 0 :
             return categoryCellViewModel.numberOfItemsInSection()
         case 1 :
@@ -162,16 +160,6 @@ class MainViewModel: MainViewModelProtocol {
         default :
             return 0
         }
-    }
-    
-    // Навигация к экрану с деталями
-    func goToDetailsController(navController: UINavigationController, dataStorage: DataStorage) {
-        coordinator.showDetailVC(controller: navController, dataStorage: dataStorage)
-    }
-    
-    // Навигация к корзине
-    func goToCartController(navController: UINavigationController, dataStorage: DataStorage) {
-        coordinator.showCartVC(controller: navController, dataStorage: dataStorage)
     }
 }
 

@@ -10,6 +10,18 @@ final class MainViewController : UICollectionViewController {
     // MARK: - Properties
     
     private var viewModel : MainViewModelProtocol
+    
+    // MARK: - Initialization
+    
+    init(viewModel: MainViewModelProtocol){
+        self.viewModel = viewModel
+        super.init(collectionViewLayout: .init())
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
 
     // MARK: - Lifecycle
     
@@ -22,7 +34,8 @@ final class MainViewController : UICollectionViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Скрытие navigationBar только на этом экране
-        setupNavigationBar()
+        hideNavBar()
+        updateCartCountVisibility()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -35,18 +48,6 @@ final class MainViewController : UICollectionViewController {
         super.viewDidLayoutSubviews()
         setupRoundedFrames()
     }
-
-    // MARK: - Initialization
-    
-    init(viewModel: MainViewModelProtocol){
-        self.viewModel = viewModel
-        super.init(collectionViewLayout: .init())
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     
     // MARK: - UI Elements
     
@@ -70,9 +71,12 @@ final class MainViewController : UICollectionViewController {
         return label
       }()
     
+    
+    //MARK: - @objc Methods
+    
     @objc func openCart() {
-        guard let navigationController = navigationController, let data = viewModel.dataStorage else { return }
-        viewModel.goToCartController(navController: navigationController, dataStorage: data)
+        guard let data = viewModel.dataStorage else { return }
+        viewModel.coordinator.showCartVC(navController: navigationController, dataStorage: data)
     }
    
 }
@@ -83,7 +87,6 @@ private extension MainViewController {
     // to viewDidLoad
     func setupUI() {
          setupCollectionView()
-         setupNavigationController()
          setupViews()
     }
     
@@ -96,17 +99,10 @@ private extension MainViewController {
        collectionView.register(HomeStoreCell.self,  forCellWithReuseIdentifier: HomeStoreCell.identifire)
        collectionView.register(BestSellerCell.self, forCellWithReuseIdentifier: BestSellerCell.identifire)
     
-      // рег заголовок
        collectionView.register(HeaderBestSeller.self, forSupplementaryViewOfKind: HeaderBestSeller.headerID,  withReuseIdentifier: HeaderBestSeller.headerID)
        collectionView.register(HeaderHotSales.self, forSupplementaryViewOfKind: HeaderHotSales.headerID, withReuseIdentifier: HeaderHotSales.headerID)
        collectionView.register(HeaderSelectCategory.self, forSupplementaryViewOfKind: HeaderSelectCategory.headerID, withReuseIdentifier: HeaderSelectCategory.headerID)
       }
-    
-    
-    func setupNavigationController() {
-        navigationItem.hidesSearchBarWhenScrolling = true
-        navigationController?.navigationBar.prefersLargeTitles = false
-    }
     
     func  setupViews() {
         view.addSubview(tabView)
@@ -129,9 +125,9 @@ private extension MainViewController {
         setupViewModelCallbacks()
     }
     
-    func setupNavigationBar() {
+    func hideNavBar() {
+        navigationItem.hidesSearchBarWhenScrolling = true
         navigationController?.setNavigationBarHidden(true, animated: false)
-        updateCartCountVisibility()
     }
 
     func restoreNavigationBar() {
@@ -206,8 +202,8 @@ extension MainViewController {
         if indexPath.section == 0 {
             return
         } else {
-            guard let navigationController = navigationController, let dataStorage = viewModel.dataStorage else { return }
-            viewModel.goToDetailsController(navController: navigationController, dataStorage: dataStorage)
+            guard let dataStorage = viewModel.dataStorage else { return }
+            viewModel.coordinator.showDetailVC(navController: navigationController, dataStorage: dataStorage)
         }
     }
 

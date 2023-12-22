@@ -2,6 +2,7 @@
 import Foundation
 
 protocol DataStorageProtocol {
+    var inCart : Bool? { get set }
     func getProductsCart() -> [ProductCart]
     func setProductsCart(_ array: [ProductCart])
    // func setProductCart(product: ProductCart)

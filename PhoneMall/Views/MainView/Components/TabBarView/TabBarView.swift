@@ -70,7 +70,7 @@ class TabBarView: UIView {
     }()
     
     @objc func didTouchBagButton(navController: UINavigationController) {
-        viewModel.goToCartController(navController: navController, dataStorage: DataStorage(inCart: true))
+        viewModel.coordinator.showCartVC(navController: navController, dataStorage: DataStorage(inCart: true))
     }
     
 }

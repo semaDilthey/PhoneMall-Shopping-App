@@ -5,10 +5,20 @@ import UIKit
 import SwiftUI
 
 
-final class MyCartVC : UIViewController, CartCellDelegate {
+final class CartViewController : UIViewController {
   
     // MARK: - Properties
-    let viewModel : MyCartViewModel?
+    let viewModel : CartViewModel?
+    
+    // MARK: - Initialization
+    init(viewModel: CartViewModel?) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // property observer, считает тотал
     var totalPriceObserver : Double = 0.0 {
@@ -26,16 +36,6 @@ final class MyCartVC : UIViewController, CartCellDelegate {
         super.viewDidLoad()
         setupUI()
         initViewModel()
-    }
-    
-    // MARK: - Initialization
-    init(viewModel: MyCartViewModel?) {
-        self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: - ViewModel Initialization
@@ -210,13 +210,8 @@ final class MyCartVC : UIViewController, CartCellDelegate {
     
     @objc func backToHomeVC() {
         guard let viewModel = viewModel, let dataStorage = viewModel.dataStorage else { return }
-        viewModel.backButtonPressed(navController: navigationController!, dataStorage: dataStorage)
+        viewModel.coordinator.showHomeVC(navController: navigationController, dataStorage: dataStorage)
     }
-    
-    func didTapDeleteButton(cell: MyCartCell) {
-        viewModel?.deleteTapped(cell: cell, tableView: tableView)
-    }
-    
     
     //MARK: - Private Methods
     
@@ -233,10 +228,18 @@ final class MyCartVC : UIViewController, CartCellDelegate {
     
 }
 
+extension CartViewController : CartCellDelegate {
+    
+    func didTapDeleteButton(cell: MyCartCell) {
+        viewModel?.deleteTapped(cell: cell, tableView: tableView)
+    }
+    
+}
+
 
 
 //MARK: - Delegate, DataSource
-extension MyCartVC : UITableViewDelegate, UITableViewDataSource {
+extension CartViewController : UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return viewModel?.cartPhonesModel.count ?? 0
@@ -275,7 +278,7 @@ extension MyCartVC : UITableViewDelegate, UITableViewDataSource {
 }
 
 //MARK: - SetupUI
-extension MyCartVC {
+extension CartViewController {
     
     func setupUI() {
         view.backgroundColor = .white
@@ -348,7 +351,7 @@ extension MyCartVC {
 }
 
 
-private extension MyCartVC {
+private extension CartViewController {
     // Конфигурация для кнопки Check out
     func configureButton(button: UIButton) {
         var config = UIButton.Configuration.filled()

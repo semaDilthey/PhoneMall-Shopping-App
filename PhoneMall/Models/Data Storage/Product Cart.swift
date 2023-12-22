@@ -9,11 +9,11 @@ struct ProductCart: Codable {
     let price: String
     let image: String
     
-    init(model bs: BestSellerModel) {
-        self.name = bs.title ?? "NaN"
+    init(model: BestSellerModel) {
+        self.name = model.title ?? "NaN"
         self.count = 1
-        self.price = bs.discountPrice ?? "0"
-        self.image = bs.pictureUrlString ?? "NaN"
+        self.price = model.discountPrice ?? "0"
+        self.image = model.pictureUrlString ?? "NaN"
     }
     
 //    init(basketData: BasketCardData) {

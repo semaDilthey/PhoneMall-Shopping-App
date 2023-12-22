@@ -71,15 +71,19 @@ class CategoryCell: UICollectionViewCell {
     }
     
     func configureSelectedState() {
-        view.backgroundColor = .customOrange
-        label.textColor = .customOrange
-        label.font = UIFont.markProFont(size: 12, weight: .heavy)
+        UIView.animate(withDuration: 0.3) {
+            self.view.backgroundColor = .customOrange
+            self.label.textColor = .customOrange
+            self.label.font = UIFont.markProFont(size: 12, weight: .heavy)
+        }
     }
     
     func configureUnselectedState() {
-        view.backgroundColor = .white
-        label.textColor = .black
-        label.font = UIFont.markProFont(size: 12, weight: .plain)
+        UIView.animate(withDuration: 0.3) {
+            self.view.backgroundColor = .white
+            self.label.textColor = .black
+            self.label.font = UIFont.markProFont(size: 12, weight: .plain)
+        }
     }
          
     // MARK: - Public Methods

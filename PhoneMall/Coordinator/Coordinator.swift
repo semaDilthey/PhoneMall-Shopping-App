@@ -5,9 +5,9 @@ import UIKit
 
 protocol CoordinatorProtocol: AnyObject {
     func start(window: UIWindow)
-    func showDetailVC(controller: UINavigationController, dataStorage: DataStorage)
-    func showCartVC(controller: UINavigationController, dataStorage: DataStorage)
-    func showHomeVC(controller: UINavigationController, dataStorage: DataStorage)
+    func showDetailVC(navController: UINavigationController?, dataStorage: DataStorageProtocol)
+    func showCartVC(navController: UINavigationController?, dataStorage: DataStorageProtocol)
+    func showHomeVC(navController: UINavigationController?, dataStorage: DataStorageProtocol)
     
 }
 class Coordinator: CoordinatorProtocol {
@@ -21,23 +21,26 @@ class Coordinator: CoordinatorProtocol {
         }
     
     
-    func showDetailVC(controller: UINavigationController, dataStorage: DataStorage){
+    func showDetailVC(navController: UINavigationController?, dataStorage: DataStorageProtocol){
+        guard let navController else { return }
         let viewModel = DetailsViewModel(networkManager: NetworkManager(), dataStorage: dataStorage)
         let vc = DetailsViewController(viewModel: viewModel)
-        setViewController(controller: controller, with: [vc])
+        setViewController(controller: navController, with: [vc])
     }
     
-    func showCartVC(controller: UINavigationController, dataStorage: DataStorage) {
-        let cartViewModel = MyCartViewModel(networkManager: NetworkManager(), dataStorage: dataStorage)
-        let vc = MyCartVC(viewModel: cartViewModel)
-        setViewController(controller: controller, with: [vc])
+    func showCartVC(navController: UINavigationController?, dataStorage: DataStorageProtocol) {
+        guard let navController else { return }
+        let cartViewModel = CartViewModel(networkManager: NetworkManager(), dataStorage: dataStorage)
+        let vc = CartViewController(viewModel: cartViewModel)
+        setViewController(controller: navController, with: [vc])
     }
     
     
-    func showHomeVC(controller: UINavigationController, dataStorage: DataStorage) {
+    func showHomeVC(navController: UINavigationController?, dataStorage: DataStorageProtocol) {
+        guard let navController else { return }
         let homeViewModel = MainViewModel(networkManager: NetworkManager(), dataStorage: dataStorage)
         let vc = MainViewController(viewModel: homeViewModel)
-        setViewController(controller: controller, with: [vc], animated: true)
+        setViewController(controller: navController, with: [vc], animated: true)
     }
     
 

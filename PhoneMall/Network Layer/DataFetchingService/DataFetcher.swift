@@ -13,6 +13,9 @@ protocol DataFetcherProtocol : AnyObject {
 
 class DataFetcher : DataFetcherProtocol {
     
+    let parser : Parser = Parser()
+    
+    // open-closed принцип, все дела, метод для получения данных с инета
     func getData<T:Decodable>(from urlString: String, completion: @escaping (Result<T, Error>) -> Void) {
         guard let url = URL(string: urlString) else {
             completion(.failure(NetworkError.invalidURL))
@@ -27,27 +30,13 @@ class DataFetcher : DataFetcherProtocol {
                 completion(.failure(NetworkError.invalidResponse))
                 return
             }
-            let decodedData = self.decodeJSON(type: T.self, from: data)
-            completion(.success(decodedData!))
+            self.parser.decodeJSON(ofType: T.self, from: data, completion: completion)
         }
         task.resume()
     }
   
 
-  private func decodeJSON <T: Decodable>(type: T.Type, from data: Data?) -> T? {
-      let decoder = JSONDecoder()
-      decoder.keyDecodingStrategy = .convertFromSnakeCase
-      guard let data = data else { return nil }
-      do {
-          let response = try? decoder.decode(type.self, from: data)
-          return response
-      } catch let jsonError {
-          print("Failed to decode JSON, \(jsonError)")
-          return nil
-      }
-  }
 }
-
 
 enum NetworkError: Error {
     case invalidURL

@@ -3,27 +3,43 @@
 import Foundation
 import UIKit
 
-protocol MyCartViewModelProtocol {
+protocol CartViewModelProtocol {
     func getCartPhones()
     func getMyCartCellViewModel(at: IndexPath) -> MyCartCellModelProtocol?
     func createCellModel(data: BasketCartData) -> MyCartCellModelProtocol?
 }
 
 
-class MyCartViewModel {
+class CartViewModel {
     
     // MARK: - Properties
-    var dataStorage : DataStorage?
-    var networkManager : NetworkManager?
+    var dataStorage : DataStorageProtocol?
+    var networkManager : Networking?
     
     var coordinator = Coordinator()
 
     var cartData : CartData?
 
     // MARK: - Initialization
-    init(networkManager: NetworkManager?, dataStorage: DataStorage? ) {
+    init(networkManager: Networking?, dataStorage: DataStorageProtocol? ) {
         self.dataStorage = dataStorage
         self.networkManager = networkManager
+    }
+    
+    //MARK: - Networking
+        // 2 Получаем телефоны из интернета и запихиваем их в модель
+    func getCartPhones() {
+        networkManager?.getCartData { [weak self] data in
+            switch data {
+            case .success(let data):
+                self?.cartData = data
+                self?.cartPhonesModel = data.basket.compactMap { basketData in
+                    return self?.createCellModel(data: basketData)
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
     
     // MARK: - Public Properties
@@ -57,10 +73,6 @@ class MyCartViewModel {
     }
     
     // MARK: - Buttons Methods
-
-    func backButtonPressed(navController: UINavigationController, dataStorage: DataStorage) {
-        coordinator.showHomeVC(controller: navController, dataStorage: dataStorage)
-    }
     
     func deleteTapped(cell: MyCartCell, tableView: UITableView) {
         if let indexPath = tableView.indexPath(for: cell) {
@@ -73,9 +85,9 @@ class MyCartViewModel {
     
 
 //MARK: - MyCartViewModelProtocol
-    extension MyCartViewModel : MyCartViewModelProtocol {
+    extension CartViewModel : CartViewModelProtocol {
         
-        // 1 создаем модельку для корзины
+        // 1 создаем модель для корзины
         func createCellModel(data: BasketCartData) -> MyCartCellModelProtocol? {
             let picture = data.images
             let title = data.title
@@ -83,24 +95,8 @@ class MyCartViewModel {
             return MyCartCellModel(title: title, picture: picture, price: price)
         }
         
-            // 2 Получаем телефончики из интернета и запихиваем их в модельку
-        func getCartPhones() {
-            networkManager?.getCartScreenData { [weak self] data in
-                switch data {
-                case .success(let data):
-                    self?.cartData = data
-                    self?.cartPhonesModel = data.basket.compactMap { basketData in
-                        return self?.createCellModel(data: basketData)
-                    }
-//                    self?.cartPhonesModel = data.basket.map { self?.createCellModel(data: $0)}
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        }
         
-        
-        // 3 Получаем нужную модельку для таблицы в ячейках
+        // 3 Получаем нужную модель для таблицы в ячейках
         func getMyCartCellViewModel(at indexPath: IndexPath) -> MyCartCellModelProtocol? {
             guard indexPath.row < cartPhonesModel.count else { return nil }
             return cartPhonesModel[indexPath.row]

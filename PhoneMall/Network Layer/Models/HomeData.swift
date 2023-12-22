@@ -4,7 +4,6 @@ import UIKit
 
 
 struct HomeData : Decodable {
-    
     let homeStore : [HomeStoreItem]
     let bestSeller : [BestSellerItem]
 }
